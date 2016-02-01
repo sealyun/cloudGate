@@ -388,7 +388,23 @@ class SnapshotHandler(BlockStorageBaseHandler):
 
 class SnapshotMetadataHandler(BlockStorageBaseHandler):
     def get(self, tenant_id, snapshot_id):
-        pass
+        metadata = self.p.querySnapshotMetadata(tenant_id, snapshot_id)
+
+        resp = {
+            "metadata":{
+                "name":metadata.name
+            }
+        }
+
+        self.send_json(resp)
 
     def put(self, tenant_id, snapshot_id):
-        pass
+        metadata = json.loads(self.request.body)["metadata"]
+
+        metadata = self.p.updataSnapshotMetadata(tenant_id, snapshot_id, metadata)
+
+        resp = {
+            "metadata":metadata
+        }
+
+        self.send_json(resp)
