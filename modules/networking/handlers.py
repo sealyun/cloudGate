@@ -480,86 +480,615 @@ class PortHandler(NetworkingBaseHandler):
 
 class LoadbalancersHandler(NetworkingBaseHandler):
     def get(self):
-        pass
+        loadbalancers = self.p.queryLoadbalancers()
+
+        resp = {
+            "loadbalancers":[
+                {
+                    "description": l.destination,
+                    "admin_state_up": l.admin_state_up,
+                    "tenant_id": l.tenant_id,
+                    "provisioning_status": l.provisioning_status,
+                    "listeners": l.listeners,
+                    "vip_address": l.vip_address,
+                    "vip_subnet_id": l.vip_subnet_id,
+                    "id": l.id,
+                    "operating_status": l.operating_status,
+                    "name": l.name
+                }
+                for l in loadbalancers
+            ]
+        }
+
+        self.send_json(resp)
 
     def post(self):
-        pass
+        loadbalancer = json.loads(self.request.body)["loadbalancer"]
+
+        loadbalancer = self.p.createLoadbalancer(loadbalancer["name"],
+                loadbalancer["destination"],
+                loadbalancer["tenant_id"],
+                loadbalancer["vip_subnet_id"],
+                loadbalancer["vip_address"],
+                loadbalancer["admin_state_up"],
+                loadbalancer["provider"])
+
+        if loadbalancer:
+            self.set_status(201)
+        else:
+            self.set_status(400)
+            return
+
+        resp = {
+            "loadbalancer":{
+                "description": loadbalancer.destination,
+                "admin_state_up": loadbalancer.admin_state_up,
+                "tenant_id": loadbalancer.tenant_id,
+                "provisioning_status": loadbalancer.provisioning_status,
+                "listeners": loadbalancer.listeners,
+                "vip_address": loadbalancer.vip_address,
+                "vip_subnet_id": loadbalancer.vip_subnet_id,
+                "id": loadbalancer.id,
+                "operating_status": loadbalancer.operating_status,
+                "name": loadbalancer.name
+            }
+        }
+
+        self.send_json(resp)
 
 class LoadbalancerHandler(NetworkingBaseHandler):
     def get(self, lbaas_id):
-        pass
+        loadbalancer = self.p.queryLoadbalancer(lbaas_id)
+
+        if loadbalancer:
+            self.set_status(200)
+        else:
+            self.set_status(403)
+            return
+
+        resp = {
+            "loadbalancer":{
+                "description": loadbalancer.destination,
+                "admin_state_up": loadbalancer.admin_state_up,
+                "tenant_id": loadbalancer.tenant_id,
+                "provisioning_status": loadbalancer.provisioning_status,
+                "listeners": loadbalancer.listeners,
+                "vip_address": loadbalancer.vip_address,
+                "vip_subnet_id": loadbalancer.vip_subnet_id,
+                "id": loadbalancer.id,
+                "operating_status": loadbalancer.operating_status,
+                "name": loadbalancer.name
+            }
+        }
+
+        self.send_json(resp)
 
     def put(self, lbaas_id):
-        pass
+        loadbalancer = json.loads(self.request.body)["loadbalancer"]
+
+        loadbalancer = self.updateLoadbalancer(lbaas_id, 
+                loadbalancer["admin_state_up"],
+                loadbalancer["destination"],
+                loadbalancer["name"])
+
+        if loadbalancer:
+            self.set_status(200)
+        else:
+            self.set_status(401)
+            return
+
+        resp = {
+            "loadbalancer":{
+                "admin_state_up": loadbalancer.admin_state_up,
+                "description": loadbalancer.destination,
+                "id": loadbalancer.id,
+                "listeners": loadbalancer.listeners,
+                "name": loadbalancer.name
+                "operating_status": loadbalancer.operating_status,
+                "provisioning_status": loadbalancer.provisioning_status,
+                "tenant_id": loadbalancer.tenant_id,
+                "vip_address": loadbalancer.vip_address,
+                "vip_subnet_id": loadbalancer.vip_subnet_id,
+            }
+        }
+
+        self.send_json(resp)
+
+
 
     def delete(self, lbaas_id):
-        pass
+        if self.p.deleteLoadbalancer(lbaas_id):
+            self.set_status(204)
+        else:
+            self.set_status(403)
+            return
 
 class LoadbalancerStatusesHandler(NetworkingBaseHandler):
     def get(self, lbaas_id):
+        #TODO
+        """
+        loadbalancer
+            |___listener1
+            |       |_____pool1                   
+            |       |       |_____member1
+            |       |       |_____member2
+            |       |______pool2
+            |___listener2
+        """
         pass
 
 class LbaasListenersHandler(NetworkingBaseHandler):
     def get(self):
-        pass
+        listeners = self.p.queryListeners()
+
+        resp = {
+            "listeners":[
+                {
+                    "admin_state_up":l.admin_state_up,
+                    "connection_limit":l.connection_limit,
+                    "default_pool_id":l.default_pool_id,
+                    "description":l.description,
+                    "id":l.id,
+                    "loadbalancers":l.loadbalancers,
+                    "name":l.name,
+                    "protocol":l.protocol,
+                    "protocol_port":l.port,
+                    "tenant_id":l.tenant_id,
+                    "default_tls_container_ref":l.default_tls_container_ref,
+                    "sni_container_refs":l.sni_container_refs,
+                }
+                for l in listeners
+            ]
+        }
+
+        self.send_json(resp)
 
     def post(self):
-        pass
+        listener = json.loads(self.request.body)["listener"]
+
+        listener = self.p.createListener(listener["admin_state_up"],
+                listener["connection_limit"],
+                listener["description"],
+                listener["loadbalancer_id"],
+                listener["name"],
+                listener["protocol"],
+                listener["protocol_port"],
+                listener["default_tls_container_ref"],
+                listener["sni_container_refs"])
+
+        if listener:
+            self.set_status(201)
+        else:
+            self.set_status(400)
+            return
+
+        resp = {
+            "listener":{
+                "admin_state_up":listener.admin_state_up,
+                "connection_limit":listener.connection_limit,
+                "default_pool_id":listener.default_pool_id,
+                "description":listener.description,
+                "id":listener.id,
+                "loadbalancers":listener.loadbalancers,
+                "name":listener.name,
+                "protocol":listener.protocol,
+                "protocol_port":listener.port,
+                "tenant_id":listener.tenant_id,
+                "default_tls_container_ref":listener.default_tls_container_ref,
+                "sni_container_refs":listener.sni_container_refs,
+            }
+        }
+
+        self.send_json(resp)
 
 class LbaasListenerHandler(NetworkingBaseHandler):
     def get(self, listener_id):
-        pass
+        listener = self.queryListener(listener_id)
+
+        if listener:
+            self.set_status(200)
+        else:
+            self.set_status(400)
+            return
+
+        resp = {
+            "listener":{
+                "admin_state_up":listener.admin_state_up,
+                "connection_limit":listener.connection_limit,
+                "default_pool_id":listener.default_pool_id,
+                "description":listener.description,
+                "id":listener.id,
+                "loadbalancers":listener.loadbalancers,
+                "name":listener.name,
+                "protocol":listener.protocol,
+                "protocol_port":listener.port,
+                "tenant_id":listener.tenant_id,
+                "default_tls_container_ref":listener.default_tls_container_ref,
+                "sni_container_refs":listener.sni_container_refs,
+            }
+        }
+
+        self.send_json(resp)
 
     def put(self, listener_id):
-        pass
+        listener = json.loads(self.request.body)["listener"]
+
+        listener = self.p.updateListener(listener_id,
+                listener["admin_state_up"],
+                listener["connection_limit"],
+                listener["description"],
+                listener["name"],
+                listener["default_tls_container_ref"],
+                listener["sni_container_refs"])
+
+        if listener:
+            self.set_status(200)
+        else:
+            self.set_status(400)
+            return
+
+        resp = {
+            "listener":{
+                "admin_state_up":listener.admin_state_up,
+                "connection_limit":listener.connection_limit,
+                "default_pool_id":listener.default_pool_id,
+                "description":listener.description,
+                "id":listener.id,
+                "loadbalancers":listener.loadbalancers,
+                "name":listener.name,
+                "protocol":listener.protocol,
+                "protocol_port":listener.port,
+                "tenant_id":listener.tenant_id,
+                "default_tls_container_ref":listener.default_tls_container_ref,
+                "sni_container_refs":listener.sni_container_refs,
+            }
+        }
+
+        self.send_json(resp)
 
     def delete(self, listener_id):
-        pass
+        if self.p.deleteListener(listener_id):
+            self.set_status(204)
+        else:
+            self.set_status(400)
 
 class LbaasPoolsHandler(NetworkingBaseHandler):
     def get(self):
-        pass
+        pools = self.p.getLbaasPools()
+
+        if pools:
+            self.set_status(200)
+        else:
+            self.set_status(400)
+            return
+
+        resp = {
+            "pools":[
+                {
+                    "status": p.status,
+                    "lb_method": p.lb_method,
+                    "protocol": p.protocol,
+                    "description": p.description,
+                    "health_monitors": p.health_moniters,
+                    "subnet_id": p.subnet_id,
+                    "tenant_id": p.tenant_id,
+                    "admin_state_up": p.admin_state_up,
+                    "name": p.name,
+                    "members": p.members,
+                    "id": p.id,
+                    "vip_id": p.vip_id
+                }
+                for p in pools
+            ]
+        }
+
+        self.send_json(resp)
 
     def post(self):
-        pass
+        pool = json.loads(self.request.body)["pool"]
+
+        pool = self.p.createPool(pool["admin_state_up"],
+                pool["description"],
+                pool["lb_algorithm"],
+                pool["listener_id"],
+                pool["name"],
+                pool["protocol"],
+                pool["session_persistence"])
+
+        if pool:
+            self.set_status(201)
+        else:
+            self.set_status(409)
+            return
+
+        resp = {
+            "pool":{
+                "admin_state_up": pool.admin_state_up,
+                "description": pool.description,
+                "healthmonitor_id": pool.healthmoniter_id,
+                "id": pool.id,
+                "lb_algorithm": pool.lb_algorithm,
+                "listeners": pool.listeners,
+                "members": pool.members,
+                "name": pool.name,
+                "protocol": pool.protocol,
+                "session_persistence": pool.session_persistence,
+                "tenant_id": pool.tenant_id 
+            }
+        }
+
+        self.send_json(resp)
 
 class LbaasPoolHandler(NetworkingBaseHandler):
     def get(self, pool_id):
-        pass
+        pool = self.p.queryLbaasPool(pool_id)
+
+        resp = {
+            "pool":{
+                "admin_state_up": pool.admin_state_up,
+                "description": pool.description,
+                "healthmonitor_id": pool.healthmoniter_id,
+                "id": pool.id,
+                "lb_algorithm": pool.lb_algorithm,
+                "listeners": pool.listeners,
+                "members": pool.members,
+                "name": pool.name,
+                "protocol": pool.protocol,
+                "tenant_id": pool.tenant_id 
+            }
+        }
+
+        self.send_json(resp)
 
     def put(self, pool_id):
-        pass
+        pool = json.loads(self.request.body)["pool"]
+
+        pool = self.p.updateLbaasPool(pool_id, pool["name"],
+                pool["description"],
+                pool["admin_state_up"],
+                pool["lb_algorithm"],
+                pool["session_persistence"])
+
+        if pool:
+            self.set_status(200)
+        else:
+            self.set_status(400)
+            return
+
+        resp = {
+            "pool":{
+                "status": pool.status,
+                "lb_method": pool.lb_method,
+                "protocol": pool.protocol,
+                "description": pool.description,
+                "health_monitors": pool.health_moniters,
+                "subnet_id": pool.subnet_id,
+                "tenant_id": pool.tenant_id,
+                "admin_state_up": pool.admin_state_up,
+                "name": pool.name,
+                "members": pool.members,
+                "id": pool.id,
+                "vip_id": pool.vip_id 
+            }
+        }
+
+        self.send_json(resp)
 
     def delete(self, pool_id):
-        pass
+        if self.p.deleteLbaasPool(pool_id):
+            self.set_status(204)
+        else:
+            self.set_status(400)
+            return
 
 class LbaasPoolMembersHandler(NetworkingBaseHandler):
     def get(self, pool_id):
-        pass
+        members = self.p.queryLbaasPoolMembers(pool_id)
+
+        resp = {
+            "members":[
+                {
+                    "address": m.address,
+                    "admin_state_up": m.admin_state_up,
+                    "id": m.id,
+                    "protocol_port": m.protocol_port,
+                    "subnet_id": m.subnet_id,
+                    "tenant_id": m.tenant_id,
+                    "weight": m.weight
+                }
+                for m in members
+            ]
+        }
+
+        self.send_json(resp)
 
     def post(self, pool_id):
-        pass
+        member = json.loads(self.request.body)["member"]
+
+        member = self.p.addMemberToPool(pool_id,
+                member["address"],
+                member["admin_state_up"],
+                member["protocol_port"],
+                member["subnet_id"],
+                member["weight"])
+
+        if member:
+            self.set_status(201)
+        else:
+            self.set_status(400)
+            return
+
+        resp = {
+            "member":{
+                "address": member.address,
+                "admin_state_up": member.admin_state_up,
+                "id": member.id,
+                "protocol_port": member.protocol_port,
+                "subnet_id": member.subnet_id,
+                "tenant_id": member.tenant_id,
+                "weight": member.weight
+            }
+        }
+
+        self.send_json(resp)
 
 class LbaasPoolMemberHandler(NetworkingBaseHandler):
     def get(self, pool_id, member_id):
-        pass
+        member = self.p.queryLbaasPoolMember(pool_id, member_id)
+
+        if member:
+            self.set_status(200)
+        else:
+            self.set_status(400)
+            return
+
+        resp = {
+            "member":{
+                "address": member.address,
+                "admin_state_up": member.admin_state_up,
+                "id": member.id,
+                "protocol_port": member.protocol_port,
+                "subnet_id": member.subnet_id,
+                "tenant_id": member.tenant_id,
+                "weight": member.weight
+            }
+        }
+
+        self.send_json(resp)
 
     def put(self, pool_id, member_id):
-        pass
+        member = json.loads(self.request.body)["member"]
+
+        if member:
+            self.set_status(200)
+        else:
+            self.set_status(400)
+            return
+
+        resp = {
+            "member":{
+                "address": member.address,
+                "admin_state_up": member.admin_state_up,
+                "id": member.id,
+                "protocol_port": member.protocol_port,
+                "subnet_id": member.subnet_id,
+                "tenant_id": member.tenant_id,
+                "weight": member.weight
+            }
+        }
+
+        self.send_json(resp)
 
     def delete(self, pool_id, member_id):
-        pass
+        if self.p.deleteLbaasPoolMember(pool_id, member_id):
+            self.set_status(204)
+        else:
+            self.set_status(400)
 
 class LbaasHealthMonitorsHandler(NetworkingBaseHandler):
     def post(self):
-        pass
+        health_moniter = json.loads(self.request.body)["health_moniter"]
+
+        health_moniter = self.p.createLbaasHealthMonitor(health_moniter["admin_state_up"],
+                health_moniter["delay"],
+                health_moniter["expected_codes"],
+                health_moniter["http_method"],
+                health_moniter["max_retries"],
+                health_moniter["pool_id"],
+                health_moniter["timeout"],
+                health_moniter["type"],
+                health_moniter["url_path"])
+
+        if health_moniter:
+            self.set_status(201)
+        else:
+            self.set_status(400)
+            return
+
+        resp = {
+            "health_moniter":{
+                "admin_state_up": health_moniter.admin_state_up,
+                "delay": health_moniter.delay,
+                "expected_codes": health_moniter.expected_codes,
+                "http_method": health_moniter.http_method,
+                "id": health_moniter.id,
+                "max_retries": health_moniter.max_retries,
+                "pools": health_moniter.pools,
+                "tenant_id": health_moniter.tenant_id,
+                "timeout": health_moniter.timeout,
+                "type": health_moniter.type,
+                "url_path": health_moniter.url_path 
+            }
+        }
+
+        self.send_json(resp)
 
 class LbaasHealthMonitorHandler(NetworkingBaseHandler):
     def get(self, health_moniter_id):
-        pass
+        health_moniter = self.p.queryLbaasHealthMonitor(healthmoniter_id)
+
+        if health_moniter:
+            self.set_status(200)
+        else:
+            self.set_status(400)
+            return
+
+        resp = {
+            "health_moniter":{
+                "admin_state_up": health_moniter.admin_state_up,
+                "delay": health_moniter.delay,
+                "expected_codes": health_moniter.expected_codes,
+                "http_method": health_moniter.http_method,
+                "id": health_moniter.id,
+                "max_retries": health_moniter.max_retries,
+                "pools": health_moniter.pools,
+                "tenant_id": health_moniter.tenant_id,
+                "timeout": health_moniter.timeout,
+                "type": health_moniter.type,
+                "url_path": health_moniter.url_path 
+            }
+        }
+
+        self.send_json(resp)
 
     def put(self, health_moniter_id):
-        pass
+        health_moniter = json.loads(self.request.body)["health_moniter"]
+
+        health_moniter = self.p.updateLbaasHealthMoniter(healthmoniter_id,
+                health_moniter["admin_state_up"],
+                health_moniter["delay"],
+                health_moniter["expected_codes"],
+                health_moniter["http_method"],
+                health_moniter["max_retries"],
+                health_moniter["timeout"],
+                health_moniter["url_path"])
+
+        if health_moniter:
+            self.set_status(200)
+        else:
+            self.set_status(400)
+            return
+
+        resp = {
+            "health_moniter":{
+                "admin_state_up": health_moniter.admin_state_up,
+                "delay": health_moniter.delay,
+                "expected_codes": health_moniter.expected_codes,
+                "http_method": health_moniter.http_method,
+                "id": health_moniter.id,
+                "max_retries": health_moniter.max_retries,
+                "pools": health_moniter.pools,
+                "tenant_id": health_moniter.tenant_id,
+                "timeout": health_moniter.timeout,
+                "type": health_moniter.type,
+                "url_path": health_moniter.url_path 
+            }
+        }
+
+        self.send_json(resp)
 
     def delete(self, health_moniter_id):
-        pass
+        if self.p.deleteLbaasHealthMonitor(healthmoniter_id):
+            self.set_status(204)
+        else:
+            self.set_status(400)
