@@ -46,7 +46,7 @@ class NetworksHandler(NetworkingBaseHandler):
 
             networks = self.p.createBuklNetworks(network)
 
-            if n:
+            if network:
                 self.set_status(201)
             else:
                 return
