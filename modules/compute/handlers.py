@@ -3,7 +3,9 @@ from cloudGate.httpbase import HttpBaseHandler
 
 class ComputeBaseHandler(HttpBaseHandler):
     #the ProcessorFac return the real processor.
-    p = ComputeProcessorFac()
+    def prepare(self):
+        #get access key and access secret from Token
+        self.p = ComputeProcessorFac(None, self.get_header("X-Auth-Token"))
 
     def get(self):
         #TODO
@@ -201,7 +203,7 @@ class ServerHandler(ComputeBaseHandler):
                     server["accessIPv6"])
 
         if r"OS-DCF:diskConfig" in server:
-            s = self.p.updateServerOS_DCF_diskConfig(tenant_id, server_id,
+            s = self.p.updateServerOSDCFdiskConfig(tenant_id, server_id,
                     server[r"OS-DCF:diskConfig"])
 
         resp = {
