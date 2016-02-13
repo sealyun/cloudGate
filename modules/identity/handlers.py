@@ -1039,7 +1039,7 @@ class ProjectsHandler(IdentityBaseHandler):
                     "parent_id": None
                 },
                 {
-                    "description": ,
+                    "description": None,
                     "domain_id": "default",
                     "enabled": True,
                     "id": "3d594eb0f04741069dbbb521635b21c7",
