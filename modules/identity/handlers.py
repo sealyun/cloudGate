@@ -208,21 +208,7 @@ class AuthTokensHandler(IdentityBaseHandler):
                         "endpoints": [
                             {
                                 "region_id": "RegionOne",
-                                "url": "",
-                                "region": "RegionOne",
-                                "interface": "admin",
-                                "id": "0ceeb58592274caea5bc942a07d5473f"
-                            },
-                            {
-                                "region_id": "RegionOne",
-                                "url": "",
-                                "region": "RegionOne",
-                                "interface": "internal",
-                                "id": "8126f2c7021d413e9c98ec3a0ba0fd58"
-                            },
-                            {
-                                "region_id": "RegionOne",
-                                "url": "",
+                                "url": "http://121.199.9.187:8081/identity/",
                                 "region": "RegionOne",
                                 "interface": "public",
                                 "id": "c693879254544e3fb502e795a3f6acc8"
