@@ -43,6 +43,8 @@ class TokensHandler(IdentityBaseHandler):
 
 class AuthTokensHandler(IdentityBaseHandler):
     def post(self):
+        print self.request.body
+
         auth = json.loads(self.request.body)
 
         if "auth" not in auth:
