@@ -578,7 +578,7 @@ class UserHandler(IdentityBaseHandler):
                 "default_project_id":"",
                 "description":"",
                 "domian_id":"",
-                "email":"",
+                "email":"asdfa",
                 "enabled":"",
                 "id":"",
                 "links":{
