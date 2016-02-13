@@ -575,16 +575,16 @@ class UserHandler(IdentityBaseHandler):
 
         resp = {
             "user":{
-                "default_project_id":user.default_project_id,
-                "description":user.description,
-                "domian_id":user.domian_id,
-                "email":user.email,
-                "enabled":user.enabled,
-                "id":user.id,
+                "default_project_id":"",
+                "description":"",
+                "domian_id":"",
+                "email":"",
+                "enabled":"",
+                "id":"",
                 "links":{
                     "self":"https://"
                 },
-                "name":user.name
+                "name":""
             }
         }
 
