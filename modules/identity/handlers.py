@@ -525,6 +525,7 @@ class UsersHandler(IdentityBaseHandler):
                     "email":"",
                     "enabled":"",
                     "id":u["UserId"],
+                    "description":u["Comments"],
                     "links":{
                         "self":"http://",
                     },
