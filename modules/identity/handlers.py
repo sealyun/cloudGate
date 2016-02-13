@@ -525,7 +525,7 @@ class UsersHandler(IdentityBaseHandler):
                     "domian_id":"",
                     "email":u["Email"],
                     "enabled":"",
-                    "id":u["UserId"],
+                    "id":u["UserName"],
                     "description":u["Comments"],
                     "links":{
                         "self":"http://" + HOST + ":" + PORT + IDENTITY_BASE_URL + "/v3/users/" + u["UserName"],
