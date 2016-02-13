@@ -527,7 +527,7 @@ class UsersHandler(IdentityBaseHandler):
                     "id":u["UserId"],
                     "description":u["Comments"],
                     "links":{
-                        "self":"http://",
+                        "self":"http://" + HOST + ":" + PORT + IDENTITY_BASE_URL + "/v3/users/" + u["UserId"],
                     },
                     "name":u["UserName"],
                 } 
