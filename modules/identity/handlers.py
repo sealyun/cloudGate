@@ -11,6 +11,11 @@ if sys.getdefaultencoding() != default_encoding:
     sys.setdefaultencoding(default_encoding)
 
 class IdentityBaseHandler(HttpBaseHandler):
+    def prepare(self):
+        token = self.get_header("X-Auth-Token")
+        print ("-----get token:", token)
+        self.p = IdentityProcessorFac(None, token)
+
     def get(self):
         resp = {
             "versions":{
