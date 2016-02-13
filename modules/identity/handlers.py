@@ -108,7 +108,7 @@ class UsersHandler(IdentityBaseHandler):
                     "id":u.id,
                     "links":{
                         "self":"http://",
-                    }
+                    },
                     "name":u.name,
                 } 
                 for u in users
