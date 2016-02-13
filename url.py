@@ -3,18 +3,18 @@ from httpbase import *
 
 MODULES_SWITCH = {
     "identity": 1,
-    "mould": 1,
-    "block_storage":1,
-    "clustering":1,
-    "compute":1,
-    "data_processing":1,
-    "database_service":1,
-    "image_service":1,
-    "networking":1,
-    "object_storage":1,
-    "orchestration":1,
-    "shared_file_systems":1,
-    "telemetry":1,
+    "mould": 0,
+    "block_storage":0,
+    "clustering":0,
+    "compute":0,
+    "data_processing":0,
+    "database_service":0,
+    "image_service":0,
+    "networking":0,
+    "object_storage":0,
+    "orchestration":0,
+    "shared_file_systems":0,
+    "telemetry":0,
 }
 
 URL_SETTINGS = []
