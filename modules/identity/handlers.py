@@ -61,7 +61,7 @@ class AuthTokensHandler(IdentityBaseHandler):
                         "name": "Default"
                     },
                     "id": "5b50efd009b540559104ee3c03bbb2b7",
-                    "name": "admin"
+                    "name": "fht"
                 },
                 "catalog": [
                     {
@@ -180,21 +180,21 @@ class AuthTokensHandler(IdentityBaseHandler):
                         "endpoints": [
                             {
                                 "region_id": "RegionOne",
-                                "url": "",
+                                "url": "http://121.199.9.187:8081/compute/1233",
                                 "region": "RegionOne",
                                 "interface": "public",
                                 "id": "bc2230a70d6a444e9fba75b85fbda41b"
                             },
                             {
                                 "region_id": "RegionOne",
-                                "url": "",
+                                "url": "http://121.199.9.187:8081/compute/1233",
                                 "region": "RegionOne",
                                 "interface": "internal",
                                 "id": "d8102dc2b9984d04b30b91b0a6037470"
                             },
                             {
                                 "region_id": "RegionOne",
-                                "url": "",
+                                "url": "http://121.199.9.187:8081/compute/1233",
                                 "region": "RegionOne",
                                 "interface": "admin",
                                 "id": "f8253a53edd749bf8b107a53a5d47a82"
@@ -206,6 +206,20 @@ class AuthTokensHandler(IdentityBaseHandler):
                     },
                     {
                         "endpoints": [
+                            {
+                                "region_id": "RegionOne",
+                                "url": "http://121.199.9.187:8081/identity/v3/",
+                                "region": "RegionOne",
+                                "interface": "admin",
+                                "id": "c693879254544e3fb502e795a3f6acc8"
+                            }
+                            {
+                                "region_id": "RegionOne",
+                                "url": "http://121.199.9.187:8081/identity/v3/",
+                                "region": "RegionOne",
+                                "interface": "internal",
+                                "id": "c693879254544e3fb502e795a3f6acc8"
+                            }
                             {
                                 "region_id": "RegionOne",
                                 "url": "http://121.199.9.187:8081/identity/v3/",
