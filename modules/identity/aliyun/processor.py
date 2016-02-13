@@ -26,8 +26,6 @@ class AliyunIdentityProcessor(IdentityProcessorBase):
 
         response = self.clt.do_action(request)
 
-        print response
-
         resp = json.loads(response)
 
         users = []
@@ -49,8 +47,6 @@ class AliyunIdentityProcessor(IdentityProcessorBase):
         response = self.clt.do_action(request)
 
         resp = json.loads(response)
-
-        print resp["Roles"]["Role"]
 
         return resp["Roles"]["Role"]
 
@@ -75,6 +71,8 @@ class AliyunIdentityProcessor(IdentityProcessorBase):
         r = GetUserRequest.GetUserRequest()
         r.set_UserName(user_name)
         r.set_accept_format('json')
-        user = json.loads(self.clt.do_action(r))
+        resp = self.clt.do_action(r)
+        print resp
+        user = json.loads(resp)
 
         return user["User"]
