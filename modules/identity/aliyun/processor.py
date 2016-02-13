@@ -51,3 +51,5 @@ class AliyunIdentityProcessor(IdentityProcessorBase):
 
         resp = json.loads(response)
 
+        return resp["Roles"]["Role"]
+

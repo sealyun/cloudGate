@@ -699,11 +699,11 @@ class RolesHandler(IdentityBaseHandler):
             },
             "roles":[
                 {
-                    "id":r.id,
+                    "id":r["RoleId"],
                     "links":{
                         "self":"http://"
                     },
-                    "name":r.name
+                    "name":r["RoleName"]
                 }
                 for r in roles
             ]
