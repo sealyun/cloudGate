@@ -21,10 +21,10 @@ class IdentityBaseHandler(HttpBaseHandler):
             "versions":{
                 "values":[
                     {
-                        "id": "v2.0",
+                        "id": "v3",
                         "links": [
                             {
-                                "href": "http://" + HOST + ":" + PORT + "/v2.0/",
+                                "href": "http://" + HOST + ":" + PORT + "/v3/",
                                 "rel": "self"
                             }
                         ],
@@ -34,7 +34,7 @@ class IdentityBaseHandler(HttpBaseHandler):
                             }
                         ],
                         "status": "stable",
-                        "updated": "2014-04-17T00:00:00Z"
+                        "updated": "2015-04-17T00:00:00Z"
                     }
                 ]
             }
