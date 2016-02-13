@@ -522,7 +522,7 @@ class UsersHandler(IdentityBaseHandler):
             "users":[
                 {
                     "domian_id":"",
-                    "email":"",
+                    "email":u["Email"],
                     "enabled":"",
                     "id":u["UserId"],
                     "description":u["Comments"],
