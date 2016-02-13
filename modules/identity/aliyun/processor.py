@@ -23,4 +23,6 @@ class AliyunIdentityProcessor(IdentityProcessorBase):
 
         print response
 
-        return response["Users"]["User"]
+        resp = json.loads(response)
+
+        return resp["Users"]["User"]
