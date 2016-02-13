@@ -10,7 +10,7 @@ class AliyunIdentityProcessor(IdentityProcessorBase):
         self.token = token
 
         self.access_key = IDENTITY["aliyun"]["access_key"]
-        self.access_secrect = IDENTITY["aliyun"]["access_secrect"]
+        self.access_secrect = IDENTITY["aliyun"]["access_secret"]
         self.regin = IDENTITY["aliyun"]["regin"]
 
         self.clt = client.AcsClient(self.access_key, self.access_secrect, self.regin)
