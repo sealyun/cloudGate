@@ -569,6 +569,8 @@ class UsersHandler(IdentityBaseHandler):
 
 class UserHandler(IdentityBaseHandler):
     def get(self, user_id):
+        self.get_processor()
+
         user = self.p.queryUserById(user_id)
 
         resp = {

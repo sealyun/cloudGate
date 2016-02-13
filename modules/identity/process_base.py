@@ -10,4 +10,5 @@ class IdentityProcessorBase():
             enabled, name, password):
         pass
 
-
+    def queryUserById(self, user_id):
+        pass

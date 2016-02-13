@@ -70,3 +70,6 @@ class AliyunIdentityProcessor(IdentityProcessorBase):
         response = self.clt.do_action(request)
 
         return json.loads(response)["User"]
+
+    def queryUserById(self, user_id):
+        pass
