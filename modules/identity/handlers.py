@@ -581,7 +581,7 @@ class UserHandler(IdentityBaseHandler):
                 "domian_id":"",
                 "email":user["Email"],
                 "enabled":"",
-                "id":user["UserId"],
+                "id":user["UserName"],
                 "links":{
                     "self":"https://"
                 },
