@@ -11,10 +11,10 @@ if sys.getdefaultencoding() != default_encoding:
     sys.setdefaultencoding(default_encoding)
 
 class IdentityBaseHandler(HttpBaseHandler):
-    def prepare(self):
+    def get_processor(self):
         token = self.request.headers["X-Auth-Token"]
         print ("-----get token:", token)
-        self.p = IdentityProcessorFac(None, token)
+        return self.p = IdentityProcessorFac(None, token)
 
     def get(self):
         resp = {
@@ -504,6 +504,8 @@ class UsersHandler(IdentityBaseHandler):
         domian_id = self.get_argument("domain_id", None)
         name = self.get_argument("name", None)
         enabled = self.get_argument("enabled", None)
+
+        self.get_processor()
 
         users = self.p.queryUsers(domian_id, name, enabled)
 
