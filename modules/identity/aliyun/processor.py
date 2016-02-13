@@ -4,6 +4,7 @@ from cloudGate.config import *
 from aliyunsdkcore import client
 
 from aliyunsdkram.request.v20150501 import ListUsersRequest
+from aliyunsdkram.request.v20150501 import GetUserRequest
 
 import json
 
@@ -26,5 +27,10 @@ class AliyunIdentityProcessor(IdentityProcessorBase):
         print response
 
         resp = json.loads(response)
+
+        for u in resp:
+            r = GetUserRequest.GetUserRequest()
+            r.set_accept_format('json')
+            print self.clt.do_action(r)
 
         return resp["Users"]["User"]
