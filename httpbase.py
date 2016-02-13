@@ -36,3 +36,10 @@ class HttpBaseHandler(tornado.web.RequestHandler):
             return True
         else:
             return False
+
+    def parse_token(self, token):
+        return {
+            "name":IDENTITY["aliyun"]["user_name"],
+            "password":IDENTITY["aliyun"]["passwd"]
+        }
+        #return json.loads(token)

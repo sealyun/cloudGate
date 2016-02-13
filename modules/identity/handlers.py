@@ -50,7 +50,10 @@ class AuthTokensHandler(IdentityBaseHandler):
         if "auth" not in auth:
             return
 
-        user = auth["auth"]["identity"]["password"]["user"]
+        if "token" in auth["auth"]["identity"]:
+            user = self.parse_token(auth["auth"]["identity"]["token"]["id"])
+        else:
+            user = auth["auth"]["identity"]["password"]["user"]
 
         if user["name"] == IDENTITY["aliyun"]["user_name"] and \
                 user["password"] == IDENTITY["aliyun"]["passwd"]:
