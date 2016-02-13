@@ -528,7 +528,7 @@ class UsersHandler(IdentityBaseHandler):
                     "id":u["UserId"],
                     "description":u["Comments"],
                     "links":{
-                        "self":"http://" + HOST + ":" + PORT + IDENTITY_BASE_URL + "/v3/users/" + u["UserId"],
+                        "self":"http://" + HOST + ":" + PORT + IDENTITY_BASE_URL + "/v3/users/" + u["UserName"],
                     },
                     "name":u["UserName"],
                 } 
@@ -569,10 +569,10 @@ class UsersHandler(IdentityBaseHandler):
         self.send_json(resp)
 
 class UserHandler(IdentityBaseHandler):
-    def get(self, user_id):
+    def get(self, user_name):
         self.get_processor()
 
-        user = self.p.queryUserById(user_id)
+        user = self.p.queryUserById(user_name)
 
         resp = {
             "user":{
