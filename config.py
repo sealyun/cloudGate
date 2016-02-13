@@ -4,8 +4,8 @@ PORT="8081"
 
 IDENTITY={
     "aliyun":{
-        "user_name":"",
-        "passwd":"",
+        "user_name":"admin",
+        "passwd":"admin",
         "access_key":"",
         "access_secret":"",
     },
