@@ -25,7 +25,7 @@ class HttpBaseHandler(tornado.web.RequestHandler):
         return id
 
     def send_json(self, resp):
-        self.set_header("content-type":"application/json")
+        self.set_header("content-type","application/json")
         self.write(json.dumps(resp))
 
     def create_tocken(self, s):
