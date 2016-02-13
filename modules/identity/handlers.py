@@ -577,15 +577,15 @@ class UserHandler(IdentityBaseHandler):
         resp = {
             "user":{
                 "default_project_id":"",
-                "description":"",
+                "description":user["Comments"],
                 "domian_id":"",
-                "email":"asdfa",
+                "email":user["Email"],
                 "enabled":"",
-                "id":"",
+                "id":user["UserId"],
                 "links":{
                     "self":"https://"
                 },
-                "name":""
+                "name":user["UserName"]
             }
         }
 

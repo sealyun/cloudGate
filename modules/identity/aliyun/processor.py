@@ -72,4 +72,9 @@ class AliyunIdentityProcessor(IdentityProcessorBase):
         return json.loads(response)["User"]
 
     def queryUserById(self, user_id):
-        pass
+        r = GetUserRequest.GetUserRequest()
+        r.set_UserName(u["UserName"])
+        r.set_accept_format('json')
+        user = json.loads(self.clt.do_action(r))
+
+        return user["User"]
