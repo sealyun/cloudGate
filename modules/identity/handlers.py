@@ -1,5 +1,5 @@
 # -*- encoding: utf-8 -*-
-from cloudGate.common import *
+from cloudGate.common.define import *
 from cloudGate.httpbase import HttpBaseHandler
 from cloudGate.config import *
 from api_factory import *
