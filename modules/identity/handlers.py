@@ -515,8 +515,8 @@ class UsersHandler(IdentityBaseHandler):
 
         resp = {
             "links": {
-                "next":null,
-                "previous":null,
+                "next":None,
+                "previous":None,
                 "self":"http://"
             },
             "users":[
@@ -640,8 +640,8 @@ class UserGroupsHandler(IdentityBaseHandler):
             ],
             "links":{
                 "self":"http://",
-                "previous":null,
-                "next":null
+                "previous":None,
+                "next":None
             }
         }
 
@@ -691,8 +691,8 @@ class RolesHandler(IdentityBaseHandler):
 
         resp = {
             "links": {
-                "next":null,
-                "previous":null,
+                "next":None,
+                "previous":None,
                 "self":"http://"
             },
             "roles":[
@@ -770,8 +770,8 @@ class GroupsHandler(IdentityBaseHandler):
 
         resp = {
             "links": {
-                "next":null,
-                "previous":null,
+                "next":None,
+                "previous":None,
                 "self":"http://"
             },
             "groups":[
@@ -878,8 +878,8 @@ class GroupUsersHandler(IdentityBaseHandler):
             ],
             "links":{
                 "self":"http://",
-                "previous":null,
-                "next":null
+                "previous":None,
+                "next":None
             }
         }
 
@@ -908,8 +908,8 @@ class PoliciesHandler(IdentityBaseHandler):
 
         resp = {
             "links": {
-                "next":null,
-                "previous":null,
+                "next":None,
+                "previous":None,
                 "self":"http://"
             },
             "policies":[
