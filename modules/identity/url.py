@@ -23,4 +23,6 @@ urls = [
 
     (IDENTITY_BASE_URL + r"/v3/policies", PoliciesHandler),
     (IDENTITY_BASE_URL + r"/v3/policies/(.*)", PolicyHandler), 
+
+    (IDENTITY_BASE_URL + r"/v3/projects", ProjectsHandler), 
 ]

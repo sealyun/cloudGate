@@ -995,3 +995,105 @@ class PolicyHandler(IdentityBaseHandler):
 
     def delete(self, policy_id):
         self.p.deletePolicy(policy_id)
+
+class ProjectsHandler(IdentityBaseHandler):
+    def get(self):
+        resp = {
+                "links": {
+                    "next": None,
+                    "previous": None,
+                    "self": "http://121.199.9.187:8081/v3/projects"
+                },
+            "projects": [
+                {
+                    "description": None,
+                    "domain_id": "default",
+                    "enabled": True,
+                    "id": "0c4e939acacf4376bdcd1129f1a054ad",
+                    "links": {
+                        "self": ""
+                    },
+                    "name": "admin",
+                    "parent_id":None 
+                },
+                {
+                    "description": None,
+                    "domain_id": "default",
+                    "enabled": True,
+                    "id": "0cbd49cbf76d405d9c86562e1d579bd3",
+                    "links": {
+                        "self": ""
+                    },
+                    "name": "demo",
+                    "parent_id": None
+                },
+                {
+                    "description": None,
+                    "domain_id": "default",
+                    "enabled": True,
+                    "id": "2db68fed84324f29bb73130c6c2094fb",
+                    "links": {
+                        "self": ""
+                    },
+                    "name": "swifttenanttest2",
+                    "parent_id": None
+                },
+                {
+                    "description": ,
+                    "domain_id": "default",
+                    "enabled": True,
+                    "id": "3d594eb0f04741069dbbb521635b21c7",
+                    "links": {
+                        "self": ""
+                    },
+                    "name": "service",
+                    "parent_id": None
+                },
+                {
+                    "description": None,
+                    "domain_id": "default",
+                    "enabled": True,
+                    "id": "43ebde53fc314b1c9ea2b8c5dc744927",
+                    "links": {
+                        "self": ""
+                    },
+                    "name": "swifttenanttest1",
+                    "parent_id": None
+                },
+                {
+                    "description": "",
+                    "domain_id": "1bc2169ca88e4cdaaba46d4c15390b65",
+                    "enabled": True,
+                    "id": "4b1eb781a47440acb8af9850103e537f",
+                    "links": {
+                        "self": ""
+                    },
+                    "name": "swifttenanttest4",
+                    "parent_id": None
+                },
+                {
+                    "description": None,
+                    "domain_id": "default",
+                    "enabled": True,
+                    "id": "5961c443439d4fcebe42643723755e9d",
+                    "links": {
+                        "self": ""
+                    },
+                    "name": "invisible_to_admin",
+                    "parent_id": None
+                },
+                {
+                    "description": None,
+                    "domain_id": "default",
+                    "enabled": True,
+                    "id": "fdb8424c4e4f4c0ba32c52e2de3bd80e",
+                    "links": {
+                        "self": ""
+                    },
+                    "name": "alt_demo",
+                    "parent_id": None
+                }
+            ]
+        }
+
+        self.send_json(resp)
