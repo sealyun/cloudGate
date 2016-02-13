@@ -3,8 +3,8 @@ from handlers import *
 from cloudGate.common.define import IDENTITY_BASE_URL
 
 urls = [
-    (IDENTITY_BASE_URL + r"/", IdentityBaseHandler),
-    (IDENTITY_BASE_URL + r"/v2.0/tokens", TokensHandler),
+    (r"/", IdentityBaseHandler),
+    (r"/v2.0/tokens", TokensHandler),
     (IDENTITY_BASE_URL + r"/v3/auth/tokens", AuthTokensHandler),
 
     (IDENTITY_BASE_URL + r"/v3/users", UsersHandler),
