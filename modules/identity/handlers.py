@@ -1,5 +1,6 @@
 # -*- encoding: utf-8 -*-
 from cloudGate.httpbase import HttpBaseHandler
+from cloudGate.config import *
 
 import sys
 import json
@@ -16,7 +17,74 @@ class IdentityBaseHandler(HttpBaseHandler):
         pass
 
     def get(self):
+        resp = {
+            "versions":{
+                "values":[
+                    {
+                        "id": "v2.0",
+                        "links": [
+                            {
+                                "href": "http://" + HOST + ":" + PORT + "/v2.0/",
+                                "rel": "self"
+                            }
+                        ],
+                        "media-types": [
+                            {
+                                "base": "application/json",
+                            }
+                        ],
+                        "status": "stable",
+                        "updated": "2014-04-17T00:00:00Z"
+                    }
+                ]
+            }
+        }
+
+        self.send_json(resp)
+
+class TokensHandler(IdentityBaseHandler):
+    def post(self):
         pass
+
+class AuthTokensHandler(IdentityBaseHandler):
+    def post(self):
+        auth = json.loads(self.request.body)
+
+        if "auth" not in auth:
+            return
+
+        user = auth["auth"]["identity"]["password"]["user"]
+
+        if user["name"] == IDENTITY["aliyun"]["user_name"] and \
+                user["password"] == IDENTITY["aliyun"]["passwd"]:
+            self.add_header('X-Auth-Token', user["name"] + user["password"])
+        else:
+            self.set_status(403)
+            return
+
+        resp = {
+            "token": {
+                "methods": [
+                    "password"
+                ],
+                "expires_at": "2915-11-06T15:32:17.893769Z",
+                "extras": {},
+                "user": {
+                    "domain": {
+                        "id": "default",
+                        "name": "Default"
+                    },
+                    "id": "423f19a4ac1e4f48bbb4180756e6eb6c",
+                    "name": user["name"]
+                },
+                "audit_ids": [
+                    "ZzZwkUflQfygX7pdYDBCQQ"
+                ],
+                "issued_at": "2015-11-06T14:32:17.893797Z"
+            }
+        }
+
+        self.send_json(resp)
 
 class UsersHandler(IdentityBaseHandler):
     def get(self):

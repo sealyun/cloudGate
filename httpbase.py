@@ -27,3 +27,12 @@ class HttpBaseHandler(tornado.web.RequestHandler):
     def send_json(self, resp):
         self.set_header("content-type":"application/json")
         self.write(json.dumps(resp))
+
+    def create_tocken(self, s):
+        return s
+
+    def auth(self, s):
+        if s == IDENTITY["aliyun"]["user_name"] + IDENTITY["aliyun"]["passwd"]:
+            return True
+        else:
+            return False

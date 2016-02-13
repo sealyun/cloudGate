@@ -2,7 +2,7 @@ class AliyunComputeProcessor(ComputeProcessorBase):
     #we can get accessKey and accessSecret from tocken
     def __init__(self, tocken):
         #TODO we can init aliyun request in ComputeProcessorBase
-        self.tocken == tocken
+        self.tocken = tocken
 
     def queryServers(self, tenant_id, changes_since, 
             image, flavor, name, status, host, limit, marker):
