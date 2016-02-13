@@ -52,7 +52,8 @@ class AuthTokensHandler(IdentityBaseHandler):
 
         if user["name"] == IDENTITY["aliyun"]["user_name"] and \
                 user["password"] == IDENTITY["aliyun"]["passwd"]:
-            self.add_header('X-Auth-Token', user["name"] + user["password"])
+            self.add_header('X-Auth-Token', self.create_tocken(user["name"] + user["password"]))
+            self.add_header('X-Subject-Token', self.create_tocken(user["name"] + user["password"]))
         else:
             self.set_status(403)
             return
