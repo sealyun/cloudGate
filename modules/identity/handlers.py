@@ -1,6 +1,7 @@
 # -*- encoding: utf-8 -*-
 from cloudGate.httpbase import HttpBaseHandler
 from cloudGate.config import *
+from api_factory import *
 
 import sys
 import json

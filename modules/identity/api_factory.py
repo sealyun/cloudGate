@@ -1,3 +1,5 @@
+from aliyun.processor import *
+
 class IdentityProcessorFac():
 
     def __init__(self, type_ = None, token = None):
