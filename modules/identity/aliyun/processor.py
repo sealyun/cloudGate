@@ -28,7 +28,7 @@ class AliyunIdentityProcessor(IdentityProcessorBase):
 
         resp = json.loads(response)
 
-        for u in resp:
+        for u in resp["Users"]["User"]:
             r = GetUserRequest.GetUserRequest()
             r.set_UserName(u["UserName"])
             r.set_accept_format('json')
