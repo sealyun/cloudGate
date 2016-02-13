@@ -14,7 +14,9 @@ class IdentityBaseHandler(HttpBaseHandler):
     def get_processor(self):
         token = self.request.headers["X-Auth-Token"]
         print ("-----get token:", token)
-        return self.p = IdentityProcessorFac(None, token)
+        self.p = IdentityProcessorFac(None, token)
+
+        return self.p
 
     def get(self):
         resp = {
