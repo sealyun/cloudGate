@@ -258,8 +258,8 @@ class UserProjectsHandler(IdentityBaseHandler):
             ], 
             "links": {
                 "self": "http://identity:35357/v3/users/313233/projects",
-                "previous": Null,
-                "next": Null
+                "previous": null,
+                "next": null
             }
         }
 
