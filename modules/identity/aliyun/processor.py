@@ -5,6 +5,8 @@ from aliyunsdkcore import client
 
 from aliyunsdkram.request.v20150501 import ListUsersRequest
 
+import json
+
 class AliyunIdentityProcessor(IdentityProcessorBase):
     def __init__(self, token):
         self.token = token
