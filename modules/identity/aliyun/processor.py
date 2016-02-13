@@ -80,6 +80,7 @@ class AliyunIdentityProcessor(IdentityProcessorBase):
     def updateUser(self, user_name, default_project_id, description, email, enabled):
         r = UpdateUserRequest.UpdateUserRequest()
         r.set_UserName(user_name)
+        r.set_NewUserName(user_name)
         r.set_accept_format('json')
 
         if description:
