@@ -208,7 +208,7 @@ class AuthTokensHandler(IdentityBaseHandler):
                         "endpoints": [
                             {
                                 "region_id": "RegionOne",
-                                "url": "http://121.199.9.187:8081/identity/",
+                                "url": "http://121.199.9.187:8081/identity/v3/",
                                 "region": "RegionOne",
                                 "interface": "public",
                                 "id": "c693879254544e3fb502e795a3f6acc8"
@@ -633,7 +633,7 @@ class UserProjectsHandler(IdentityBaseHandler):
                     "id": "456788",
                     "parent_id": "212223",
                     "links": {
-                        "self": "http://identity:35357/v3/projects/456788"
+                        "self": ""
                     },
                     "name": "a project name"
                 },
@@ -644,13 +644,13 @@ class UserProjectsHandler(IdentityBaseHandler):
                     "id": "456789",
                     "parent_id": "212223",
                     "links": {
-                        "self": "http://identity:35357/v3/projects/456789"
+                        "self": ""
                     },
                     "name": "another domain"
                 }
             ], 
             "links": {
-                "self": "http://identity:35357/v3/users/313233/projects",
+                "self": "",
                 "previous": None,
                 "next": None 
             }
