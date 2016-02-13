@@ -467,7 +467,7 @@ class AuthTokensHandler(IdentityBaseHandler):
             self.set_status(403)
             return
 
-        if "project" in auth["scope"]:
+        if "scope" in auth["auth"] and "project" in auth["auth"]["scope"]:
             resp = self.token_with_scoped(auth["scope"]["project"]["id"])
         else:
             resp = {
