@@ -540,7 +540,9 @@ class UsersHandler(IdentityBaseHandler):
     def post(self):
         user = json.loads(self.request.body)["user"]
 
-        user = self.p.createUser(user["default_project_id"], 
+        self.get_processor()
+        
+        u = self.p.createUser(user["default_project_id"], 
                 user["description"], 
                 user["domian_id"], 
                 user["email"], 
@@ -550,16 +552,16 @@ class UsersHandler(IdentityBaseHandler):
 
         resp = {
             "user":{
-                "default_project_id":user.default_project_id,
-                "description":user.description,
-                "domian_id":user.domian_id,
-                "email":user.email,
-                "enabled":user.enabled,
-                "id":user.id,
+                "default_project_id":user["default_project_id"],
+                "description":u["Comments"],
+                "domian_id":user["domian_id"],
+                "email":u["Email"],
+                "enabled":user["enabled"],
+                "id":u["UserName"],
                 "links":{
                     "self":"https://"
                 },
-                "name":user.name
+                "name":u["UserName"]
             }
         }
 

@@ -6,6 +6,7 @@ from aliyunsdkcore import client
 from aliyunsdkram.request.v20150501 import ListUsersRequest
 from aliyunsdkram.request.v20150501 import GetUserRequest
 from aliyunsdkram.request.v20150501 import ListRolesRequest
+from aliyunsdkram.request.v20150501 import CreateUserRequest 
 
 import json
 
@@ -53,3 +54,19 @@ class AliyunIdentityProcessor(IdentityProcessorBase):
 
         return resp["Roles"]["Role"]
 
+    def createUser(self, default_project_id, description, domian_id, email, 
+            enabled, name, password):
+
+        request = CreateUserRequest.CreateUserRequest() 
+        request.set_accept_format('json')
+
+        if name:
+            request.set_UserName(name)
+        if email:
+            request.set_Email(email)
+        if description:
+            request.set_Comments(description)
+
+        response = self.clt.do_action(request)
+
+        return json.loads(response)["User"]

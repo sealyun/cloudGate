@@ -5,3 +5,9 @@ class IdentityProcessorBase():
 
     def queryRolesByName(self, name):
         pass
+
+    def createUser(self, default_project_id, description, domian_id, email, 
+            enabled, name, password):
+        pass
+
+
