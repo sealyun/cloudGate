@@ -30,6 +30,7 @@ class AliyunIdentityProcessor(IdentityProcessorBase):
 
         for u in resp:
             r = GetUserRequest.GetUserRequest()
+            r.set_UserName(u["UserName"])
             r.set_accept_format('json')
             print self.clt.do_action(r)
 
