@@ -34,8 +34,8 @@ class AliyunIdentityProcessor(IdentityProcessorBase):
             r = GetUserRequest.GetUserRequest()
             r.set_UserName(u["UserName"])
             r.set_accept_format('json')
-            user = self.clt.do_action(r)
+            user = json.loads(self.clt.do_action(r))
 
-            users.append(json.loads(user["User"]))
+            users.append(user["User"])
 
         return users
