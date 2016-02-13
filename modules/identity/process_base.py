@@ -12,3 +12,6 @@ class IdentityProcessorBase():
 
     def queryUserById(self, user_id):
         pass
+
+    def updateUser(self, user_name, default_project_id, description, email, enabled):
+        pass

@@ -7,6 +7,7 @@ from aliyunsdkram.request.v20150501 import ListUsersRequest
 from aliyunsdkram.request.v20150501 import GetUserRequest
 from aliyunsdkram.request.v20150501 import ListRolesRequest
 from aliyunsdkram.request.v20150501 import CreateUserRequest 
+from aliyunsdkram.request.v20150501 import UpdateUserRequest
 
 import json
 
@@ -72,7 +73,24 @@ class AliyunIdentityProcessor(IdentityProcessorBase):
         r.set_UserName(user_name)
         r.set_accept_format('json')
         resp = self.clt.do_action(r)
+        user = json.loads(resp)
+
+        return user["User"]
+
+    def updateUser(self, user_name, default_project_id, description, email, enabled):
+        r = UpdateUserRequest.UpdateUserRequest()
+        r.set_UserName(user_name)
+        r.set_accept_format('json')
+
+        if description:
+            r.set_NewComments(description)
+        if email:
+            r.set_NewEmail(email)
+
+        resp = self.clt.do_action(r)
+
         print resp
+
         user = json.loads(resp)
 
         return user["User"]

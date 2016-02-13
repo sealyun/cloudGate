@@ -592,10 +592,12 @@ class UserHandler(IdentityBaseHandler):
         self.send_json(resp)
 
 
-    def patch(self, user_id):
+    def patch(self, user_name):
         user = json.loads(self.request.body)["user"]
 
-        user = self.p.updateUser(user_id, 
+        self.get_processor()
+
+        u = self.p.updateUser(user_name, 
                 user["default_project_id"],
                 user["description"],
                 user["email"],
@@ -603,16 +605,16 @@ class UserHandler(IdentityBaseHandler):
 
         resp = {
             "user":{
-                "default_project_id":user.default_project_id,
-                "description":user.description,
-                "domian_id":user.domian_id,
-                "email":user.email,
-                "enabled":user.enabled,
-                "id":user.id,
+                "default_project_id":user["default_project_id"],
+                "description":u["Comments"],
+                "domian_id":user["domian_id"],
+                "email":u["Email"],
+                "enabled":user["enabled"],
+                "id":u["UserName"],
                 "links":{
                     "self":"https://"
                 },
-                "name":user.name
+                "name":u["UserName"]
             }
         }
 
