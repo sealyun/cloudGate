@@ -218,7 +218,7 @@ class UserGroupsHandler(IdentityBaseHandler):
                     "name":g.name
                 }
                 for g in groups
-            ]
+            ],
             "links":{
                 "self":"http://",
                 "previous":null,

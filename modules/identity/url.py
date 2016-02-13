@@ -6,9 +6,7 @@ urls = [
     (IDENTITY_BASE_URL + r"/", IdentityBaseHandler),
     (IDENTITY_BASE_URL + r"/v2.0/tokens", TokensHandler),
     (IDENTITY_BASE_URL + r"/v3/auth/tokens", AuthTokensHandler),
-]
 
-"""
     (IDENTITY_BASE_URL + r"/v3/users", UsersHandler),
     (IDENTITY_BASE_URL + r"/v3/users/(.*)", UserHandler),
     (IDENTITY_BASE_URL + r"/v3/users/(.*)/password", UserPasswordHandler),
@@ -25,4 +23,3 @@ urls = [
     (IDENTITY_BASE_URL + r"/v3/policies", PoliciesHandler),
     (IDENTITY_BASE_URL + r"/v3/policies/(.*)", PolicyHandler), 
 ]
-"""
