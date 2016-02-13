@@ -17,6 +17,7 @@ class AliyunIdentityProcessor(IdentityProcessorBase):
 
     def queryUsers(self, domian_id, name, enabled):
         request = ListUsersRequest.ListUsersRequest()
+        request.set_accept_format('json')
 
         response = self.clt.do_action(request)
 
