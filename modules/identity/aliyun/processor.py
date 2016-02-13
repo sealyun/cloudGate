@@ -47,9 +47,9 @@ class AliyunIdentityProcessor(IdentityProcessorBase):
 
         response = self.clt.do_action(request)
 
-        print response
-
         resp = json.loads(response)
+
+        print resp["Roles"]["Role"]
 
         return resp["Roles"]["Role"]
 
