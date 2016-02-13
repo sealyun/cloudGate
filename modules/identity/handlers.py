@@ -688,6 +688,7 @@ class RolesHandler(IdentityBaseHandler):
     def get(self):
         name = self.get_argument("name", None)
 
+        self.get_processor()
         roles = self.p.queryRolesByName(name)
 
         resp = {

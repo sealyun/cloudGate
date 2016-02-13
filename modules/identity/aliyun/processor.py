@@ -5,6 +5,7 @@ from aliyunsdkcore import client
 
 from aliyunsdkram.request.v20150501 import ListUsersRequest
 from aliyunsdkram.request.v20150501 import GetUserRequest
+from aliyunsdkram.request.v20150501 import ListRolesRequest
 
 import json
 
@@ -39,3 +40,14 @@ class AliyunIdentityProcessor(IdentityProcessorBase):
             users.append(user["User"])
 
         return users
+
+    def queryRolesByName(self, name):
+        request = ListRolesRequest.ListRolesRequest()
+        request.set_accept_format('json')
+
+        response = self.clt.do_action(request)
+
+        print response
+
+        resp = json.loads(response)
+
