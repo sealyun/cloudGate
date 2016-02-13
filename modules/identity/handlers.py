@@ -229,6 +229,42 @@ class UserGroupsHandler(IdentityBaseHandler):
 
         self.send_json(resp)
 
+class UserProjectsHandler(IdentityBaseHandler):
+    def get(self, user_id):
+        resp = {
+            "projects": [
+                {
+                    "description": "description of this project",
+                    "domain_id": "161718",
+                    "enabled": True,
+                    "id": "456788",
+                    "parent_id": "212223",
+                    "links": {
+                        "self": "http://identity:35357/v3/projects/456788"
+                    },
+                    "name": "a project name"
+                },
+                {
+                    "description": "description of this project",
+                    "domain_id": "161718",
+                    "enabled": True,
+                    "id": "456789",
+                    "parent_id": "212223",
+                    "links": {
+                        "self": "http://identity:35357/v3/projects/456789"
+                    },
+                    "name": "another domain"
+                }
+            ], 
+            "links": {
+                "self": "http://identity:35357/v3/users/313233/projects",
+                "previous": Null,
+                "next": Null
+            }
+        }
+
+        self.send_json(resp)
+
 class RolesHandler(IdentityBaseHandler):
     def get(self):
         name = self.get_argument("name", None)

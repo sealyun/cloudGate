@@ -11,6 +11,7 @@ urls = [
     (IDENTITY_BASE_URL + r"/v3/users/(.*)", UserHandler),
     (IDENTITY_BASE_URL + r"/v3/users/(.*)/password", UserPasswordHandler),
     (IDENTITY_BASE_URL + r"/v3/users/(.*)/groups", UserGroupsHandler),
+    (IDENTITY_BASE_URL + r"/v3/users/(.*)/projects", UserProjectsHandler),
 
     (IDENTITY_BASE_URL + r"/v3/roles", RolesHandler),
     (IDENTITY_BASE_URL + r"/v3/roles/(.*)", RoleHandler),
