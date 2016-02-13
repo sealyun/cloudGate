@@ -607,7 +607,7 @@ class UserHandler(IdentityBaseHandler):
             "user":{
                 "default_project_id":user["default_project_id"],
                 "description":u["Comments"],
-                "domian_id":user["domian_id"],
+                "domian_id":"",
                 "email":u["Email"],
                 "enabled":user["enabled"],
                 "id":u["UserName"],
