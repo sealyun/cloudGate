@@ -544,7 +544,7 @@ class UsersHandler(IdentityBaseHandler):
         
         u = self.p.createUser(user["default_project_id"], 
                 user["description"], 
-                user["domian_id"], 
+                user["domain_id"], 
                 user["email"], 
                 user["enabled"], 
                 user["name"], 
@@ -554,7 +554,7 @@ class UsersHandler(IdentityBaseHandler):
             "user":{
                 "default_project_id":user["default_project_id"],
                 "description":u["Comments"],
-                "domian_id":user["domian_id"],
+                "domian_id":user["domain_id"],
                 "email":u["Email"],
                 "enabled":user["enabled"],
                 "id":u["UserName"],
