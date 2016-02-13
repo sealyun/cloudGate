@@ -11,11 +11,6 @@ if sys.getdefaultencoding() != default_encoding:
     sys.setdefaultencoding(default_encoding)
 
 class IdentityBaseHandler(HttpBaseHandler):
-    #TODO init a processor
-    def __init__(self):
-        #TODO we can set access key to processor
-        pass
-
     def get(self):
         resp = {
             "versions":{
