@@ -22,3 +22,5 @@ class AliyunIdentityProcessor(IdentityProcessorBase):
         response = self.clt.do_action(request)
 
         print response
+
+        return response["Users"]["User"]

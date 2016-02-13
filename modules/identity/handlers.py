@@ -521,14 +521,14 @@ class UsersHandler(IdentityBaseHandler):
             },
             "users":[
                 {
-                    "domian_id":domian_id,
-                    "email":u.email,
-                    "enabled":u.enabled,
-                    "id":u.id,
+                    "domian_id":"",
+                    "email":"",
+                    "enabled":"",
+                    "id":u["UserId"],
                     "links":{
                         "self":"http://",
                     },
-                    "name":u.name,
+                    "name":u["UserName"],
                 } 
                 for u in users
             ]
