@@ -6,7 +6,8 @@ IDENTITY={
     "aliyun":{
         "user_name":"admin",
         "passwd":"admin",
-        "access_key":"",
-        "access_secret":"",
+        "access_key":"h66cGGRqSeZuJDrZ",
+        "access_secret":"64EOCkx5KCQ4eLwZKeMdlvATrpgczB",
+        "regin":"cn-hangzhou"
     },
 }
