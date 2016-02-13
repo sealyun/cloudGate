@@ -1,5 +1,6 @@
 import tornado.web
 import json
+from cloudGate.config import *
 
 class HttpBaseHandler(tornado.web.RequestHandler):
     def __init__(self, application, request, **kwargs):
