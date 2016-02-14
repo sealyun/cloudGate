@@ -13,6 +13,7 @@ from aliyunsdkram.request.v20150501 import CreateRoleRequest
 from aliyunsdkram.request.v20150501 import DeleteRoleRequest
 from aliyunsdkram.request.v20150501 import ListGroupsRequest
 from aliyunsdkram.request.v20150501 import CreateGroupRequest
+from aliyunsdkram.request.v20150501 import UpdateGroupRequest
 
 import json
 
@@ -172,3 +173,23 @@ class AliyunIdentityProcessor(IdentityProcessorBase):
         resp = json.loads(response)
 
         return resp["Group"]
+
+    def updateGroup(self, group_id, description, name):
+        r = UpdateGroupRequest.UpdateGroupRequest()
+
+        r.set_GroupName(group_id)
+        if name:
+            r.set_NewGroupName(name)
+        else:
+            r.set_NewGroupName(group_id)
+
+        if description:
+            r.set_NewComments(description)
+
+        response = self.clt.do_action(r)
+
+        resp = json.loads(response)
+
+        return resp["Group"]
+
+

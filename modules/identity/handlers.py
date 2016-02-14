@@ -860,21 +860,27 @@ class GroupHandler(IdentityBaseHandler):
         self.send_json(resp)
 
     def patch(self, group_id):
+        self.get_processor()
         group = json.loads(self.request.body)["group"]
 
-        group = self.p.updateGroup(group_id, 
-                group["description"],
-                group["name"])
+        description = ""
+        name = ""
+        if "description" in group:
+            description = group["description"]
+        if "name" in group:
+            name = group["name"]
+
+        group = self.p.updateGroup(group_id, description, name)
 
         resp = {
             "group": {
-                "domain_id":group.domain_id,
-                "description":group.description,
-                "id":group.id,
+                "domain_id":"",
+                "description":group["Comments"],
+                "id":group["GroupName"],
                 "links":{
                     "self":"http://"
                 },
-                "name":group.name
+                "name":group["GroupName"]
             }
         }
 

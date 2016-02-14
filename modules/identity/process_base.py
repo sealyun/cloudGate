@@ -33,3 +33,6 @@ class IdentityProcessorBase():
 
     def createGroup(self, description, domian_id, name):
         pass
+
+    def updateGroup(self, group_id, description, name):
+        pass
