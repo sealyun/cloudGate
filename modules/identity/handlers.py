@@ -926,6 +926,7 @@ class GroupUsersHandler(IdentityBaseHandler):
 
 class GroupUserHandler(IdentityBaseHandler):
     def put(self, group_id, user_id):
+        print ("===========",group_id, user_id)
         self.get_processor()
         self.p.addUserInGroup(group_id, user_id)
 
