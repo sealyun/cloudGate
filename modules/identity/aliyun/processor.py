@@ -113,7 +113,7 @@ class AliyunIdentityProcessor(IdentityProcessorBase):
     def createRole(self, name):
         r = CreateRoleRequest.CreateRoleRequest() 
         r.set_RoleName(name)
-        #r.set_AssumeRolePolicyDocument(json.dumps({ "Statement": [ { "Action": "sts:AssumeRole", "Effect": "Allow", "Principal": { "RAM": "acs:ram::1953308415728282:role/"+name } } ], "Version": "1" }))
+        r.set_AssumeRolePolicyDocument(json.dumps({ "Statement": [ { "Action": "sts:AssumeRole", "Effect": "Allow", "Principal": { "RAM": "acs:ram::1953308415728282:role/"+name } } ], "Version": "1" }))
         r.set_accept_format('json')
 
         response = self.clt.do_action(r)
