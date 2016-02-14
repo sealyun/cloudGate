@@ -16,6 +16,7 @@ from aliyunsdkram.request.v20150501 import CreateGroupRequest
 from aliyunsdkram.request.v20150501 import UpdateGroupRequest
 from aliyunsdkram.request.v20150501 import GetGroupRequest
 from aliyunsdkram.request.v20150501 import DeleteGroupRequest
+from aliyunsdkram.request.v20150501 import ListUsersForGroupRequest
 
 import json
 
@@ -214,3 +215,14 @@ class AliyunIdentityProcessor(IdentityProcessorBase):
         response = self.clt.do_action(r)
 
         return True
+
+    def queryUsersInGroup(self, group_id, domain_id, description, name, enabled):
+        r = ListUsersForGroupRequest.ListUsersForGroupRequest()
+        r.set_accept_format('json')
+        r.set_GroupName(group_id)
+
+        response = self.clt.do_action(r)
+
+        resp = json.loads(response)
+
+        return resp["Users"]["User"]

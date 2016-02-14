@@ -893,6 +893,7 @@ class GroupHandler(IdentityBaseHandler):
 
 class GroupUsersHandler(IdentityBaseHandler):
     def get(self, group_id):
+        self.get_processor()
         domain_id = self.get_arguments("domain_id",None)
         description = self.get_arguments("description",None)
         name = self.get_arguments("name",None)
@@ -903,14 +904,14 @@ class GroupUsersHandler(IdentityBaseHandler):
         resp = {
             "users":[
                 {
-                    "name":u.name,
+                    "name":u["UserName"],
                     "links":{
                         "self":"http://"
                     },
-                    "domain_id":u.domain_id,
-                    "enabled":u.enabled,
-                    "email":u.email,
-                    "id":u.id
+                    "domain_id":"",
+                    "enabled":True,
+                    "email":"email",
+                    "id":u["UserId"]
                 }
                 for u in users
             ],

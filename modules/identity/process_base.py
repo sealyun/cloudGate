@@ -42,3 +42,6 @@ class IdentityProcessorBase():
 
     def deleteGroupById(self, group_id):
         pass
+
+    def queryUsersInGroup(self, group_id, domain_id, description, name, enabled):
+        pass
