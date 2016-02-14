@@ -843,17 +843,18 @@ class GroupsHandler(IdentityBaseHandler):
 
 class GroupHandler(IdentityBaseHandler):
     def get(self, group_id):
+        self.get_processor()
         group = self.p.queryGroup(group_id)
 
         resp = {
             "group": {
-                "domain_id":group.domain_id,
-                "description":group.description,
-                "id":group.id,
+                "domain_id":"",
+                "description":group["Comments"],
+                "id":group["GroupName"],
                 "links":{
                     "self":"http://"
                 },
-                "name":group.name
+                "name":group["GroupName"]
             }
         }
 

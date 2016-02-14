@@ -36,3 +36,6 @@ class IdentityProcessorBase():
 
     def updateGroup(self, group_id, description, name):
         pass
+
+    def queryGroup(self, group_id):
+        pass

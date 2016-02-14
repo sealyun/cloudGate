@@ -14,6 +14,7 @@ from aliyunsdkram.request.v20150501 import DeleteRoleRequest
 from aliyunsdkram.request.v20150501 import ListGroupsRequest
 from aliyunsdkram.request.v20150501 import CreateGroupRequest
 from aliyunsdkram.request.v20150501 import UpdateGroupRequest
+from aliyunsdkram.request.v20150501 import GetGroupRequest
 
 import json
 
@@ -178,6 +179,7 @@ class AliyunIdentityProcessor(IdentityProcessorBase):
         r = UpdateGroupRequest.UpdateGroupRequest()
 
         r.set_GroupName(group_id)
+        r.set_accept_format('json')
         if name:
             r.set_NewGroupName(name)
         else:
@@ -192,4 +194,13 @@ class AliyunIdentityProcessor(IdentityProcessorBase):
 
         return resp["Group"]
 
+    def queryGroup(self, group_id):
+        r = GetGroupRequest.GetGroupRequest()
+        r.set_GroupName(group_id)
+        r.set_accept_format('json')
 
+        response = self.clt.do_action(r)
+
+        resp = json.loads(response)
+
+        return resp["Group"]
