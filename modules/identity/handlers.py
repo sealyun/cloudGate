@@ -818,8 +818,12 @@ class GroupsHandler(IdentityBaseHandler):
 
         if "description" in group:
             description = group["description"]
+        else:
+            description = ""
         if "domain_id" in group:
             domain = group["domain_id"]
+        else:
+            domain = ""
 
         group = self.p.createGroup(description, domain, group["name"])
 
