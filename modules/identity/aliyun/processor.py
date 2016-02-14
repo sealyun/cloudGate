@@ -10,6 +10,7 @@ from aliyunsdkram.request.v20150501 import CreateUserRequest
 from aliyunsdkram.request.v20150501 import UpdateUserRequest
 from aliyunsdkram.request.v20150501 import DeleteUserRequest
 from aliyunsdkram.request.v20150501 import CreateRoleRequest 
+from aliyunsdkram.request.v20150501 import DeleteRoleRequest
 
 import json
 
@@ -137,4 +138,11 @@ class AliyunIdentityProcessor(IdentityProcessorBase):
 
         return resp["Role"]
 
+    def deleteRoleById(self, role_id):
+        r = DeleteRoleRequest.DeleteRoleRequest()
+        r.set_RoleName(role_id)
+        r.set_accept_format('json')
 
+        response = self.clt.do_action(r)
+
+        return True

@@ -712,7 +712,7 @@ class RolesHandler(IdentityBaseHandler):
             },
             "roles":[
                 {
-                    "id":r["RoleId"],
+                    "id":r["RoleName"],
                     "links":{
                         "self":"http://" + HOST + ":" + PORT + IDENTITY_BASE_URL + "/v3/roles/" + r["RoleId"]
                     },
@@ -745,37 +745,40 @@ class RolesHandler(IdentityBaseHandler):
 
 class RoleHandler(IdentityBaseHandler):
     def get(self, role_id):
+        self.get_processor()
         role = self.p.queryRoleByid(role_id)
 
         resp = {
             "role": {
-                "id":role.id,
+                "id":"",
                 "links":{
                     "self":"http://",
                 },
-                "name":role.name
+                "name":""
             }
         }
 
         self.send_json(resp)
 
     def patch(self, role_id):
+        self.get_processor()
         name = json.loads(self.request.body)["role"]["name"]
         role = self.p.updateRole(role_id, name)
 
         resp = {
             "role": {
-                "id":role.id,
+                "id":"",
                 "links":{
                     "self":"http://",
                 },
-                "name":role.name
+                "name":""
             }
         }
 
         self.send_json(resp)
 
     def delete(self, role_id):
+        self.get_processor()
         self.p.deleteRoleById(role_id)
 
 class GroupsHandler(IdentityBaseHandler):

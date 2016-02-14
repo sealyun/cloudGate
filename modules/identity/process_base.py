@@ -24,3 +24,6 @@ class IdentityProcessorBase():
 
     def createRole(self, name):
         pass
+
+    def deleteRoleById(self, role_id):
+        pass
