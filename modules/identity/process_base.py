@@ -15,3 +15,6 @@ class IdentityProcessorBase():
 
     def updateUser(self, user_name, default_project_id, description, email, enabled):
         pass
+
+    def deleteUserById(self, user_name):
+        pass

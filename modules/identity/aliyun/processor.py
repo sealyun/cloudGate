@@ -8,6 +8,7 @@ from aliyunsdkram.request.v20150501 import GetUserRequest
 from aliyunsdkram.request.v20150501 import ListRolesRequest
 from aliyunsdkram.request.v20150501 import CreateUserRequest 
 from aliyunsdkram.request.v20150501 import UpdateUserRequest
+from aliyunsdkram.request.v20150501 import DeleteUserRequest
 
 import json
 
@@ -95,3 +96,12 @@ class AliyunIdentityProcessor(IdentityProcessorBase):
         user = json.loads(resp)
 
         return user["User"]
+
+    def deleteUserById(self, user_name):
+        r = DeleteUserRequest.DeleteUserRequest()
+        r.set_UserName(user_name)
+        r.set_accept_format('json')
+
+        resp = self.clt.do_action(r)
+
+        return True

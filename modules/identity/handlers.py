@@ -620,8 +620,12 @@ class UserHandler(IdentityBaseHandler):
 
         self.send_json(resp)
 
-    def delete(self, user_id):
-        self.p.deleteUserById(user_id)
+    def delete(self, user_name):
+        self.get_processor()
+        if self.p.deleteUserById(user_name):
+            self.set_status(203)
+        else:
+            self.set_status(403)
 
 class UserPasswordHandler(IdentityBaseHandler):
     def post(self, user_id):
