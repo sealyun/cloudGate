@@ -892,6 +892,9 @@ class GroupHandler(IdentityBaseHandler):
         self.p.deleteGroupById(group_id)
 
 class GroupUsersHandler(IdentityBaseHandler):
+    def put(self, group_id):
+        print "-----wrong place"
+
     def get(self, group_id):
         self.get_processor()
         domain_id = ""

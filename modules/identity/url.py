@@ -18,8 +18,8 @@ urls = [
 
     (IDENTITY_BASE_URL + r"/v3/groups", GroupsHandler),
     (IDENTITY_BASE_URL + r"/v3/groups/([a-z0-9A-Z\-]+)", GroupHandler),
-    (IDENTITY_BASE_URL + r"/v3/groups/([a-z0-9A-Z]*)/users", GroupUsersHandler),
-    (IDENTITY_BASE_URL + r"/v3/groups/(a-z0-9A-Z]*)/users/(.*)", GroupUserHandler),
+    (IDENTITY_BASE_URL + r"/v3/groups/([a-z0-9A-Z\-]+)/users", GroupUsersHandler),
+    (IDENTITY_BASE_URL + r"/v3/groups/(a-z0-9A-Z\-]+)/users/(.*)", GroupUserHandler),
 
     (IDENTITY_BASE_URL + r"/v3/policies", PoliciesHandler),
     (IDENTITY_BASE_URL + r"/v3/policies/(.*)", PolicyHandler), 
