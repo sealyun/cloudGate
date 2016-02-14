@@ -813,6 +813,7 @@ class GroupsHandler(IdentityBaseHandler):
         self.send_json(resp)
 
     def post(self):
+        self.get_processor()
         group = json.loads(self.request.body)["group"]
 
         group = self.p.createGroup(group["description"],
@@ -821,13 +822,13 @@ class GroupsHandler(IdentityBaseHandler):
 
         resp = {
             "group": {
-                "domian_id":group.domian_id,
-                "description":group.description,
-                "id":group.id,
+                "domian_id":"",
+                "description":group["Comments"],
+                "id":group["GroupName"],
                 "links":{
                     "self":"http://"
                 },
-                "name":group.name
+                "name":group["GroupName"]
             }
         }
 

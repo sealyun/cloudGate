@@ -12,6 +12,7 @@ from aliyunsdkram.request.v20150501 import DeleteUserRequest
 from aliyunsdkram.request.v20150501 import CreateRoleRequest 
 from aliyunsdkram.request.v20150501 import DeleteRoleRequest
 from aliyunsdkram.request.v20150501 import ListGroupsRequest
+from aliyunsdkram.request.v20150501 import CreateGroupRequest
 
 import json
 
@@ -154,8 +155,20 @@ class AliyunIdentityProcessor(IdentityProcessorBase):
 
         response = self.clt.do_action(r)
 
+        resp = json.loads(response)
+
+        return resp["Groups"]["Group"]
+
+    def createGroup(self, description, domian_id, name)
+        r = CreateGroupRequest.CreateGroupRequest()
+        r.set_GroupName(name)
+        r.set_Comments(description)
+        r.set_accept_format('json')
+
+        response = self.clt.do_action(r)
+
         print response
 
         resp = json.loads(response)
 
-        return resp["Groups"]["Group"]
+        return resp["Group"]

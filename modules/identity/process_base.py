@@ -30,3 +30,6 @@ class IdentityProcessorBase():
 
     def queryGroups(self, domian_id, name):
         pass
+
+    def createGroup(self, description, domian_id, name)
+        pass
