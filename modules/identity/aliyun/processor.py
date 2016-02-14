@@ -159,7 +159,7 @@ class AliyunIdentityProcessor(IdentityProcessorBase):
 
         return resp["Groups"]["Group"]
 
-    def createGroup(self, description, domian_id, name)
+    def createGroup(self, description, domian_id, name):
         r = CreateGroupRequest.CreateGroupRequest()
         r.set_GroupName(name)
         r.set_Comments(description)
