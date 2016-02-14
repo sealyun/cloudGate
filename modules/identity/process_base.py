@@ -27,3 +27,6 @@ class IdentityProcessorBase():
 
     def deleteRoleById(self, role_id):
         pass
+
+    def queryGroups(self, domian_id, name):
+        pass

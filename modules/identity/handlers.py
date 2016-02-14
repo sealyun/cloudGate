@@ -642,7 +642,7 @@ class UserGroupsHandler(IdentityBaseHandler):
         resp = {
             "groups":[
                 {
-                    "description":g.description,
+                    "description":g["Comments"],
                     "domian_id":g.domian_id,
                     "id":g.id,
                     "links":{
@@ -786,6 +786,8 @@ class GroupsHandler(IdentityBaseHandler):
         domian_id = self.get_argument("domian_id", None)
         name = self.get_argument("name", None)
 
+        self.get_processor()
+
         groups = self.p.queryGroups(domian_id, name)
 
         resp = {
@@ -796,13 +798,13 @@ class GroupsHandler(IdentityBaseHandler):
             },
             "groups":[
                 {
-                    "domian_id":g.domian_id,
-                    "description":g.description,
-                    "id":g.id,
+                    "domian_id":domian_id,
+                    "description":g["Comments"],
+                    "id":g["GroupName"],
                     "links":{
                         "self":"http://"
                     },
-                    "name":g.name
+                    "name":g["GroupName"]
                 }
                 for g in groups
             ]
