@@ -708,7 +708,7 @@ class RolesHandler(IdentityBaseHandler):
             "links": {
                 "next":None,
                 "previous":None,
-                "self":"http://"
+                "self":"http://" + HOST + ":" + PORT + IDENTITY_BASE_URL + "/v3/roles"
             },
             "roles":[
                 {
