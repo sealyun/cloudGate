@@ -816,9 +816,12 @@ class GroupsHandler(IdentityBaseHandler):
         self.get_processor()
         group = json.loads(self.request.body)["group"]
 
-        group = self.p.createGroup(group["description"],
-                group["domain_id"],
-                group["name"])
+        if "description" in group:
+            description = group["description"]
+        if "domain_id" in group:
+            domain = group["domain_id"]
+
+        group = self.p.createGroup(description, domain, group["name"])
 
         resp = {
             "group": {
