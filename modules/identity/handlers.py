@@ -506,13 +506,13 @@ class AuthTokensHandler(IdentityBaseHandler):
 
 class UsersHandler(IdentityBaseHandler):
     def get(self):
-        domian_id = self.get_argument("domain_id", None)
+        domain_id = self.get_argument("domain_id", None)
         name = self.get_argument("name", None)
         enabled = self.get_argument("enabled", None)
 
         self.get_processor()
 
-        users = self.p.queryUsers(domian_id, name, enabled)
+        users = self.p.queryUsers(domain_id, name, enabled)
 
         resp = {
             "links": {
@@ -522,7 +522,7 @@ class UsersHandler(IdentityBaseHandler):
             },
             "users":[
                 {
-                    "domian_id":"",
+                    "domain_id":"",
                     "email":u["Email"],
                     "enabled":"",
                     "id":u["UserName"],
@@ -555,7 +555,7 @@ class UsersHandler(IdentityBaseHandler):
             "user":{
                 "default_project_id":user["default_project_id"],
                 "description":u["Comments"],
-                "domian_id":user["domain_id"],
+                "domain_id":user["domain_id"],
                 "email":u["Email"],
                 "enabled":user["enabled"],
                 "id":u["UserName"],
@@ -578,7 +578,7 @@ class UserHandler(IdentityBaseHandler):
             "user":{
                 "default_project_id":"",
                 "description":user["Comments"],
-                "domian_id":"",
+                "domain_id":"",
                 "email":user["Email"],
                 "enabled":"",
                 "id":user["UserName"],
@@ -607,7 +607,7 @@ class UserHandler(IdentityBaseHandler):
             "user":{
                 "default_project_id":user["default_project_id"],
                 "description":u["Comments"],
-                "domian_id":"",
+                "domain_id":"",
                 "email":u["Email"],
                 "enabled":user["enabled"],
                 "id":u["UserName"],
@@ -643,7 +643,7 @@ class UserGroupsHandler(IdentityBaseHandler):
             "groups":[
                 {
                     "description":g["Comments"],
-                    "domian_id":g.domian_id,
+                    "domain_id":g.domain_id,
                     "id":g.id,
                     "links":{
                         "self":"http://"
@@ -783,12 +783,12 @@ class RoleHandler(IdentityBaseHandler):
 
 class GroupsHandler(IdentityBaseHandler):
     def get(self):
-        domian_id = self.get_argument("domian_id", None)
+        domain_id = self.get_argument("domain_id", None)
         name = self.get_argument("name", None)
 
         self.get_processor()
 
-        groups = self.p.queryGroups(domian_id, name)
+        groups = self.p.queryGroups(domain_id, name)
 
         resp = {
             "links": {
@@ -798,7 +798,7 @@ class GroupsHandler(IdentityBaseHandler):
             },
             "groups":[
                 {
-                    "domian_id":domian_id,
+                    "domain_id":domain_id,
                     "description":g["Comments"],
                     "id":g["GroupName"],
                     "links":{
@@ -817,12 +817,12 @@ class GroupsHandler(IdentityBaseHandler):
         group = json.loads(self.request.body)["group"]
 
         group = self.p.createGroup(group["description"],
-                group["domian_id"],
+                group["domain_id"],
                 group["name"])
 
         resp = {
             "group": {
-                "domian_id":"",
+                "domain_id":"",
                 "description":group["Comments"],
                 "id":group["GroupName"],
                 "links":{
@@ -840,7 +840,7 @@ class GroupHandler(IdentityBaseHandler):
 
         resp = {
             "group": {
-                "domian_id":group.domian_id,
+                "domain_id":group.domain_id,
                 "description":group.description,
                 "id":group.id,
                 "links":{
@@ -861,7 +861,7 @@ class GroupHandler(IdentityBaseHandler):
 
         resp = {
             "group": {
-                "domian_id":group.domian_id,
+                "domain_id":group.domain_id,
                 "description":group.description,
                 "id":group.id,
                 "links":{
@@ -878,12 +878,12 @@ class GroupHandler(IdentityBaseHandler):
 
 class GroupUsersHandler(IdentityBaseHandler):
     def get(self, group_id):
-        domian_id = self.get_arguments("domian_id",None)
+        domain_id = self.get_arguments("domain_id",None)
         description = self.get_arguments("description",None)
         name = self.get_arguments("name",None)
         enabled = self.get_arguments("enabled",None)
 
-        users = self.p.queryUsersInGroup(group_id, domian_id, description, name, enabled)
+        users = self.p.queryUsersInGroup(group_id, domain_id, description, name, enabled)
 
         resp = {
             "users":[
@@ -892,7 +892,7 @@ class GroupUsersHandler(IdentityBaseHandler):
                     "links":{
                         "self":"http://"
                     },
-                    "domian_id":u.domian_id,
+                    "domain_id":u.domain_id,
                     "enabled":u.enabled,
                     "email":u.email,
                     "id":u.id
