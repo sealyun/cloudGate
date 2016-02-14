@@ -223,6 +223,8 @@ class AliyunIdentityProcessor(IdentityProcessorBase):
 
         response = self.clt.do_action(r)
 
+        print response
+
         resp = json.loads(response)
 
         return resp["Users"]["User"]
