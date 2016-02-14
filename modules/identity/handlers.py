@@ -888,6 +888,7 @@ class GroupHandler(IdentityBaseHandler):
         self.send_json(resp)
 
     def delete(self, group_id):
+        self.get_processor()
         self.p.deleteGroupById(group_id)
 
 class GroupUsersHandler(IdentityBaseHandler):

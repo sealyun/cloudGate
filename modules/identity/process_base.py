@@ -39,3 +39,6 @@ class IdentityProcessorBase():
 
     def queryGroup(self, group_id):
         pass
+
+    def deleteGroupById(self, group_id):
+        pass

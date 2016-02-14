@@ -15,6 +15,7 @@ from aliyunsdkram.request.v20150501 import ListGroupsRequest
 from aliyunsdkram.request.v20150501 import CreateGroupRequest
 from aliyunsdkram.request.v20150501 import UpdateGroupRequest
 from aliyunsdkram.request.v20150501 import GetGroupRequest
+from aliyunsdkram.request.v20150501 import DeleteGroupRequest
 
 import json
 
@@ -204,3 +205,12 @@ class AliyunIdentityProcessor(IdentityProcessorBase):
         resp = json.loads(response)
 
         return resp["Group"]
+
+    def deleteGroupById(self, group_id):
+        r = DeleteGroupRequest.DeleteGroupRequest()
+        r.set_GroupName(group_id)
+        r.set_accept_format('json')
+
+        response = self.clt.do_action(r)
+
+        return True
