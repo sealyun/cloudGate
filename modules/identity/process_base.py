@@ -18,3 +18,9 @@ class IdentityProcessorBase():
 
     def deleteUserById(self, user_name):
         pass
+
+    def queryUserGroups(self, user_name):
+        pass
+
+    def createRole(self, name):
+        pass

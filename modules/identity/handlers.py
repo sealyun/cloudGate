@@ -634,8 +634,10 @@ class UserPasswordHandler(IdentityBaseHandler):
                 user["original_password"])
 
 class UserGroupsHandler(IdentityBaseHandler):
-    def get(self, user_id):
-        groups = self.p.queryUserGroups(user_id)
+    def get(self, user_name):
+        self.get_processor()
+
+        groups = self.p.queryUserGroups(user_name)
 
         resp = {
             "groups":[
@@ -712,7 +714,7 @@ class RolesHandler(IdentityBaseHandler):
                 {
                     "id":r["RoleId"],
                     "links":{
-                        "self":"http://"
+                        "self":"http://" + HOST + ":" + PORT + IDENTITY_BASE_URL + "/v3/roles/" + r["RoleId"]
                     },
                     "name":r["RoleName"]
                 }
@@ -725,15 +727,17 @@ class RolesHandler(IdentityBaseHandler):
     def post(self):
         role = json.loads(self.request.body)["role"]
 
+        self.get_processor()
+
         role = self.p.createRole(role["name"])
 
         resp = {
             "role": {
-                "id":role.id,
+                "id":role["RoleId"],
                 "links":{
-                    "self":"http://",
+                    "self":"http://" + HOST + ":" + PORT + IDENTITY_BASE_URL + "/v3/roles/" + role["RoleId"]
                 },
-                "name":role.name
+                "name":role["RoleName"]
             }
         }
 
