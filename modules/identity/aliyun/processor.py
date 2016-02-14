@@ -115,7 +115,7 @@ class AliyunIdentityProcessor(IdentityProcessorBase):
         r.set_RoleName(name)
         r.set_accept_format('json')
 
-        resp = json.load(self.clt.do_action(r))
+        resp = json.loads(self.clt.do_action(r))
 
         return resp["Role"]
 
