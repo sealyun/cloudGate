@@ -940,6 +940,7 @@ class GroupUserHandler(IdentityBaseHandler):
             pass
 
     def delete(self, group_id, user_id):
+        self.get_processor()
         self.p.deleteUserFromGroup(group_id, user_id)
 
 class PoliciesHandler(IdentityBaseHandler):
