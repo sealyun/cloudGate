@@ -894,10 +894,10 @@ class GroupHandler(IdentityBaseHandler):
 class GroupUsersHandler(IdentityBaseHandler):
     def get(self, group_id):
         self.get_processor()
-        domain_id = self.get_arguments("domain_id",None)
-        description = self.get_arguments("description",None)
-        name = self.get_arguments("name",None)
-        enabled = self.get_arguments("enabled",None)
+        domain_id = ""
+        description = ""
+        name = ""
+        enabled = ""
 
         users = self.p.queryUsersInGroup(group_id, domain_id, description, name, enabled)
 
