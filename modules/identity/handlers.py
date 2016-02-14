@@ -926,9 +926,11 @@ class GroupUsersHandler(IdentityBaseHandler):
 
 class GroupUserHandler(IdentityBaseHandler):
     def put(self, group_id, user_id):
+        self.get_processor()
         self.p.addUserInGroup(group_id, user_id)
 
     def head(self, group_id, user_id):
+        self.get_processor()
         res = self.p.checkUserBelongsToGroup(group_id, user_id)
         if res:
             #HTTP 204

@@ -45,3 +45,6 @@ class IdentityProcessorBase():
 
     def queryUsersInGroup(self, group_id, domain_id, description, name, enabled):
         pass
+
+    def addUserInGroup(self, group_id, user_id):
+        pass
