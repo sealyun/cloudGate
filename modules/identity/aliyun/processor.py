@@ -10,6 +10,7 @@ from aliyunsdkram.request.v20150501 import CreateUserRequest
 from aliyunsdkram.request.v20150501 import UpdateUserRequest
 from aliyunsdkram.request.v20150501 import DeleteUserRequest
 from aliyunsdkram.request.v20150501 import CreateRoleRequest 
+from aliyunsdkram.request.v20150501 import GetRoleRequest
 from aliyunsdkram.request.v20150501 import DeleteRoleRequest
 from aliyunsdkram.request.v20150501 import ListGroupsRequest
 from aliyunsdkram.request.v20150501 import CreateGroupRequest
@@ -142,6 +143,17 @@ class AliyunIdentityProcessor(IdentityProcessorBase):
 
         response = self.clt.do_action(r)
         print response
+        resp = json.loads(response)
+
+        return resp["Role"]
+
+    def queryRoleByid(self, role_id):
+        r = GetRoleRequest.GetRoleRequest()
+        r.set_accept_format('json')
+        r.set_RoleName(role_id)
+
+        response = self.clt.do_action(r)
+
         resp = json.loads(response)
 
         return resp["Role"]
