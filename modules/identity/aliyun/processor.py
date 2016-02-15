@@ -18,6 +18,7 @@ from aliyunsdkram.request.v20150501 import GetGroupRequest
 from aliyunsdkram.request.v20150501 import DeleteGroupRequest
 from aliyunsdkram.request.v20150501 import ListUsersForGroupRequest
 from aliyunsdkram.request.v20150501 import AddUserToGroupRequest
+from aliyunsdkram.request.v20150501 import RemoveUserFromGroupRequest
 
 import json
 
@@ -235,6 +236,36 @@ class AliyunIdentityProcessor(IdentityProcessorBase):
         r.set_accept_format('json')
         r.set_UserName(user_id)
         r.set_GroupName(group_id)
+
+        response = self.clt.do_action(r)
+
+        return True
+
+    def checkUserBelongsToGroup(self, group_id, user_id):
+        r = ListUsersForGroupRequest.ListUsersForGroupRequest()
+        r.set_accept_format('json')
+        r.set_GroupName(group_id)
+
+        response = self.clt.do_action(r)
+
+        print response
+
+        resp = json.loads(response)
+
+        res = False
+
+        for u in resp["Users"]["User"]:
+            if u["UserName"] == user_id:
+                res = True
+                break
+
+        return res
+
+    def deleteUserFromGroup(self, group_id, user_id):
+        r = RemoveUserFromGroupRequest.RemoveUserFromGroupRequest()
+        r.set_accept_format('json')
+        r.set_GroupName(group_id)
+        r.set_UserName(user_id)
 
         response = self.clt.do_action(r)
 

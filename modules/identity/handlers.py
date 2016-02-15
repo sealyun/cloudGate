@@ -892,9 +892,6 @@ class GroupHandler(IdentityBaseHandler):
         self.p.deleteGroupById(group_id)
 
 class GroupUsersHandler(IdentityBaseHandler):
-    def put(self, group_id):
-        print "-----wrong place"
-
     def get(self, group_id):
         self.get_processor()
         domain_id = ""
@@ -929,7 +926,6 @@ class GroupUsersHandler(IdentityBaseHandler):
 
 class GroupUserHandler(IdentityBaseHandler):
     def put(self, group_id, user_id):
-        print ("===========",group_id, user_id)
         self.get_processor()
         self.p.addUserInGroup(group_id, user_id)
 
@@ -937,10 +933,9 @@ class GroupUserHandler(IdentityBaseHandler):
         self.get_processor()
         res = self.p.checkUserBelongsToGroup(group_id, user_id)
         if res:
-            #HTTP 204
-            pass
+            self.set_status(204)
         else:
-            pass
+            self.set_status(400)
 
     def delete(self, group_id, user_id):
         self.get_processor()

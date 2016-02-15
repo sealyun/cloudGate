@@ -48,3 +48,9 @@ class IdentityProcessorBase():
 
     def addUserInGroup(self, group_id, user_id):
         pass
+
+    def checkUserBelongsToGroup(self, group_id, user_id):
+        pass
+
+    def deleteUserFromGroup(self, group_id, user_id):
+        pass
