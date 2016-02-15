@@ -26,16 +26,17 @@ class IdentityBaseHandler(HttpBaseHandler):
             "versions":{
                 "values":[
                     {
-                        "id": "v3",
+                        "id": "v3.4",
                         "links": [
                             {
-                                "href": "http://" + HOST + ":" + PORT + "/v3/",
+                                "href": "http://" + HOST + ":" + PORT + IDENTITY_BASE_URL + "/v3/",
                                 "rel": "self"
                             }
                         ],
                         "media-types": [
                             {
                                 "base": "application/json",
+                                "type": "application/vnd.openstack.identity-v3+json"
                             }
                         ],
                         "status": "stable",
