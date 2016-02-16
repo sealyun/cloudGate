@@ -119,6 +119,8 @@ class NetworksHandler(NetworkingBaseHandler):
 
 class NetworksExtensionsHandler(NetworkingBaseHandler):
     def get(self):
+        print "NetworksExtensionsHandler POST"
+
         extensions = []
         resp = {
             "extensions":extensions
@@ -190,9 +192,14 @@ class SubnetsHandler(NetworkingBaseHandler):
         ipv6_ra_mode = self.get_argument("ipv6_ra_mode", None)
         ipv6_address_mode = self.get_argument("ipv6_address_mode", None)
 
-        subnets = self.p.querySubnets(display_name, network_id,
+        processor = self.get_processor()
+
+        '''
+        subnets = processor.querySubnets(display_name, network_id,
                 gateway_ip, ip_version, cidr, id, enable_dhcp,
                 ipv6_ra_mode, ipv6_address_mode)
+        '''
+        subnets = []
 
         resp = {
             "subnets":[
