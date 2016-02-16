@@ -88,7 +88,9 @@ class ImagesHandler(ImageBaseHandler):
                         "distro": "Ubuntu 10.04 LTS"
                     }
                 }
-            ]
+            ],
+            "next": "",
+            "previous ": "",
         }
 
         self.send_json(resp)
