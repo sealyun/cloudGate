@@ -74,3 +74,11 @@ class AliyunNetworkingProcessor(NetworkingProcessorBase):
 
         print networks
         return networks
+
+    def createNetwork(self, shared, tenantID, inNetwork):
+        #TODO
+        pass
+
+    def createNetworks(self, shared, tenantID, inNetworks):
+        #TODO
+        pass

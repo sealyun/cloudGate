@@ -117,6 +117,14 @@ class NetworksHandler(NetworkingBaseHandler):
             self.send_json(resp)
             return
 
+class NetworksExtensionsHandler(NetworkingBaseHandler):
+    def get(self):
+        extensions = []
+        resp = {
+            "extensions":extensions
+        }
+        self.send_json(resp)
+
 class NetworkHandler(NetworkingBaseHandler):
     def get(self, network_id):
         network = self.p.getNetwork(network_id)
