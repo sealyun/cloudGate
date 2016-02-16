@@ -6,4 +6,4 @@ class NetworkingProcessorBase():
         pass
 
     def queryNetwotks(self):
-        pass
+        return None

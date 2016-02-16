@@ -16,6 +16,7 @@ class NetworkingBaseHandler(HttpBaseHandler):
 
 class NetworksHandler(NetworkingBaseHandler):
     def get(self):
+        print "NetworksHandler"
         networks = self._processor.queryNetwotks()
         if networks:
             self.set_status(200)
