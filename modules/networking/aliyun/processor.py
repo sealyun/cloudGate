@@ -100,3 +100,6 @@ class AliyunNetworkingProcessor(NetworkingProcessorBase):
     def createNetworks(self, shared, tenantID, inNetworks):
         #TODO
         pass
+
+    def getAPIExtensions(self):
+        return []

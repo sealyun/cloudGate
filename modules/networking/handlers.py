@@ -37,11 +37,11 @@ class NetworksHandler(NetworkingBaseHandler):
                     "status": network["status"],
                     "subnets": network["subnets"],
                     "name": network["name"],
-                    "provider:physical_network": network["provider_physical_network"],
+                    "provider:physical_network": network["provider:physical_network"],
                     "admin_state_up": network["admin_state_up"],
                     "tenant_id": network["tenant_id"],
-                    "provider:network_type": network["provider_network_type"],
-                    "router:external": network["router_external"],
+                    "provider:network_type": network["provider:network_type"],
+                    "router:external": network["router:external"],
                     "mtu": network["mtu"],
                     "shared": network["shared"],
                     "id": network["id"],
@@ -80,7 +80,7 @@ class NetworksHandler(NetworkingBaseHandler):
                             "name": outNetwork["name"],
                             "admin_state_up": outNetwork["admin_state_up"],
                             "tenant_id": outNetwork["tenant_id"],
-                            "router:external": outNetwork["router_external"],
+                            "router:external": outNetwork["router:external"],
                             "mtu": outNetwork["mtu"],
                             "shared": outNetwork["shared"],
                             "id": outNetwork["id"]
@@ -103,7 +103,7 @@ class NetworksHandler(NetworkingBaseHandler):
                         "status": network["status"],
                         "subnets": network["subnets"],
                         "name": network["name"],
-                        "provider:physical_network": network["provider_physical_network"],
+                        "provider:physical_network": network["provider:physical_network"],
                         "admin_state_up": network["admin_state_up"],
                         "tenant_id": network["tenant_id"],
                         "mtu": network["mtu"],
@@ -121,7 +121,8 @@ class NetworksExtensionsHandler(NetworkingBaseHandler):
     def get(self):
         print "NetworksExtensionsHandler POST"
 
-        extensions = []
+        processor = self.get_processor()
+        extensions = processor.getAPIExtensions()
         resp = {
             "extensions":extensions
         }

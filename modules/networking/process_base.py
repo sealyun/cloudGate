@@ -13,3 +13,6 @@ class NetworkingProcessorBase():
 
     def createNetworks(self, shared, tenantID, inNetworks):
         pass
+
+    def getAPIExtensions(self):
+        pass
