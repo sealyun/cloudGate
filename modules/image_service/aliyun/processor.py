@@ -1,3 +1,5 @@
+import json
+
 from cloudGate.modules.image_service.process_base import ImageServiceProcessorBase
 from cloudGate.config import *
 from aliyunsdkcore import client
@@ -16,7 +18,7 @@ class AliyunImageServiceProcessor(ImageServiceProcessorBase):
 
         self.clt = client.AcsClient(self.access_key, self.access_secrect, self.regin)
 
-    def queryImages(limit, marker, name, visibility, member_status, owner, status,
+    def queryImages(self, limit, marker, name, visibility, member_status, owner, status,
                     size_min, size_max, sort_key, sort_dir, sort, tag):
         request = ListVirtualMFADevicesRequest.ListVirtualMFADevicesRequest()
         request.set_accept_format('json')
@@ -24,5 +26,5 @@ class AliyunImageServiceProcessor(ImageServiceProcessorBase):
         resp = json.loads(response)
 
         images = []
-        print(resp)
+        print('resp', resp)
         return images
