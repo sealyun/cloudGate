@@ -31,6 +31,7 @@ class ImagesHandler(ImageBaseHandler):
         sort = self.get_argument("sort", None)
         tag = self.get_argument("tag", None)
 
+        self.get_processor()
         images = self.p.queryImages(limit, marker, name, visibility, member_status, owner, status,
                 size_min, size_max, sort_key, sort_dir, sort, tag)
 
