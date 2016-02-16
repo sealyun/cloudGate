@@ -82,7 +82,7 @@ class AliyunNetworkingProcessor(NetworkingProcessorBase):
         network["admin_state_up"] = True
         network["tenant_id"] = tenantID
         network["provider:network_type"] = "local"
-        network["router:external"] = True
+        network["router:external"] = routerExternal
         network["mtu"] = 0
         network["shared"] = shared
         network["id"] = "vpcid-qqqqqwwwwww"

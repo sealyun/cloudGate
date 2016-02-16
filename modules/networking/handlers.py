@@ -23,6 +23,7 @@ class NetworksHandler(NetworkingBaseHandler):
         routerExternal = self.get_argument("router:external", None)
         print "shared: ", shared
         print "tenant_id: ", tenantID
+        print "router:external: ", routerExternal
 
         processor = self.get_processor()
         networks = processor.getNetwotks(shared, tenantID, routerExternal)
