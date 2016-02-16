@@ -70,6 +70,7 @@ class ImagesHandler(ImageBaseHandler):
         self.send_json(resp)
 
     def post(self):
+        print(self.request.body)
         image = json.loads(self.request.body)
         print(post)
 
