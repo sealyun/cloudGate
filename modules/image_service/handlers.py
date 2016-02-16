@@ -78,10 +78,10 @@ class ImagesHandler(ImageBaseHandler):
                     "updated_at": "2010-02-03 09:34:01",
                     "deleted_at": "",
                     "status": "active",
-                    "is_public": true,
+                    "is_public": True,
                     "min_ram": 256,
                     "min_disk": 5,
-                    "owner": null,
+                    "owner": None,
                     "properties": {
                         "distro": "Ubuntu 10.04 LTS"
                     }
