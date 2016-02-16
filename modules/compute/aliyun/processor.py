@@ -1,5 +1,5 @@
 #coding=utf-8
-
+from cloudGate.modules.compute.process_base import ComputeProcessorBase
 
 class AliyunComputeProcessor(ComputeProcessorBase):
     #we can get accessKey and accessSecret from tocken

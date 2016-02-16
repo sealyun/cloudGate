@@ -255,7 +255,7 @@ class ServerActionHandler(ComputeBaseHandler):
         self.p.ServerAction(tenant_id, server_id, action)
 
 class ExtensionsHandler(ComputeBaseHandler):
-    def get(self):
+    def get(self, ob):
         self.get_processor()
         processor = self.get_processor()
         extensions = processor.getExtensions()
