@@ -39,58 +39,29 @@ class ImagesHandler(ImageBaseHandler):
         self.get_processor()
         images = self.p.queryImages(limit, marker, name, visibility, member_status, owner, status,
                                     size_min, size_max, sort_key, sort_dir, sort, tag)
-
         resp = {
-            "images": [
-                {
-                    "status": i['Status'],
-                    "name": i['ImageName'],
-                    "tags": [],
-                    "container_format": '',
-                    "create_at": i['CreationTime'],
-                    "disk_format": '',
-                    "updated_at": '',
-                    "visibility": i['IsSubscribed'],
-                    "self": "/v2/images/" + i['ImageId'],
-                    "min_disk": 0,
-                    "protected": i['IsCopied'],
-                    "id": i['ImageId'],
-                    "file": "/v2/images/" + i['ImageId'] + "/file",
-                    "checksum": None,
-                    "owner": i['ImageOwnerAlias'],
-                    "size": i['Size'],
-                    "min_ram": None,
-                    "schema": '',
-                    "virtual_size": i['Size']
-                }
-                for i in images
+            "images": [{
+                "is_public": i['IsCopied'],
+                "uri": "",
+                "name": i['ImageName'],
+                "disk_format": "",
+                "container_format": "",
+                "size": i['Size'],
+                "checksum": "c2e5db72bd7fd153f53ede5da5a06de3",
+                "created_at": i["CreationTime"],
+                "updated_at": "",
+                "deleted_at": "",
+                "status": "active" if i["Status"] == "Available" else "",
+                "is_public": i['IsSubscribed'],
+                "min_ram": None,
+                "min_disk": None,
+                "owner": i['ImageOwnerAlias'],
+                "properties": {
+                    "distro": i["OSName"],
+                },
+                "id": i["ImageId"],
+            } for i in images
             ]
-        }
-
-        resp = {
-            "images": [
-                {
-                    "uri": "http://glance.example.com/images/71c675ab-d94f-49cd-a114-e12490b328d9",
-                    "name": "Ubuntu 10.04 Plain 5GB",
-                    "disk_format": "vhd",
-                    "container_format": "ovf",
-                    "size": "5368709120",
-                    "checksum": "c2e5db72bd7fd153f53ede5da5a06de3",
-                    "created_at": "2010-02-03 09:34:01",
-                    "updated_at": "2010-02-03 09:34:01",
-                    "deleted_at": "",
-                    "status": "active",
-                    "is_public": True,
-                    "min_ram": 256,
-                    "min_disk": 5,
-                    "owner": None,
-                    "properties": {
-                        "distro": "Ubuntu 10.04 LTS"
-                    }
-                }
-            ],
-            "next": "",
-            "previous ": "",
         }
 
         self.send_json(resp)
