@@ -13,10 +13,10 @@ urls_v2 = [
     (BLOCK_STORAGE_BASE_URL + r"/v2/(.*)/volumes/(.*)/metadata", VolumeMetadataHandler),
     (BLOCK_STORAGE_BASE_URL + r"/v2/(.*)/volumes/(.*)/action", VolumeActionHandler),
 
-    (r"/v2/(.*)/snapshots", SnapshotsHandler),
-    (r"/v2/(.*)/snapshots/detail", SnapshotsDetailHandler),
-    (r"/v2/(.*)/snapshots/(.*)", SnapshotHandler),
-    (r"/v2/(.*)/snapshots/(.*)/metadata", SnapshotMetadataHandler),
+    (BLOCK_STORAGE_BASE_URL + r"/v2/(.*)/snapshots", SnapshotsHandler),
+    (BLOCK_STORAGE_BASE_URL + r"/v2/(.*)/snapshots/detail", SnapshotsDetailHandler),
+    (BLOCK_STORAGE_BASE_URL + r"/v2/(.*)/snapshots/(.*)", SnapshotHandler),
+    (BLOCK_STORAGE_BASE_URL + r"/v2/(.*)/snapshots/(.*)/metadata", SnapshotMetadataHandler),
 ]
 
 urls = urls_low_version + urls_v2

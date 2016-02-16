@@ -13,6 +13,7 @@ class BlockStorageBaseHandler(HttpBaseHandler):
         print ("--- WU JUN ---get token:", token)
         i = BlockStorageProcessorFac()
         self.p = i.create_processor(None, token)
+        print ("--- WU JUN ---self.p:", self.p)
 
 class VolumesHandler(BlockStorageBaseHandler):
     def get(self, tenant_id):
