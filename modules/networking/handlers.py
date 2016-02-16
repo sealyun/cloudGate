@@ -7,7 +7,7 @@ import json
 class NetworkingBaseHandler(HttpBaseHandler):
     def get_processor(self):
         token = self.request.headers["X-Auth-Token"]
-        print ("-----get token:", token)
+        #print ("-----get token:", token)
         factory = NetworkingProcessorFactory()
         return factory.getAliyunProcessor(token)
 
