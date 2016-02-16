@@ -133,6 +133,13 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
     
     
     def querySnapshotsDetails(self, tenant_id):
+        print "querySnapshotsDetails WUJUN begin ...."        
+        r = DescribeSnapshotsRequest.DescribeSnapshotsRequest()
+        
+        r.set_accept_format('json')
+        response = self.clt.do_action(r)
+        print "querySnapshotsDetails WUJUN response is ", response
+        return response        
         pass
     
     
