@@ -7,3 +7,9 @@ class NetworkingProcessorBase():
 
     def queryNetwotks(self, shared, tenantID):
         pass
+
+    def createNetwork(self, shared, tenantID, inNetwork):
+        pass
+
+    def createNetworks(self, shared, tenantID, inNetworks):
+        pass

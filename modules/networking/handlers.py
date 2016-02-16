@@ -25,29 +25,29 @@ class NetworksHandler(NetworkingBaseHandler):
 
         processor = self.get_processor()
         networks = processor.queryNetwotks(shared, tenantID)
-        if networks:
-            self.set_status(200)
-        else:
+        if networks is None:
             self.set_status(401)
-            return 
+            return
+        else:
+            self.set_status(200)
 
         resp = {
             "networks":[
                 {
-                    "status": n.status,
-                    "subnets": n.subnets,
-                    "name": n.name,
-                    "provider:physical_network": n.provider_physical_network,
-                    "admin_state_up": n.admin_state_up,
-                    "tenant_id": n.tenant_id,
-                    "provider:network_type": n.provider_network_type,
-                    "router:external": n.router_external,
-                    "mtu": n.mtu,
-                    "shared": n.shared,
-                    "id": n.id,
-                    "provider:segmentation_id": n.provider_segmentation_id
+                    "status": network["status"],
+                    "subnets": network["subnets"],
+                    "name": network["name"],
+                    "provider:physical_network": network["provider_physical_network"],
+                    "admin_state_up": network["admin_state_up"],
+                    "tenant_id": network["tenant_id"],
+                    "provider:network_type": network["provider_network_type"],
+                    "router:external": network["router_external"],
+                    "mtu": network["mtu"],
+                    "shared": network["shared"],
+                    "id": network["id"],
+                    "provider:segmentation_id": network["provider:segmentation_id"],
                 }
-                for n in networks
+                for network in networks
             ]
         }
 
@@ -55,64 +55,67 @@ class NetworksHandler(NetworkingBaseHandler):
 
     #maybe bulk
     def post(self):
-        network = json.loads(self.request.body)["network"]
+        print "NetworksHandler POST"
 
-        if type(network) is list:
-            #bulk create networks
+        shared = self.get_argument("shared", None)
+        tenantID = self.get_argument("tenant_id", None)
+        print "shared: ", shared
+        print "tenant_id: ", tenantID
 
-            networks = self.p.createBulkNetworks(network)
+        processor = self.get_processor()
 
-            if network:
-                self.set_status(201)
-            else:
+        body = json.loads(self.request.body)
+        if "network" in body.keys():
+            inNetwork = body["network"]
+            outNetwork = processor.createNetworks(shared, tenantID, inNetwork)
+            if outNetwork is None:
+                self.set_status(401)
                 return
-
+            else:
+                self.set_status(200)
+            resp = {
+                "network":{
+                            "status": outNetwork["status"],
+                            "subnets": outNetwork["subnets"],
+                            "name": outNetwork["name"],
+                            "admin_state_up": outNetwork["admin_state_up"],
+                            "tenant_id": outNetwork["tenant_id"],
+                            "router:external": outNetwork["router_external"],
+                            "mtu": outNetwork["mtu"],
+                            "shared": outNetwork["shared"],
+                            "id": outNetwork["id"]
+                        }
+                    }
+            self.send_json(resp)
+            return
+        else:
+            inNetworks = []
+            inNetworks.append(body["networks"])
+            outNetworks = processor.createNetworks(shared, tenantID, inNetworks)
+            if outNetworks is None:
+                self.set_status(401)
+                return
+            else:
+                self.set_status(200)
             resp = {
                 "networks":[
                     {
-                        "status": n.status,
-                        "subnets": n.subnets,
-                        "name": n.name,
-                        "provider:physical_network": n.provider_physical_network,
-                        "admin_state_up": n.admin_state_up,
-                        "tenant_id": n.tenant_id,
-                        "provider:network_type": n.provider_network_type,
-                        "router:external": n.router_external,
-                        "mtu": n.mtu,
-                        "shared": n.shared,
-                        "id": n.id,
-                        "provider:segmentation_id": n.provider_segmentation_id
+                        "status": network["status"],
+                        "subnets": network["subnets"],
+                        "name": network["name"],
+                        "provider:physical_network": network["provider_physical_network"],
+                        "admin_state_up": network["admin_state_up"],
+                        "tenant_id": network["tenant_id"],
+                        "mtu": network["mtu"],
+                        "shared": network["shared"],
+                        "id": network["id"],
+                        "provider:segmentation_id": network["provider:segmentation_id"],
                     }
-                    for n in networks
+                    for network in outNetworks
                 ]
             }
-
             self.send_json(resp)
-            return 
-
-        network = self.p.createNetwork(network)
-
-        if network:
-            self.set_status(201)
-        else:
-            self.set_status(400)
             return
-
-        resp = {
-            "network":{
-                "status": network.status,
-                "subnets": network.subnets,
-                "name": network.name,
-                "admin_state_up": network.admin_state_up,
-                "tenant_id": network.tenant_id,
-                "router:external": network.router_external,
-                "mtu": network.mtu,
-                "shared": network.shared,
-                "id": network.id
-            }
-        }
-
-        self.send_json(resp)
 
 class NetworkHandler(NetworkingBaseHandler):
     def get(self, network_id):
