@@ -90,7 +90,8 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
         ### r.set_ClientToken(self.token)
         ### r.set_OwnerAccount("wj")  ## wj or admin       
         r.set_accept_format('json')
-        response = self.clt.do_action(r)
+        
+        ### response = self.clt.do_action(r)
         
         print "createVolume WUJUN response is ", response
         return True
