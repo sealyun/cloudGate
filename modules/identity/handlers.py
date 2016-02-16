@@ -79,21 +79,21 @@ class AuthTokensHandler(IdentityBaseHandler):
                         "endpoints": [
                             {
                                 "region_id": "RegionOne",
-                                "url": "",
+                                "url": "http://" + HOST + ":" + PORT + IMAGE_SERVICE_BASE_URL,
                                 "region": "RegionOne",
                                 "interface": "admin",
                                 "id": "b2605da9b25943beb49b2bd86aca2202"
                             },
                             {
                                 "region_id": "RegionOne",
-                                "url": "",
+                                "url": "http://" + HOST + ":" + PORT + IMAGE_SERVICE_BASE_URL,
                                 "region": "RegionOne",
                                 "interface": "public",
                                 "id": "c4d1184caf8c4351bff4bf502a09684e"
                             },
                             {
                                 "region_id": "RegionOne",
-                                "url": "",
+                                "url": "http://" + HOST + ":" + PORT + IMAGE_SERVICE_BASE_URL,
                                 "region": "RegionOne",
                                 "interface": "internal",
                                 "id": "cd73bda89e3948738c2721a8c3acac54"
@@ -191,21 +191,21 @@ class AuthTokensHandler(IdentityBaseHandler):
                         "endpoints": [
                             {
                                 "region_id": "RegionOne",
-                                "url": "http://121.199.9.187:8081/compute/v2.1/tenant_id",
+                                "url": "http://" + HOST + ":" + PORT + COMPUTE_BASE_URL + "/v2.1/tenant_id",
                                 "region": "RegionOne",
                                 "interface": "public",
                                 "id": "bc2230a70d6a444e9fba75b85fbda41b"
                             },
                             {
                                 "region_id": "RegionOne",
-                                "url": "http://121.199.9.187:8081/compute/v2.1/tenant_id",
+                                "url": "http://" + HOST + ":" + PORT + COMPUTE_BASE_URL + "/v2.1/tenant_id",
                                 "region": "RegionOne",
                                 "interface": "internal",
                                 "id": "d8102dc2b9984d04b30b91b0a6037470"
                             },
                             {
                                 "region_id": "RegionOne",
-                                "url": "http://121.199.9.187:8081/compute/v2.1/tenant_id",
+                                "url": "http://" + HOST + ":" + PORT + COMPUTE_BASE_URL + "/v2.1/tenant_id",
                                 "region": "RegionOne",
                                 "interface": "admin",
                                 "id": "f8253a53edd749bf8b107a53a5d47a82"
@@ -219,21 +219,21 @@ class AuthTokensHandler(IdentityBaseHandler):
                         "endpoints": [
                             {
                                 "region_id": "RegionOne",
-                                "url": "http://121.199.9.187:8081/identity/v3/",
+                                "url": "http://"+ HOST + ":" + PORT +"/identity/v3/",
                                 "region": "RegionOne",
                                 "interface": "admin",
                                 "id": "c693879254544e3fb502e795a3f6acc8"
                             },
                             {
                                 "region_id": "RegionOne",
-                                "url": "http://121.199.9.187:8081/identity/v3/",
+                                "url": "http://"+ HOST + ":" + PORT +"/identity/v3/",
                                 "region": "RegionOne",
                                 "interface": "internal",
                                 "id": "c693879254544e3fb502e795a3f6acc8"
                             },
                             {
                                 "region_id": "RegionOne",
-                                "url": "http://121.199.9.187:8081/identity/v3/",
+                                "url": "http://"+ HOST + ":" + PORT +"/identity/v3/",
                                 "region": "RegionOne",
                                 "interface": "public",
                                 "id": "c693879254544e3fb502e795a3f6acc8"
@@ -303,21 +303,21 @@ class AuthTokensHandler(IdentityBaseHandler):
                         "endpoints": [
                             {
                                 "region_id": "RegionOne",
-                                "url": "",
+                                "url":"http://"+ HOST +":"+ PORT + NETWORKING_BASE_URL,
                                 "region": "RegionOne",
                                 "interface": "admin",
                                 "id": "3e78c357b3c8469fbea12eb681f88a0c"
                             },
                             {
                                 "region_id": "RegionOne",
-                                "url": "",
+                                "url":"http://"+ HOST +":"+ PORT + NETWORKING_BASE_URL,
                                 "region": "RegionOne",
                                 "interface": "public",
                                 "id": "89d2aad3dc8e478fbabb21dd7db0962a"
                             },
                             {
                                 "region_id": "RegionOne",
-                                "url": "",
+                                "url":"http://"+ HOST +":"+ PORT + NETWORKING_BASE_URL,
                                 "region": "RegionOne",
                                 "interface": "internal",
                                 "id": "b6d4a8cf5e4042848a749a3116497e55"

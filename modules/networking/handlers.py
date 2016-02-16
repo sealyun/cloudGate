@@ -5,18 +5,26 @@ import json
 
 
 class NetworkingBaseHandler(HttpBaseHandler):
-    def __init__(self):
+    def get_processor(self):
         token = self.request.headers["X-Auth-Token"]
-        print ("-----get token:", token)
+        #print ("-----get token:", token)
         factory = NetworkingProcessorFactory()
-        self._processor = factory.getAliyunProcessor(token)
+        return factory.getAliyunProcessor(token)
 
     def get(self):
         pass
 
 class NetworksHandler(NetworkingBaseHandler):
     def get(self):
-        networks = self._processor.queryNetwotks()
+        print "NetworksHandler GET"
+
+        shared = self.get_argument("shared", None)
+        tenantID = self.get_argument("tenant_id", None)
+        print "shared: ", shared
+        print "tenant_id: ", tenantID
+
+        processor = self.get_processor()
+        networks = processor.queryNetwotks(shared, tenantID)
         if networks:
             self.set_status(200)
         else:
