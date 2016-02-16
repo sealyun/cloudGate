@@ -52,6 +52,26 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
         self.clt = client.AcsClient(self.access_key, self.access_secrect, self.regin)
     
     def queryVolumes(self, tenant_id, sort, limit, marker):
+        print "queryVolumes WUJUN begin ...."
+        print "WUJUN tenant_id is ", tenant_id, "  limit is ", limit, "   marker is ", marker
+        r = DescribeDisksRequest.DescribeDisksRequest()
+        ##### r.set_ZoneId(self.regin)
+        ## r.set_DiskIds()
+        '''
+        r.set_InstanceId()
+        r.set_DiskType()
+        r.set_Category()
+        r.set_Status()
+        r.set_SnapshotId()
+        r.set_Portable()
+        r.set_PageNumber()
+        r.set_PageSize()
+        r.set_DiskName()
+        '''
+        r.set_accept_format('json')
+        response = self.clt.do_action(r)
+        print "queryVolumes WUJUN response is ", response
+        return response
         pass
     
     def createVolume(self, tenant_id, size, availability_zone, source_volid,
@@ -61,18 +81,18 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
         ## r.set_OwnerId(owner_id)
         ## r.set_ResourceOwnerAccount(resource_owner_account)
         ## r.set_ResourceOwnerId(resource_owner_id)
-        ## r.set_ZoneId(zone_id)
+        ##### r.set_ZoneId(self.regin)
         ## r.set_SnapshotId(snapshot_id)
         r.set_DiskName(name)
         r.set_Size(size)
         ## r.set_DiskCategory(disk_category)
         r.set_Description(description)
-        r.set_ClientToken(self.token)
-        r.set_OwnerAccount("wj")  ## wj or admin       
+        ### r.set_ClientToken(self.token)
+        ### r.set_OwnerAccount("wj")  ## wj or admin       
         r.set_accept_format('json')
         response = self.clt.do_action(r)
         
-        print "WUJUN response is ", response
+        print "createVolume WUJUN response is ", response
         return True
                     
         pass
