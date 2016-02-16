@@ -18,8 +18,13 @@ class NetworksHandler(NetworkingBaseHandler):
     def get(self):
         print "NetworksHandler GET"
 
+        shared = self.get_argument("shared", None)
+        tenantID = self.get_argument("tenant_id", None)
+        print "shared: ", shared
+        print "tenant_id: ", tenantID
+
         processor = self.get_processor()
-        networks = processor.queryNetwotks()
+        networks = processor.queryNetwotks(shared, tenantID)
         if networks:
             self.set_status(200)
         else:
