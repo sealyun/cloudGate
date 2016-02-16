@@ -67,7 +67,7 @@ class ImagesHandler(ImageBaseHandler):
             ]
         }
 
-        self.send_json({
+        resp = {
             "images": [
                 {
                     "uri": "http://glance.example.com/images/71c675ab-d94f-49cd-a114-e12490b328d9",
@@ -89,7 +89,9 @@ class ImagesHandler(ImageBaseHandler):
                     }
                 }
             ]
-        })
+        }
+
+        self.send_json(resp)
 
     def post(self):
         print('self.request.body', self.request.body)
