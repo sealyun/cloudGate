@@ -5,5 +5,5 @@ class NetworkingProcessorBase():
     def __init__(self):
         pass
 
-    def queryNetwotks(self):
-        return None
+    def queryNetwotks(self, shared, tenantID):
+        pass
