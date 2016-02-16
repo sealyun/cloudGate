@@ -1,3 +1,6 @@
+#coding=utf-8
+
+
 class AliyunComputeProcessor(ComputeProcessorBase):
     #we can get accessKey and accessSecret from tocken
     def __init__(self, token):
