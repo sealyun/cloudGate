@@ -5,7 +5,8 @@ from cloudGate.config import *
 from aliyunsdkcore import client
 
 
-from aliyunsdkram.request.v20150501 import ListVirtualMFADevicesRequest
+from aliyunsdkecs.request.v20140526 import DescribeImagesRequest
+
 
 class AliyunImageServiceProcessor(ImageServiceProcessorBase):
 
@@ -20,11 +21,13 @@ class AliyunImageServiceProcessor(ImageServiceProcessorBase):
 
     def queryImages(self, limit, marker, name, visibility, member_status, owner, status,
                     size_min, size_max, sort_key, sort_dir, sort, tag):
-        request = ListVirtualMFADevicesRequest.ListVirtualMFADevicesRequest()
+        request = DescribeImagesRequest.DescribeImagesRequest()
         request.set_accept_format('json')
+
         response = self.clt.do_action(request)
         resp = json.loads(response)
 
-        images = []
-        print('resp', resp)
-        return images
+        return resp['Images']['Image']
+
+    def createImage(self, container_format, disk_format, name, id):
+        pass
