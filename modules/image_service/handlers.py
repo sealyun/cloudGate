@@ -92,7 +92,7 @@ class ImagesHandler(ImageBaseHandler):
         })
 
     def post(self):
-        print(self.request.body)
+        print('self.request.body', self.request.body)
         image = json.loads(self.request.body)
         print(post)
 
