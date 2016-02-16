@@ -1,10 +1,17 @@
 from tornado.gen import coroutine
 from cloudGate.httpbase import HttpBaseHandler
+from api_factory import ImageServiceProcessorFac
 
-class ImageBaseHandler(HttpBaseHandler):   
-    #TODO add init processor
-    pass
-    
+class ImageBaseHandler(HttpBaseHandler):
+    def get_processor(self):
+        token = self.request.headers["X-Auth-Token"]
+        print ("-----get token:", token)
+        i = ImageServiceProcessorFac()
+        self.p = i.create_processor(None, token)
+
+        return self.p
+
+
     def get(self):
         pass
 
@@ -48,7 +55,7 @@ class ImagesHandler(ImageBaseHandler):
                     "size": i.size,
                     "min_ram": i.min_ram,
                     "schema": i.schema,
-                    "virtual_size": i.virtual_size 
+                    "virtual_size": i.virtual_size
                 }
                 for i in images
             ]
@@ -63,7 +70,7 @@ class ImagesHandler(ImageBaseHandler):
                 image["name"],
                 image["id"])
 
-        if !i:
+        if not i:
             return
 
         resp = {
@@ -84,9 +91,9 @@ class ImagesHandler(ImageBaseHandler):
             "file": "/v2/images/"+i.id+"/file",
             "checksum": i.checksum,
             "owner": i.owner,
-            "virtual_size": i.virtual_size 
-            "min_ram": i.min_ram,
-            "schema": i.schema,
+            "virtual_size": i.virtual_size
+            # "min_ram": i.min_ram,
+            # "schema": i.schema,
         }
 
         self.set_status(201)
@@ -95,7 +102,7 @@ class ImagesHandler(ImageBaseHandler):
 class ImageHandler(ImageBaseHandler):
     def get(self, image_id):
         i = self.p.queryImageId(image_id)
-        if !i:
+        if not i:
             return
 
         resp = {
@@ -117,7 +124,7 @@ class ImageHandler(ImageBaseHandler):
             "size": i.size,
             "min_ram": i.min_ram,
             "schema": i.schema,
-            "virtual_size": i.virtual_size 
+            "virtual_size": i.virtual_size
         }
 
         self.send_json(resp)
@@ -146,7 +153,7 @@ class ImageHandler(ImageBaseHandler):
             "min_disk": i.min_disk,
             "disk_format":i.disk_format,
             "virtual_size": i.virtual_size
-            "container_format":i.container_format,
+            # "container_format":i.container_format,
         }
 
         self.send_json(resp)
@@ -162,7 +169,7 @@ class ImageHandler(ImageBaseHandler):
 
 class ImageActionReactivateHandler(ImageBaseHandler):
     def post(self, image_id):
-        i = self.p.reactivateImage(image_id):
+        i = self.p.reactivateImage(image_id)
         if i:
             self.set_status(204)
         else:
@@ -187,14 +194,14 @@ class ImageActionReactivateHandler(ImageBaseHandler):
             "size": i.size,
             "min_ram": i.min_ram,
             "schema": i.schema,
-            "virtual_size": i.virtual_size 
+            "virtual_size": i.virtual_size
         }
 
         self.send_json(resp)
 
 class ImageActionDeactivateHandler(ImageBaseHandler):
     def post(self, image_id):
-        i = self.p.deactivateImage(image_id):
+        i = self.p.deactivateImage(image_id)
         if i:
             self.set_status(204)
         else:
@@ -219,7 +226,7 @@ class ImageActionDeactivateHandler(ImageBaseHandler):
             "size": i.size,
             "min_ram": i.min_ram,
             "schema": i.schema,
-            "virtual_size": i.virtual_size 
+            "virtual_size": i.virtual_size
         }
 
         self.send_json(resp)
@@ -231,4 +238,3 @@ class ImageFileHandler(ImageBaseHandler):
 
     def get(self, image_id):
         pass
-
