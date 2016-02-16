@@ -1,5 +1,6 @@
 from tornado.gen import coroutine
 from cloudGate.httpbase import HttpBaseHandler
+from api_factory import ComputeProcessorFac
 
 class ComputeBaseHandler(HttpBaseHandler):
     #the ProcessorFac return the real processor.
