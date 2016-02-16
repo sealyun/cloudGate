@@ -72,6 +72,24 @@ class AliyunNetworkingProcessor(NetworkingProcessorBase):
 
                 networks.append(network)
 
+
+        #test begin
+        network = {}
+        network["status"] = "ACTIVE"
+        network["subnets"] = []
+        network["name"] = "vpcname-qqqqqwwwwww"
+        network["provider:physical_network"] = None
+        network["admin_state_up"] = True
+        network["tenant_id"] = tenantID
+        network["provider:network_type"] = "local"
+        network["router:external"] = True
+        network["mtu"] = 0
+        network["shared"] = shared
+        network["id"] = "vpcid-qqqqqwwwwww"
+        network["provider:segmentation_id"] = None
+        networks.append(network)
+        #test end
+
         print networks
         return networks
 
