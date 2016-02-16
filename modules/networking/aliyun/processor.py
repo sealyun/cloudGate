@@ -21,7 +21,7 @@ class AliyunNetworkingProcessor(NetworkingProcessorBase):
 
         self.clt = client.AcsClient(self.access_key, self.access_secrect, self.regin)
 
-    def queryNetwotks(self, shared, tenantID):
+    def getNetwotks(self, shared, tenantID, routerExternal):
         request = DescribeVpcsRequest.DescribeVpcsRequest()
         request.set_PageNumber(1)
         request.set_PageSize(50)
@@ -64,7 +64,7 @@ class AliyunNetworkingProcessor(NetworkingProcessorBase):
                 network["admin_state_up"] = True
                 network["tenant_id"] = tenantID
                 network["provider:network_type"] = "local"
-                network["router:external"] = True
+                network["router:external"] = routerExternal
                 network["mtu"] = 0
                 network["shared"] = shared
                 network["id"] = vpc["VpcId"]

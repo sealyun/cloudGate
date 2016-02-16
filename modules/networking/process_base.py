@@ -5,7 +5,7 @@ class NetworkingProcessorBase():
     def __init__(self):
         pass
 
-    def queryNetwotks(self, shared, tenantID):
+    def getNetwotks(self, shared, tenantID, routerExternal):
         pass
 
     def createNetwork(self, shared, tenantID, inNetwork):
