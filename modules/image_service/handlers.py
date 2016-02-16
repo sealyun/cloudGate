@@ -93,10 +93,17 @@ class ImagesHandler(ImageBaseHandler):
 
     def post(self):
         print('self.request.body', self.request.body)
-        image = json.loads(self.request.body)
-        print(post)
 
-        name = image.get("name")
+        # headers = {
+        #     'Content-Length': '0', 'Host': '121.199.9.187:8085', 'Accept-Encoding': 'gzip, deflate',
+        #     'X-Image-Meta-Container_format': 'bare', 'Content-Type': 'application/octet-stream',
+        #     'X-Image-Meta-Min_disk': '1', 'X-Image-Meta-Protected': 'False',
+        #     'Accept': '*/*', 'User-Agent': 'python-glanceclient',
+        #     'Connection': 'keep-alive',
+        #     'X-Image-Meta-Property-Architecture': '11', 'X-Image-Meta-Is_public': 'True', 'X-Image-Meta-Min_ram': '1',
+        #     'X-Auth-Token': 'adminadmin', 'X-Image-Meta-Property-Description': '11', 'X-Image-Meta-Disk_format': 'iso',
+        #     'X-Image-Meta-Name': '11'
+        # }
 
         i = self.p.createImage(
             image["name"],
