@@ -1,14 +1,18 @@
 from tornado.gen import coroutine
 from cloudGate.httpbase import HttpBaseHandler
+from api_factory import *
 
 class LowVersionBlockStorageBaseHandler(HttpBaseHandler):   
     def get(self):
         pass
 
 class BlockStorageBaseHandler(HttpBaseHandler):
-    #TODO init a processor
-    def get(self):
-        pass
+    def __init__(self, *args, **kwargs):
+        super(BlockStorageBaseHandler, self).__init__(args[0], args[1], **kwargs)
+        token = self.request.headers["X-Auth-Token"]
+        print ("--- WU JUN ---get token:", token)
+        i = BlockStorageProcessorFac()
+        self.p = i.create_processor(None, token)
 
 class VolumesHandler(BlockStorageBaseHandler):
     def get(self, tenant_id):
@@ -31,7 +35,7 @@ class VolumesHandler(BlockStorageBaseHandler):
                             "href":"http://",
                             "rel":"bookmark"
                         }
-                    ]
+                    ],
                     "name":v.name
                 }
                 for v in volumes
@@ -345,7 +349,7 @@ class SnapshotHandler(BlockStorageBaseHandler):
             "snapshot":{
                 "status":s.status,
                 "os-extended-snapshot-attributes:progress": s.os_extended_snapshot_attributes_progress,
-                "description":s.description
+                "description":s.description,
                 "created_at": s.create_at,    
                 "metadata":s.metadata,
                 "volume_id": s.volume_id,
