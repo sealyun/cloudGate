@@ -303,21 +303,21 @@ class AuthTokensHandler(IdentityBaseHandler):
                         "endpoints": [
                             {
                                 "region_id": "RegionOne",
-                                "url": "",
+                                "url":"http://"+ HOST +":"+ PORT + NETWORKING_BASE_URL,
                                 "region": "RegionOne",
                                 "interface": "admin",
                                 "id": "3e78c357b3c8469fbea12eb681f88a0c"
                             },
                             {
                                 "region_id": "RegionOne",
-                                "url": "",
+                                "url":"http://"+ HOST +":"+ PORT + NETWORKING_BASE_URL,
                                 "region": "RegionOne",
                                 "interface": "public",
                                 "id": "89d2aad3dc8e478fbabb21dd7db0962a"
                             },
                             {
                                 "region_id": "RegionOne",
-                                "url": "",
+                                "url":"http://"+ HOST +":"+ PORT + NETWORKING_BASE_URL,
                                 "region": "RegionOne",
                                 "interface": "internal",
                                 "id": "b6d4a8cf5e4042848a749a3116497e55"
