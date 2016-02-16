@@ -318,6 +318,8 @@ class SnapshotsHandler(BlockStorageBaseHandler):
 
         self.send_json(resp)
 
+## "os-extended-snapshot-attributes:project_id" ???
+## "metadata"
 class SnapshotsDetailHandler(BlockStorageBaseHandler):
     def get(self, tenant_id):
         snapshots = self.p.querySnapshotsDetails(tenant_id)
@@ -325,16 +327,16 @@ class SnapshotsDetailHandler(BlockStorageBaseHandler):
         resp = {
             "snapshots":[
                 {
-                    "status":s.status,
-                    "metadata":s.metadata,
-                    "os-extended-snapshot-attributes:progress": s.os_extended_snapshot_attributes_progress,
-                    "name": s.name,
-                    "volume_id": s.volume_id,
-                    "os-extended-snapshot-attributes:project_id":s.os_extended_snapshot_attributes_project_id,
-                    "created_at": s.create_at,    
-                    "size":s.size,
-                    "id":s.id,
-                    "description":s.description
+                    "status":s["Status"],
+                    "metadata":None,
+                    "os-extended-snapshot-attributes:progress": s["Progress"],
+                    "name": s["SnapshotName"],
+                    "volume_id": s["SourceDiskId"],
+                    "os-extended-snapshot-attributes:project_id":s["ProductCode"],
+                    "created_at": s["CreationTime"],    
+                    "size":s["SourceDiskSize"],
+                    "id":s["SnapshotId"],
+                    "description":s["Description"]
                 }
                 for s in snapshots
             ]

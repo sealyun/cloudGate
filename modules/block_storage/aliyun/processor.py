@@ -139,7 +139,7 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
         r.set_accept_format('json')
         response = self.clt.do_action(r)
         print "querySnapshotsDetails WUJUN response is ", response
-        return response        
+        return response["Snapshots"]["Snapshot"]        
         pass
     
     
