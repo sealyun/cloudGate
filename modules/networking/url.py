@@ -3,8 +3,9 @@ from cloudGate.common.define import *
 
 urls = [
     (NETWORKING_BASE_URL, NetworkingBaseHandler),
+    (NETWORKING_BASE_URL + "/v2.0/extensions.json", NetworksExtensionsHandler),
     (NETWORKING_BASE_URL + "/v2.0/networks.json", NetworksHandler),
-    (NETWORKING_BASE_URL + "/v2.0/networks/(.*)", NetworkHandler),
+    (NETWORKING_BASE_URL + "/v2.0/network(.*)", NetworkHandler),
 
     (NETWORKING_BASE_URL + "/v2.0/subnets", SubnetsHandler),
     (NETWORKING_BASE_URL + "/v2.0/subnets/(.*)", SubnetHandler),

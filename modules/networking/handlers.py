@@ -14,6 +14,9 @@ class NetworkingBaseHandler(HttpBaseHandler):
     def get(self):
         pass
 
+class NetworksExtensionsHandler(NetworkingBaseHandler):
+
+
 class NetworksHandler(NetworkingBaseHandler):
     def get(self):
         networks = self._processor.queryNetwotks()
