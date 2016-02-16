@@ -14,9 +14,11 @@ class NetworkingBaseHandler(HttpBaseHandler):
     def get(self):
         pass
 
+"""
 class NetworkExtensionsHandler(NetworkingBaseHandler):
     def get(self):
         pass
+"""
 
 class NetworksHandler(NetworkingBaseHandler):
     def get(self):
