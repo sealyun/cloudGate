@@ -24,7 +24,7 @@ class AliyunNetworkingProcessor(NetworkingProcessorBase):
     def queryNetwotks(self, shared, tenantID):
         request = DescribeVpcsRequest.DescribeVpcsRequest()
         request.set_PageNumber(1)
-        request.set_PageSize(100)
+        request.set_PageSize(50)
         request.set_accept_format('json')
 
         response = self.clt.do_action(request)
