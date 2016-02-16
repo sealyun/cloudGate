@@ -5,7 +5,7 @@ urls_low_version = [
     (BLOCK_STORAGE_BASE_URL, LowVersionBlockStorageBaseHandler),
 ]
 
-url_v2 = [
+urls_v2 = [
     (BLOCK_STORAGE_BASE_URL + r"/v2", BlockStorageBaseHandler),
     (BLOCK_STORAGE_BASE_URL + r"/v2/(.*)/volumes", VolumesHandler),
     (BLOCK_STORAGE_BASE_URL + r"/v2/(.*)/volumes/detail", VolumesDetailHandler),
