@@ -65,55 +65,20 @@ class ImagesHandler(ImageBaseHandler):
             ]
         }
 
-        self.send_json({
-            "images": [
-                {
-                    "uri": "http://glance.example.com/images/71c675ab-d94f-49cd-a114-e12490b328d9",
-                    "name": "Ubuntu 10.04 Plain 5GB",
-                    "disk_format": "vhd",
-                    "container_format": "ovf",
-                    "size": "5368709120",
-                    "checksum": "c2e5db72bd7fd153f53ede5da5a06de3",
-                    "created_at": "2010-02-03 09:34:01",
-                    "updated_at": "2010-02-03 09:34:01",
-                    "deleted_at": "",
-                    "status": "active",
-                    "is_public": True,
-                    "min_ram": 256,
-                    "min_disk": 5,
-                    "owner": None,
-                    "properties": {
-                        "distro": "Ubuntu 10.04 LTS"
-                    }
-                },
-                {
-                    "uri": "http://glance.example.com/images/71c675ab-d94f-49cd-a114-e12490b328d9",
-                    "name": "Ubuntu 10.04 Plain 5GB",
-                    "disk_format": "vhd",
-                    "container_format": "ovf",
-                    "size": "5368709120",
-                    "checksum": "c2e5db72bd7fd153f53ede5da5a06de3",
-                    "created_at": "2010-02-03 09:34:01",
-                    "updated_at": "2010-02-03 09:34:01",
-                    "deleted_at": "",
-                    "status": "active",
-                    "is_public": True,
-                    "min_ram": 256,
-                    "min_disk": 5,
-                    "owner": None,
-                    "properties": {
-                        "distro": "Ubuntu 10.04 LTS"
-                    }
-                },
-            ]
-        })
+        self.send_json(resp)
 
     def post(self):
         image = json.loads(self.request.body)
-        i = self.p.createImage(image["container_format"],
-                               image["disk_format"],
-                               image["name"],
-                               image["id"])
+        print(post)
+
+        name = image.get("name")
+
+        i = self.p.createImage(
+            image["name"],
+            image["container_format"],
+            image["disk_format"],
+            image["id"]
+        )
 
         if not i:
             return

@@ -9,5 +9,6 @@ urls = [
     (IMAGE_SERVICE_BASE_URL + r"/v2/images/(.*)/actions/deactivate", ImageActionDeactivateHandler),
     (IMAGE_SERVICE_BASE_URL + r"/v2/images/(.*)/file", ImageFileHandler),
 
+    (IMAGE_SERVICE_BASE_URL + r"/v1/images", ImagesHandler),
     (IMAGE_SERVICE_BASE_URL + r"/v1/images/detail", ImagesHandler),
 ]
