@@ -15,7 +15,8 @@ class NetworkingBaseHandler(HttpBaseHandler):
         pass
 
 class NetworksExtensionsHandler(NetworkingBaseHandler):
-
+    def get(self):
+        self.send_json("")
 
 class NetworksHandler(NetworkingBaseHandler):
     def get(self):
