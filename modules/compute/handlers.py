@@ -61,14 +61,14 @@ class ServersHandler(ComputeBaseHandler):
                     {
                         "href": "http://",
                         "rel": "self"
-                    }, 
+                    },
                     {
                         "href": "http://",
                         "rel": "bookmark"
                     }
                 ],
                 "security_groups": server.security_groups
-            } 
+            }
         }
 
         self.send_json(resp)
@@ -84,7 +84,7 @@ class ServersDetailHandler(ComputeBaseHandler):
         limit = self.get_argument("limit", None)
         marker = self.get_argument("marker", None)
 
-        servers = self.p.queryServersDetails(tenant_id, changes_since, image, 
+        servers = self.p.queryServersDetails(tenant_id, changes_since, image,
                 flavor, name, status, host, limit, marker)
 
         resp = {
@@ -101,7 +101,7 @@ class ServersDetailHandler(ComputeBaseHandler):
                         {
                             "href": "http://",
                             "rel": "self"
-                        }, 
+                        },
                         {
                             "href": "http://",
                             "rel": "bookmark"
@@ -153,7 +153,7 @@ class ServerHandler(ComputeBaseHandler):
                     {
                         "href": "http://",
                         "rel": "self"
-                    }, 
+                    },
                     {
                         "href": "http://",
                         "rel": "bookmark"
@@ -186,7 +186,7 @@ class ServerHandler(ComputeBaseHandler):
         }
 
         self.send_json(resp)
-    
+
     def put(self, tenant_id, server_id):
         server = json.loads(self.request.body)["server"]
 
@@ -243,3 +243,13 @@ class ServerActionHandler(ComputeBaseHandler):
     def post(self, tenant_id, server_id):
         action = json.loads(self.request.body)
         self.p.ServerAction(tenant_id, server_id, action)
+
+class ExtensionsHandler(ComputeBaseHandler):
+    def get(self):
+
+        processor = self.get_processor()
+        extensions = processor.getExtensions()
+        resp = {
+            "extensions":extensions
+        }
+        self.send_json(resp)

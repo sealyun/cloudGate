@@ -7,14 +7,14 @@ class AliyunComputeProcessor(ComputeProcessorBase):
         #TODO we can init aliyun request in ComputeProcessorBase
         self.token = token
 
-    def queryServers(self, tenant_id, changes_since, 
+    def queryServers(self, tenant_id, changes_since,
             image, flavor, name, status, host, limit, marker):
         pass
 
     def createServer(self, tenant_id, name, imageRef, flavorRef, metadata):
         pass
 
-    def queryServersDetails(self, tenant_id, changes_since, image, 
+    def queryServersDetails(self, tenant_id, changes_since, image,
             flavor, name, status, host, limit, marker):
         pass
 
@@ -36,3 +36,6 @@ class AliyunComputeProcessor(ComputeProcessorBase):
     def ServerAction(self, tenat_id, server_id, action):
         #TODO a real action to aliyun server
         pass
+
+    def getExtensions(self):
+        return []
