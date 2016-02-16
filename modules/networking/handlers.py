@@ -5,19 +5,21 @@ import json
 
 
 class NetworkingBaseHandler(HttpBaseHandler):
-    def __init__(self):
+    def get_processor(self):
         token = self.request.headers["X-Auth-Token"]
         print ("-----get token:", token)
         factory = NetworkingProcessorFactory()
-        self._processor = factory.getAliyunProcessor(token)
+        return factory.getAliyunProcessor(token)
 
     def get(self):
         pass
 
 class NetworksHandler(NetworkingBaseHandler):
     def get(self):
-        print "NetworksHandler"
-        networks = self._processor.queryNetwotks()
+        print "NetworksHandler GET"
+
+        processor = self.get_processor()
+        networks = processor.queryNetwotks()
         if networks:
             self.set_status(200)
         else:
