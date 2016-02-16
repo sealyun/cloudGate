@@ -1,14 +1,22 @@
 from tornado.gen import coroutine
 from cloudGate.httpbase import HttpBaseHandler
+from api_factory import NetworkingProcessorFactory
+import json
 
-class NetworkingBaseHandler(HttpBaseHandler):   
-    #TODO init a processor
+
+class NetworkingBaseHandler(HttpBaseHandler):
+    def __init__(self):
+        token = self.request.headers["X-Auth-Token"]
+        print ("-----get token:", token)
+        factory = NetworkingProcessorFactory()
+        self._processor = factory.getAliyunProcessor(token)
+
     def get(self):
         pass
 
 class NetworksHandler(NetworkingBaseHandler):
     def get(self):
-        networks = self.p.queryNetworks()
+        networks = self._processor.queryNetwotks()
         if networks:
             self.set_status(200)
         else:
@@ -44,7 +52,7 @@ class NetworksHandler(NetworkingBaseHandler):
         if type(network) is list:
             #bulk create networks
 
-            networks = self.p.createBuklNetworks(network)
+            networks = self.p.createBulkNetworks(network)
 
             if network:
                 self.set_status(201)
@@ -458,7 +466,7 @@ class PortHandler(NetworkingBaseHandler):
                 "fixed_ips": port.fixed_ips,
                 "id": port.id,
                 "security_groups": port.security_groups,
-                "device_id": port.device_id
+                "device_id": port.device_id,
                 "name": port.name,
                 "admin_state_up": port.admin_state_up,
                 "network_id": port.network_id,
@@ -583,7 +591,7 @@ class LoadbalancerHandler(NetworkingBaseHandler):
                 "description": loadbalancer.destination,
                 "id": loadbalancer.id,
                 "listeners": loadbalancer.listeners,
-                "name": loadbalancer.name
+                "name": loadbalancer.name,
                 "operating_status": loadbalancer.operating_status,
                 "provisioning_status": loadbalancer.provisioning_status,
                 "tenant_id": loadbalancer.tenant_id,
@@ -1025,7 +1033,7 @@ class LbaasHealthMonitorsHandler(NetworkingBaseHandler):
 
 class LbaasHealthMonitorHandler(NetworkingBaseHandler):
     def get(self, health_moniter_id):
-        health_moniter = self.p.queryLbaasHealthMonitor(healthmoniter_id)
+        health_moniter = self.p.queryLbaasHealthMonitor(health_moniter_id)
 
         if health_moniter:
             self.set_status(200)
@@ -1054,7 +1062,7 @@ class LbaasHealthMonitorHandler(NetworkingBaseHandler):
     def put(self, health_moniter_id):
         health_moniter = json.loads(self.request.body)["health_moniter"]
 
-        health_moniter = self.p.updateLbaasHealthMoniter(healthmoniter_id,
+        health_moniter = self.p.updateLbaasHealthMoniter(health_moniter_id,
                 health_moniter["admin_state_up"],
                 health_moniter["delay"],
                 health_moniter["expected_codes"],
@@ -1088,7 +1096,7 @@ class LbaasHealthMonitorHandler(NetworkingBaseHandler):
         self.send_json(resp)
 
     def delete(self, health_moniter_id):
-        if self.p.deleteLbaasHealthMonitor(healthmoniter_id):
+        if self.p.deleteLbaasHealthMonitor(health_moniter_id):
             self.set_status(204)
         else:
             self.set_status(400)
