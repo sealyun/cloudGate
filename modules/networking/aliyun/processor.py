@@ -101,12 +101,28 @@ class AliyunNetworkingProcessor(NetworkingProcessorBase):
         return networks
 
     def createNetwork(self, inNetwork):
-        #TODO
         print inNetwork
         name = inNetwork["name"]
         adminStateUp = inNetwork["admin_state_up"]
+        shared = inNetwork["shared"]
+        routerExternal = inNetwork["router:external"]
+        tenantID = inNetwork["tenant_id"]
+
+        #Unsupport shared network and external network
+        if shared or routerExternal:
+            print "Unsupport shared network and external network"
+            return None
+
+        request = CreateVpcRequest.CreateVpcRequest()
+        request.set_OwnerId(tenantID)
+        request.set_VpcName(name)
+        request.set_accept_format('json')
+        response = self.clt.do_action(request)
+        resp = json.loads(response)
+
+        print resp
+
         return None
-        pass
 
     def createNetworks(self, inNetworks):
         #TODO
