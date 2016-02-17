@@ -6,6 +6,7 @@ urls = [
     (IDENTITY_BASE_URL + r"/v3", IdentityBaseHandler),
     (r"/v2.0/tokens", TokensHandler),
     (IDENTITY_BASE_URL + r"/v3/auth/tokens", AuthTokensHandler),
+    (IDENTITY_BASE_URL + r"/v3/tokens", AuthTokensHandler),
 
     (IDENTITY_BASE_URL + r"/v3/users", UsersHandler),
     (IDENTITY_BASE_URL + r"/v3/users/(^[a-zA-Z0-9\.@\-_]+$)", UserHandler),
