@@ -148,9 +148,43 @@ class AliyunNetworkingProcessor(NetworkingProcessorBase):
         return []
 
     def getNetwork(self, networkID):
-        #TODO
-        #-----20160218--------
-        return None
+        request = DescribeVpcsRequest.DescribeVpcsRequest()
+        request.set_PageNumber(1)
+        request.set_PageSize(50)
+        request.set_VpcId(networkID)
+        request.set_accept_format('json')
+        response = self.clt.do_action(request)
+        resp = json.loads(response)
+
+        if "Vpcs" not in resp.keys():
+            return None
+
+        if len(resp["Vpcs"]["Vpc"]) <= 0:
+            return None
+
+        networks = []
+        for vpc in resp["Vpcs"]["Vpc"]:
+            network = {}
+
+            if vpc["Status"] == "Available":
+                network["status"] = "ACTIVE"
+            network["subnets"] = []
+            network["name"] = vpc["VpcName"]
+            network["router:external"] = False
+            network["admin_state_up"] = True
+            network["tenant_id"] = ""
+            network["mtu"] = 0
+            network["shared"] = False
+            network["port_security_enabled"] = True
+            network["id"] = vpc["VpcId"]
+
+            if networkID["id"] == networkID:
+                networks.append(network)
+
+        if len(networks) > 0:
+            return networks[0]
+        else:
+            return None
 
     def updateNetwork(self, networkID, inNetwork):
         #TODO
