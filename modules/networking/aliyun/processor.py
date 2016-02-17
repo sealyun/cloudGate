@@ -100,11 +100,15 @@ class AliyunNetworkingProcessor(NetworkingProcessorBase):
         print networks
         return networks
 
-    def createNetwork(self, shared, tenantID, inNetwork):
+    def createNetwork(self, inNetwork):
         #TODO
+        print inNetwork
+        name = inNetwork["name"]
+        adminStateUp = inNetwork["admin_state_up"]
+        return None
         pass
 
-    def createNetworks(self, shared, tenantID, inNetworks):
+    def createNetworks(self, inNetworks):
         #TODO
         pass
 

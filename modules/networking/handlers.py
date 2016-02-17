@@ -16,7 +16,7 @@ class NetworkingBaseHandler(HttpBaseHandler):
 
 class NetworksHandler(NetworkingBaseHandler):
     def get(self):
-        print "NetworksHandler GET"
+        print "[----------NetworksHandler GET----------]"
 
         shared = self.get_argument("shared", None)
         tenantID = self.get_argument("tenant_id", None)
@@ -57,19 +57,14 @@ class NetworksHandler(NetworkingBaseHandler):
 
     #maybe bulk
     def post(self):
-        print "NetworksHandler POST"
-
-        shared = self.get_argument("shared", None)
-        tenantID = self.get_argument("tenant_id", None)
-        print "shared: ", shared
-        print "tenant_id: ", tenantID
+        print "[----------NetworksHandler POST----------]"
 
         processor = self.get_processor()
 
         body = json.loads(self.request.body)
         if "network" in body.keys():
             inNetwork = body["network"]
-            outNetwork = processor.createNetworks(shared, tenantID, inNetwork)
+            outNetwork = processor.createNetworks(inNetwork)
             if outNetwork is None:
                 self.set_status(401)
                 return
@@ -93,7 +88,7 @@ class NetworksHandler(NetworkingBaseHandler):
         else:
             inNetworks = []
             inNetworks.append(body["networks"])
-            outNetworks = processor.createNetworks(shared, tenantID, inNetworks)
+            outNetworks = processor.createNetworks(inNetworks)
             if outNetworks is None:
                 self.set_status(401)
                 return
@@ -121,7 +116,7 @@ class NetworksHandler(NetworkingBaseHandler):
 
 class NetworksExtensionsHandler(NetworkingBaseHandler):
     def get(self):
-        print "NetworksExtensionsHandler GET"
+        print "[----------NetworksExtensionsHandler GET----------]"
 
         processor = self.get_processor()
         extensions = processor.getAPIExtensions()
