@@ -20,6 +20,12 @@ class NetworkingProcessorBase():
     def getNetwork(self, networkID):
         pass
 
+    def updateNetwork(self, networkID, inNetwork):
+        pass
+
+    def deleteNetwork(self, networkID):
+        pass
+
     def getDHCPAgents(self, networkID):
         pass
 

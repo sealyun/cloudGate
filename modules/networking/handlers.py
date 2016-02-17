@@ -162,36 +162,50 @@ class NetworkHandler(NetworkingBaseHandler):
 
     #add decorator fill network, if not exit set None
     def put(self, networkID):
-        #TODO
-        network = json.loads(self.request.body)
-        network = self.p.updateNetwork(networkID, network)
+        print "[----------NetworkHandler PUT----------]"
+
+        inNetwork = json.loads(self.request.body)["network"]
+
+        processor = self.get_processor()
+        outNetwork = processor.updateNetwork(networkID, inNetwork)
+
+        if outNetwork is None:
+            self.set_status(401)
+            return
+        else:
+            self.set_status(200)
 
         resp = {
             "network":{
-                "status": network.status,
-                "subnets": network.subnets,
-                "name": network.name,
-                "provider:physical_network": network.provider_physical_network,
-                "admin_state_up": network.admin_state_up,
-                "tenant_id": network.tenant_id,
-                "provider:network_type": network.provider_network_type,
-                "router:external": network.router_external,
-                "mtu": network.mtu,
-                "shared": network.shared,
-                "port_security_enabled":network.port_security_enabled,
-                "id": network.id,
-                "provider:segmentation_id": network.provider_segmentation_id
+                "status": outNetwork["status"],
+                "subnets": outNetwork["subnets"],
+                "name": outNetwork["name"],
+                "provider:physical_network": outNetwork["provider:physical_network"],
+                "admin_state_up": outNetwork["admin_state_up"],
+                "tenant_id": outNetwork["tenant_id"],
+                "provider:network_type": outNetwork["provider:network_type"],
+                "router:external": outNetwork["router:external"],
+                "mtu": outNetwork["mtu"],
+                "shared": outNetwork["shared"],
+                "port_security_enabled":outNetwork["port_security_enabled"],
+                "id": outNetwork["id"],
+                "provider:segmentation_id": outNetwork["provider_segmentation_id"]
             }
+
         }
 
         self.send_json(resp)
 
     def delete(self, networkID):
-        #TODO
-        if self.p.deleteNetwork(networkID):
-            self.set_status(204)
+        print "[----------NetworkHandler DELETE----------]"
+
+        processor = self.get_processor()
+
+        if processor.deleteNetwork(networkID):
+            self.set_status(200)
+            return
         else:
-            self.set_status(409)
+            self.set_status(400)
             return
 
 class DHCPAgentsHandler(NetworkingBaseHandler):

@@ -149,7 +149,18 @@ class AliyunNetworkingProcessor(NetworkingProcessorBase):
 
     def getNetwork(self, networkID):
         #TODO
+        #-----20160218--------
         return None
+
+    def updateNetwork(self, networkID, inNetwork):
+        #TODO
+        #-----20160218--------
+        return None
+
+    def deleteNetwork(self, networkID):
+        #TODO
+        #-----20160218--------
+        return False
 
     def getDHCPAgents(self, networkID):
         #TODO
