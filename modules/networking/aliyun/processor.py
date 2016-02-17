@@ -194,9 +194,18 @@ class AliyunNetworkingProcessor(NetworkingProcessorBase):
         return None
 
     def deleteNetwork(self, networkID):
-        #TODO
-        #-----20160218--------
-        return False
+        request = DeleteVpcRequest.DeleteVpcRequest()
+        request.set_VpcId(networkID)
+        request.set_accept_format('json')
+        response = self.clt.do_action(request)
+        resp = json.loads(response)
+
+        print "response: ", resp
+
+        if "Code" in resp.keys() and "Message" in resp.keys():
+            return False
+
+        return True
 
     def getDHCPAgents(self, networkID):
         #TODO
