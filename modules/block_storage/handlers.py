@@ -203,7 +203,6 @@ class VolumesDetailHandler(BlockStorageBaseHandler):
                         "readonly": "False",
                         "attached_mode": "rw"
                     },
-                    },
                     "status": "in-use",
                     "description": None,
                     "multiattach": True,
