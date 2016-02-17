@@ -37,7 +37,7 @@ class AliyunNetworkingProcessor(NetworkingProcessorBase):
             response = self.clt.do_action(request)
             resp = json.loads(response)
 
-            print resp
+            print "response: ", resp
             ''' response data
             {
               "PageNumber": 1,
@@ -92,6 +92,7 @@ class AliyunNetworkingProcessor(NetworkingProcessorBase):
 
 
         #test begin
+        '''
         network = {}
         network["status"] = "ACTIVE"
         network["subnets"] = []
@@ -106,9 +107,10 @@ class AliyunNetworkingProcessor(NetworkingProcessorBase):
         network["id"] = "vpcid-qqqqqwwwwww"
         network["provider:segmentation_id"] = None
         networks.append(network)
+        '''
         #test end
 
-        print networks
+        print "networks: ", networks
         return networks
 
     def createNetwork(self, inNetwork):
@@ -130,7 +132,7 @@ class AliyunNetworkingProcessor(NetworkingProcessorBase):
         response = self.clt.do_action(request)
         resp = json.loads(response)
 
-        print resp
+        print "response: ", resp
         ''' response data
         {
           "RequestId": "461D0C42-D5D1-4009-9B6A-B3D5888A19A9",
