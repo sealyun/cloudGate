@@ -67,7 +67,7 @@ class NetworksHandler(NetworkingBaseHandler):
         if "network" in body.keys():
             print "11111111111"
             inNetwork = body["network"]
-            outNetwork = processor.createNetworks(inNetwork)
+            outNetwork = processor.createNetwork(inNetwork)
             if outNetwork is None:
                 self.set_status(401)
                 return
