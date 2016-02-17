@@ -12,7 +12,7 @@ import requests
 
 from cloudGate.modules.image_service.aliyun import processor
 
-run = 'test_list_images'
+run = 'test_query_image_by_id'
 
 
 class TestCase(unittest.TestCase):
@@ -23,8 +23,11 @@ class TestCase(unittest.TestCase):
         r = p.queryImages(None, None, None, None, None, None, None, None, None, None, None, None, None,)
         print(r)
 
-        # response = requests.get('http://localhost:8085/image_service/v2/images')
-        # print(response.text)
+    @unittest.skipUnless(run == 'test_query_image_by_id', 'reason')
+    def test_query_image_by_id(self):
+        p = processor.AliyunImageServiceProcessor("")
+        r = p.queryImageId("")
+        print(r)
 
 if __name__ == '__main__':
     unittest.main()
