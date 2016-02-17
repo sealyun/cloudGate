@@ -14,6 +14,7 @@ class ComputeBaseHandler(HttpBaseHandler):
         #TODO
         pass
 
+
 class ServersHandler(ComputeBaseHandler):
     def get(self, tenant_id):
         self.get_processor()
@@ -28,26 +29,7 @@ class ServersHandler(ComputeBaseHandler):
 	
 	print "ServersHandler get()"
         servers = self.p.queryServers(tenant_id, changes_since, image, flavor, name, status, host, limit, marker)
-
-        resp = {
-            "servers":[
-                {
-                    "id":s["InstanceId"],
-                    "links":[
-                        {
-                            "href":"http://",
-                            "rel":"self"
-                        },
-                        {
-                            "href":"http://",
-                            "rel":"self"
-                        }
-                    ],
-                    "name":s["InstanceName"]
-                }
-                for s in servers
-            ]
-        }
+        self.send_json(servers)
 
     def post(self, tenant_id):
         self.get_processor()
@@ -94,150 +76,14 @@ class ServersDetailHandler(ComputeBaseHandler):
 
         servers = self.p.queryServersDetails(tenant_id, changes_since, image,
                 flavor, name, status, host, limit, marker)
-
-	resp = {
-	    "servers": [
-		{
-		    "addresses": {
-			"private": [
-			    {
-				"addr": ip,
-				"OS-EXT-IPS-MAC:mac_addr": "",
-				"OS-EXT-IPS:type": "fixed",
-				"version": 4
-			    }
-			    for ip in s["InnerIpAddress"]["IpAddress"]
-			],
-			"public": [
-			    {
-				"addr": ip,
-				"OS-EXT-IPS-MAC:mac_addr": "",
-				"OS-EXT-IPS:type": "fixed",
-				"version": 4
-			    }
-			    for ip in s["PublicIpAddress"]["IpAddress"]
-			]
-		    },
-		    "created": s["CreationTime"],
-		    "flavor": {
-			"id": "1", #todo
-			"links": [
-			    {
-				"href": "http://openstack.example.com/openstack/flavors/1",
-				"rel": "bookmark"
-			    }
-			]
-		    },
-		    "hostId": s["HostName"],
-		    "id": s["InstanceId"],
-		    "image": {
-			"id": s["ImageId"],
-			"links": [
-			    {
-				"href": "http://",
-				"rel": "bookmark"
-			    }
-			]
-		    },
-		    "key_name": "",
-		    "links": [
-			{
-			    "href": "http://",
-			    "rel": "self"
-			},
-			{
-			    "href": "http://",
-			    "rel": "bookmark"
-			}
-		    ],
-		    "metadata": {
-			"My Server Name": s["InstanceName"]
-		    },
-		    "name": s["InstanceName"],
-		    "accessIPv4": "",
-		    "accessIPv6": "",
-		    "config_drive": "",
-		    "OS-DCF:diskConfig": "AUTO",
-		    "OS-EXT-AZ:availability_zone": s["ZoneId"],
-		    "OS-EXT-SRV-ATTR:host": s["HostName"],
-		    "OS-EXT-SRV-ATTR:hypervisor_hostname": s["HostName"],
-		    "OS-EXT-SRV-ATTR:instance_name": s["InstanceName"],
-		    "OS-EXT-STS:power_state": 1 if s["DeviceAvailable"] else 0,
-		    "OS-EXT-STS:task_state": "",
-		    "OS-EXT-STS:vm_state": "active",
-		    "os-extended-volumes:volumes_attached": [],
-		    "OS-SRV-USG:launched_at": "",
-		    "OS-SRV-USG:terminated_at": "",
-		    "progress": 0,
-		    "security_groups": [
-			{
-			    "name": name
-			}
-			for name in s["SecurityGroupIds"]["SecurityGroupId"]
-		    ],
-		    "status": s["Status"],
-		    "host_status": "UP",
-		    "tenant_id": "openstack",
-		    "updated": s["ExpiredTime"],
-		    "user_id": "fake"
-		}
-                for s in servers
-	    ]
-	}
-
-        self.send_json(resp)
+        self.send_json(servers)
 
 class ServerHandler(ComputeBaseHandler):
     def get(self, tenant_id, server_id):
-        print "ServerHandler get()"
 	self.get_processor()
         s = self.p.queryServer(tenant_id, server_id)
-        resp = {
-            "servers":{
-                "addresses":s.addresses,
-                "created":s.created,
-                "flavor":s.flavor,
-                "hostId":s.hostId,
-                "id":s.id,
-                "image":s.image,
-                "key_name":s.key_name,
-                "links": [
-                    {
-                        "href": "http://",
-                        "rel": "self"
-                    },
-                    {
-                        "href": "http://",
-                        "rel": "bookmark"
-                    }
-                ],
-                "metadata":s.metadata,
-                "name":s.name,
-                "accessIPv4":s.accessIPv4,
-                "accessIPv6":s.accessIPv6,
-                "config_drive":s.config_drive,
-                "OS-DCF:diskConfig":s.OS_DCF_diskConfig,
-                "OS-EXT-Az:availability_zone":s.OS_EXT_Az_availability_zone,
-                "OS-EXT-SRV-ATTR:host": s.OS_EXT_SRV_ATTR_host,
-                "OS-EXT-SRV-ATTR:hypervisor_hostname": s.OS_EXT_SRV_ATTR_hypervisor_hostname,
-                "OS-EXT-SRV-ATTR:instance_name": s.OS_EXT_SRV_ATTR_instance_name,
-                "OS-EXT-STS:power_state": s.OS_EXT_STS_power_state,
-                "OS-EXT-STS:task_state": s.OS_EXT_STS_task_state,
-                "OS-EXT-STS:vm_state": s.OS_EXT_STS_vm_state,
-                "os-extended-volumes:volumes_attached": s.os_extended_volumes_volumes_attached,
-                "OS-SRV-USG:launched_at": s.OS_SRV_USG_launched_at,
-                "OS-SRV-USG:terminated_at": s.OS_SRV_USG_terminated_at,
-                "progress":s.progress,
-                "security_groups":s.security_groups,
-                "status":s.status,
-                "host_status":s.host_status,
-                "tenant_id":s.tenant_id,
-                "updated":s.updated,
-                "user_id":s.user_id
-            }
-        }
 
-        self.send_json(resp)
+        self.send_json(s)
 
     def put(self, tenant_id, server_id):
         self.get_processor()
