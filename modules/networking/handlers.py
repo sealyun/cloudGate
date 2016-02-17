@@ -170,7 +170,7 @@ class NetworkHandler(NetworkingBaseHandler):
         outNetwork = processor.updateNetwork(networkID, inNetwork)
 
         if outNetwork is None:
-            self.set_status(401)
+            self.set_status(404)
             return
         else:
             self.set_status(200)
@@ -202,10 +202,10 @@ class NetworkHandler(NetworkingBaseHandler):
         processor = self.get_processor()
 
         if processor.deleteNetwork(networkID):
-            self.set_status(200)
+            self.set_status(204)
             return
         else:
-            self.set_status(400)
+            self.set_status(404)
             return
 
 class DHCPAgentsHandler(NetworkingBaseHandler):
@@ -215,7 +215,7 @@ class DHCPAgentsHandler(NetworkingBaseHandler):
         processor = self.get_processor()
         agents = processor.getDHCPAgents(network_id)
         if agents is None:
-            self.set_status(401)
+            self.set_status(400)
             return
         else:
             self.set_status(200)
