@@ -156,6 +156,8 @@ class AliyunNetworkingProcessor(NetworkingProcessorBase):
         response = self.clt.do_action(request)
         resp = json.loads(response)
 
+        print "response: ", resp
+
         if "Vpcs" not in resp.keys():
             return None
 
