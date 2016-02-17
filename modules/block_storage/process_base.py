@@ -62,4 +62,6 @@ class BlockStorageProcessorBase():
     
     def updataSnapshotMetadata(self, tenant_id, snapshot_id, metadata):
         pass  
-    
+
+    def queryOsVolumeTransfer(self, tenant_id):
+        pass    
