@@ -61,6 +61,8 @@ class NetworksHandler(NetworkingBaseHandler):
 
         processor = self.get_processor()
 
+        print self.request.body
+
         body = json.loads(self.request.body)
         if "network" in body.keys():
             inNetwork = body["network"]
