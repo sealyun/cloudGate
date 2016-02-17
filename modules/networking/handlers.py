@@ -21,9 +21,9 @@ class NetworksHandler(NetworkingBaseHandler):
         shared = self.get_argument("shared", None)
         tenantID = self.get_argument("tenant_id", None)
         routerExternal = self.get_argument("router:external", None)
-        print "shared: ", shared, ", type: ", type(shared)
-        print "tenant_id: ", tenantID, ", type: ", type(tenantID)
-        print "router:external: ", routerExternal, ", type: ", type(routerExternal)
+        #print "shared: ", shared, ", type: ", type(shared)
+        #print "tenant_id: ", tenantID, ", type: ", type(tenantID)
+        #print "router:external: ", routerExternal, ", type: ", type(routerExternal)
 
         processor = self.get_processor()
         networks = processor.getNetwotks(shared, tenantID, routerExternal)
@@ -129,93 +129,139 @@ class NetworksExtensionsHandler(NetworkingBaseHandler):
         self.send_json(resp)
 
 class NetworkHandler(NetworkingBaseHandler):
-    def get(self, network_id):
-        network = self.p.getNetwork(network_id)
+    def get(self, networkID):
+        print "[----------NetworkHandler GET----------]"
+
+        print "network id: ", networkID
+        print "request body: ", self.request.body
+
+        processor = self.get_processor()
+        network = processor.getNetwork(networkID)
+        if network is None:
+            self.set_status(401)
+            return
+        else:
+            self.set_status(200)
 
         resp = {
             "network":{
-                "status": network.status,
-                "subnets": network.subnets,
-                "name": network.name,
-                "router:external": network.router_external,
-                "admin_state_up": network.admin_state_up,
-                "tenant_id": network.tenant_id,
-                "mtu": network.mtu,
-                "shared": network.shared,
-                "port_security_enabled":network.port_security_enabled,
-                "id": network.id
+                "status": network["status"],
+                "subnets": network["subnets"],
+                "name": network["name"],
+                "router:external": network["router:external"],
+                "admin_state_up": network["admin_state_up"],
+                "tenant_id": network["tenant_id"],
+                "mtu": network["mtu"],
+                "shared": network["shared"],
+                "port_security_enabled":network["port_security_enabled"],
+                "id": network["id"]
             }
         }
 
         self.send_json(resp)
 
     #add decorator fill network, if not exit set None
-    def put(self, network_id):
-        network = json.loads(self.request.body)
-        network = self.p.updateNetwork(network_id, network)
+    def put(self, networkID):
+        print "[----------NetworkHandler PUT----------]"
+
+        inNetwork = json.loads(self.request.body)["network"]
+
+        processor = self.get_processor()
+        outNetwork = processor.updateNetwork(networkID, inNetwork)
+
+        if outNetwork is None:
+            self.set_status(401)
+            return
+        else:
+            self.set_status(200)
 
         resp = {
             "network":{
-                "status": network.status,
-                "subnets": network.subnets,
-                "name": network.name,
-                "provider:physical_network": network.provider_physical_network,
-                "admin_state_up": network.admin_state_up,
-                "tenant_id": network.tenant_id,
-                "provider:network_type": network.provider_network_type,
-                "router:external": network.router_external,
-                "mtu": network.mtu,
-                "shared": network.shared,
-                "port_security_enabled":network.port_security_enabled,
-                "id": network.id,
-                "provider:segmentation_id": network.provider_segmentation_id
+                "status": outNetwork["status"],
+                "subnets": outNetwork["subnets"],
+                "name": outNetwork["name"],
+                "provider:physical_network": outNetwork["provider:physical_network"],
+                "admin_state_up": outNetwork["admin_state_up"],
+                "tenant_id": outNetwork["tenant_id"],
+                "provider:network_type": outNetwork["provider:network_type"],
+                "router:external": outNetwork["router:external"],
+                "mtu": outNetwork["mtu"],
+                "shared": outNetwork["shared"],
+                "port_security_enabled":outNetwork["port_security_enabled"],
+                "id": outNetwork["id"],
+                "provider:segmentation_id": outNetwork["provider_segmentation_id"]
             }
+
         }
 
         self.send_json(resp)
 
-    def delete(self, network_id):
-        if self.p.deleteNetwork(network_id):
-            self.set_status(204)
-        else:
-            self.set_status(409)
-            return
-
-class SubnetsHandler(NetworkingBaseHandler):
-    def get(self):
-        display_name = self.get_argument("display_name", None)
-        network_id = self.get_argument("network_id", None)
-        gateway_ip = self.get_argument("gateway_ip", None)
-        ip_version = self.get_argument("ip_version", None)
-        cidr = self.get_argument("cidr", None)
-        id = self.get_argument("id", None)
-        enable_dhcp = self.get_argument("enable_dhcp", None)
-        ipv6_ra_mode = self.get_argument("ipv6_ra_mode", None)
-        ipv6_address_mode = self.get_argument("ipv6_address_mode", None)
+    def delete(self, networkID):
+        print "[----------NetworkHandler DELETE----------]"
 
         processor = self.get_processor()
 
-        '''
-        subnets = processor.querySubnets(display_name, network_id,
-                gateway_ip, ip_version, cidr, id, enable_dhcp,
-                ipv6_ra_mode, ipv6_address_mode)
-        '''
-        subnets = []
+        if processor.deleteNetwork(networkID):
+            self.set_status(200)
+            return
+        else:
+            self.set_status(400)
+            return
+
+class DHCPAgentsHandler(NetworkingBaseHandler):
+    def get(self, network_id):
+        print "[----------DHCPAgentsHandler GET----------]"
+
+        processor = self.get_processor()
+        agents = processor.getDHCPAgents(network_id)
+        if agents is None:
+            self.set_status(401)
+            return
+        else:
+            self.set_status(200)
+
+        resp = {
+            "agents": agents
+        }
+        self.send_json(resp)
+
+class SubnetsHandler(NetworkingBaseHandler):
+    def get(self):
+        print "[----------SubnetsHandler GET----------]"
+
+        displayName = self.get_argument("display_name", None)
+        networkID = self.get_argument("network_id", None)
+        gatewayIP = self.get_argument("gateway_ip", None)
+        ipVersion = self.get_argument("ip_version", None)
+        cidr = self.get_argument("cidr", None)
+        id = self.get_argument("id", None)
+        enableDHCP = self.get_argument("enable_dhcp", None)
+        ipv6RaMode = self.get_argument("ipv6_ra_mode", None)
+        ipv6AddressMode = self.get_argument("ipv6_address_mode", None)
+
+        processor = self.get_processor()
+        subnets = processor.getSubsets(displayName, networkID, gatewayIP, ipVersion, cidr, id, enableDHCP, ipv6RaMode, ipv6AddressMode)
+
+        if subnets is None:
+            self.set_status(401)
+            return
+        else:
+            self.set_status(200)
 
         resp = {
             "subnets":[
                 {
-                    "name": s.name,
-                    "enable_dhcp": s.enable_dhcp,
-                    "network_id": s.network_id,
-                    "tenant_id": s.tenant_id,
-                    "dns_nameservers": s.dns_nameservers,
-                    "allocation_pools": s.allocation_pools,
-                    "host_routes": s.host_routes,
-                    "ip_version": s.ip_version,
-                    "gateway_ip": s.gateway_ip,
-                    "cidr": s.cidr,
-                    "id": s.id
+                    "name": s["name"],
+                    "enable_dhcp": s["enable_dhcp"],
+                    "network_id": s["network_id"],
+                    "tenant_id": s["tenant_id"],
+                    "dns_nameservers": s["dns_nameservers"],
+                    "allocation_pools": s["allocation_pools"],
+                    "host_routes": s["host_routes"],
+                    "ip_version": s["ip_version"],
+                    "gateway_ip": s["gateway_ip"],
+                    "cidr": s["cidr"],
+                    "id": s["id"]
                 }
                 for s in subnets
             ]
@@ -225,162 +271,181 @@ class SubnetsHandler(NetworkingBaseHandler):
 
     #support bulk create subnet
     def post(self):
-        subnet = json.loads(self.request.body)["subnet"]
+        print "[----------SubnetsHandler POST----------]"
 
-        if type(subnet) is list:
-            #bulk create subnet
+        processor = self.get_processor()
 
-            subnets = self.p.createBuklSubnets(subnet)
-
-            if subnets:
-                self.set_status(201)
-            else:
+        #print self.request.body
+        body = json.loads(self.request.body)
+        if "subnet" in body.keys():
+            print "create subnet"
+            inSubnet = body["subnet"]
+            outSubnet = processor.createSubnet(inSubnet)
+            if outSubnet is None:
+                self.set_status(401)
                 return
-
+            else:
+                self.set_status(200)
+            resp = {
+                "subnet":{
+                    "name": outSubnet["name"],
+                    "enable_dhcp": outSubnet["enable_dhcp"],
+                    "network_id": outSubnet["network_id"],
+                    "tenant_id": outSubnet["tenant_id"],
+                    "dns_nameservers": outSubnet["dns_nameservers"],
+                    "allocation_pools": outSubnet["allocation_pools"],
+                    "host_routes": outSubnet["host_routes"],
+                    "ip_version": outSubnet["ip_version"],
+                    "gateway_ip": outSubnet["gateway_ip"],
+                    "cidr": outSubnet["cidr"],
+                    "id": outSubnet["id"]
+                }
+            }
+            self.send_json(resp)
+            return
+        else:
+            print "create subnets"
+            inSubnets = []
+            inSubnets.append(body["subnets"])
+            outSubnets = processor.createSubnets(inSubnets)
+            if outSubnets is None:
+                self.set_status(401)
+                return
+            else:
+                self.set_status(200)
             resp = {
                 "subnets":[
                     {
-                        "name": s.name,
-                        "enable_dhcp": s.enable_dhcp,
-                        "network_id": s.network_id,
-                        "tenant_id": s.tenant_id,
-                        "dns_nameservers": s.dns_nameservers,
-                        "allocation_pools": s.allocation_pools,
-                        "host_routes": s.host_routes,
-                        "ip_version": s.ip_version,
-                        "gateway_ip": s.gateway_ip,
-                        "cidr": s.cidr,
-                        "id": s.id
+                        "name": outSubnet["name"],
+                        "enable_dhcp": outSubnet["enable_dhcp"],
+                        "network_id": outSubnet["network_id"],
+                        "tenant_id": outSubnet["tenant_id"],
+                        "dns_nameservers": outSubnet["dns_nameservers"],
+                        "allocation_pools": outSubnet["allocation_pools"],
+                        "host_routes": outSubnet["host_routes"],
+                        "ip_version": outSubnet["ip_version"],
+                        "gateway_ip": outSubnet["gateway_ip"],
+                        "cidr": outSubnet["cidr"],
+                        "id": outSubnet["id"]
                     }
-                    for s in subnets
+                    for outSubnet in outSubnets
                 ]
             }
-
             self.send_json(resp)
             return
 
-        s = self.p.createSubnet(subnet["network_id"],
-                subnet["ip_version"],
-                subnet["cidr"])
-
-        if s:
-            self.set_status(201)
-        else:
-            return
-
-        resp = {
-            "subnet":{
-                "name": s.name,
-                "enable_dhcp": s.enable_dhcp,
-                "network_id": s.network_id,
-                "tenant_id": s.tenant_id,
-                "dns_nameservers": s.dns_nameservers,
-                "allocation_pools": s.allocation_pools,
-                "host_routes": s.host_routes,
-                "ip_version": s.ip_version,
-                "gateway_ip": s.gateway_ip,
-                "cidr": s.cidr,
-                "id": s.id
-            }
-        }
-
-        self.send_json(resp)
-
 class SubnetHandler(NetworkingBaseHandler):
-    def get(self, subnet_id):
-        s = self.p.querySubnet(subnet_id)
+    def get(self, subnetID):
+        print "[----------SubnetsHandler GET----------]"
 
-        resp = {
-            "subnet":{
-                "name": s.name,
-                "enable_dhcp": s.enable_dhcp,
-                "network_id": s.network_id,
-                "tenant_id": s.tenant_id,
-                "dns_nameservers": s.dns_nameservers,
-                "allocation_pools": s.allocation_pools,
-                "host_routes": s.host_routes,
-                "ip_version": s.ip_version,
-                "gateway_ip": s.gateway_ip,
-                "cidr": s.cidr,
-                "id": s.id
-            }
-        }
+        processor = self.get_processor()
+        subset = processor.getSubnet(subnetID)
 
-        self.send_json(resp)
-
-    def put(self, subnet_id):
-        subnet = json.loads(self.request.body)["subnet"]
-
-        subnet = self.p.updateSubnet(subnet_id, subnet)
-
-        if subnet:
-            self.set_status(200)
-        else:
+        if subset is None:
+            self.set_status(401)
             return
+        else:
+            self.set_status(200)
 
         resp = {
             "subnet":{
-                "name": subnet.name,
-                "enable_dhcp": subnet.enable_dhcp,
-                "network_id": subnet.network_id,
-                "tenant_id": subnet.tenant_id,
-                "dns_nameservers": subnet.dns_nameservers,
-                "allocation_pools": subnet.allocation_pools,
-                "host_routes": subnet.host_routes,
-                "ip_version": subnet.ip_version,
-                "gateway_ip": subnet.gateway_ip,
-                "cidr": subnet.cidr,
-                "id": subnet.id
+                    "name": subset["name"],
+                    "enable_dhcp": subset["enable_dhcp"],
+                    "network_id": subset["network_id"],
+                    "tenant_id": subset["tenant_id"],
+                    "dns_nameservers": subset["dns_nameservers"],
+                    "allocation_pools": subset["allocation_pools"],
+                    "host_routes": subset["host_routes"],
+                    "ip_version": subset["ip_version"],
+                    "gateway_ip": subset["gateway_ip"],
+                    "cidr": subset["cidr"],
+                    "id": subset["id"]
+                }
+        }
+
+        self.send_json(resp)
+
+    def put(self, subnetID):
+        print "[----------SubnetsHandler PUT----------]"
+
+        inSubnet = json.loads(self.request.body)["subnet"]
+
+        processor = self.get_processor()
+        outSubnet = processor.updateSubnet(subnetID, inSubnet)
+
+        if outSubnet is None:
+            self.set_status(401)
+            return
+        else:
+            self.set_status(200)
+
+        resp = {
+            "subnet":{
+                "name": outSubnet["name"],
+                "enable_dhcp": outSubnet["enable_dhcp"],
+                "network_id": outSubnet["network_id"],
+                "tenant_id": outSubnet["tenant_id"],
+                "dns_nameservers": outSubnet["dns_nameservers"],
+                "allocation_pools": outSubnet["allocation_pools"],
+                "host_routes": outSubnet["host_routes"],
+                "ip_version": outSubnet["ip_version"],
+                "gateway_ip": outSubnet["gateway_ip"],
+                "cidr": outSubnet["cidr"],
+                "id": outSubnet["id"]
             }
         }
 
         self.send_json(resp)
 
-    def delete(self, subnet_id):
-        if self.p.deleteSubnet(subnet_id):
+    def delete(self, subnetID):
+        print "[----------SubnetsHandler DELETE----------]"
+
+        processor = self.get_processor()
+
+        if processor.deleteSubnet(subnetID):
             self.set_status(200)
+            return
         else:
             self.set_status(400)
+            return
 
 class PortsHandler(NetworkingBaseHandler):
     def get(self):
         status = self.get_argument("status", None)
-        display_name = self.get_argument("display_name", None)
-        admin_state = self.get_argument("admin_state", None)
-        network_id = self.get_argument("network_id", None)
-        tenant_id = self.get_argument("tenant_id", None)
-        device_owner = self.get_argument("device_owner", None)
-        mac_address = self.get_argument("mac_address", None)
-        port_id = self.get_argument("port_id", None)
-        security_groups = self.get_argument("security_groups", None)
-        device_id = self.get_argument("device_id", None)
+        displayName = self.get_argument("display_name", None)
+        adminState = self.get_argument("admin_state", None)
+        networkID = self.get_argument("network_id", None)
+        tenantID = self.get_argument("tenant_id", None)
+        deviceOwner = self.get_argument("device_owner", None)
+        macAddress = self.get_argument("mac_address", None)
+        portID = self.get_argument("port_id", None)
+        securityGroups = self.get_argument("security_groups", None)
+        deviceID = self.get_argument("device_id", None)
 
-        ports = self.p.queryPorts(status, display_name, admin_state,
-                network_id, tenant_id, device_owner, mac_address,
-                port_id, security_groups, device_id)
-
-        if ports:
-            self.set_status(200)
-        else :
-            self.set_status(400)
+        processor = self.get_processor()
+        ports = processor.getPorts(status, displayName, adminState, networkID, tenantID, deviceOwner, macAddress, portID, securityGroups, deviceID)
+        if ports is None:
+            self.set_status(401)
             return
+        else:
+            self.set_status(200)
 
         resp = {
             "ports":[
                 {
-                    "status": p.status,
-                    "name": p.name,
-                    "allowed_address_pairs": p.allowed_address_pairs,
-                    "admin_state_up": p.admin_state_up,
-                    "network_id": p.network_id,
-                    "tenant_id": p.tenant_id,
-                    "extra_dhcp_opts": p.extra_dhcp_opts,
-                    "device_owner": p.device_owner,
-                    "mac_address": p.mac_address,
-                    "fixed_ips": p.fixed_ips,
-                    "id": p.id,
-                    "security_groups": p.security_groups,
-                    "device_id": p.device_id
+                    "status": p["status"],
+                    "name": p["name"],
+                    "allowed_address_pairs": p["allowed_address_pairs"],
+                    "admin_state_up": p["admin_state_up"],
+                    "network_id": p["network_id"],
+                    "tenant_id": p["tenant_id"],
+                    "extra_dhcp_opts": p["extra_dhcp_opts"],
+                    "device_owner": p["device_owner"],
+                    "mac_address": p["mac_address"],
+                    "fixed_ips": p["fixed_ips"],
+                    "id": p["id"],
+                    "security_groups": p["security_groups"],
+                    "device_id": p["device_id"]
                 }
                 for p in ports
             ]
@@ -389,129 +454,156 @@ class PortsHandler(NetworkingBaseHandler):
         self.send_json(resp)
 
     def post(self):
-        port = json.loads(self.request.body)["port"]
+        print "[----------PortsHandler POST----------]"
 
-        if type(port) is list:
-            ports = self.p.createBulkPorts(port)
+        processor = self.get_processor()
 
-            if ports:
-                self.set_status(201)
-            else:
-                self.set_status(400)
+        #print self.request.body
+        body = json.loads(self.request.body)
+        if "port" in body.keys():
+            print "create port"
+            inPort = body["port"]
+            outPort = processor.createPort(inPort)
+            if outPort is None:
+                self.set_status(401)
                 return
-
+            else:
+                self.set_status(200)
+            resp = {
+                "port" :{
+                    "status": outPort["status"],
+                    "name": outPort["name"],
+                    "allowed_address_pairs": outPort["allowed_address_pairs"],
+                    "admin_state_up": outPort["admin_state_up"],
+                    "network_id": outPort["network_id"],
+                    "tenant_id": outPort["tenant_id"],
+                    "extra_dhcp_opts": outPort["extra_dhcp_opts"],
+                    "device_owner": outPort["device_owner"],
+                    "mac_address": outPort["mac_address"],
+                    "fixed_ips": outPort["fixed_ips"],
+                    "id": outPort["id"],
+                    "security_groups": outPort["security_groups"],
+                    "device_id": outPort["device_id"]
+                }
+            }
+            self.send_json(resp)
+            return
+        else:
+            print "create ports"
+            inPorts = []
+            inPorts.append(body["ports"])
+            outPorts = processor.createPorts(inPorts)
+            if outPorts is None:
+                self.set_status(401)
+                return
+            else:
+                self.set_status(200)
             resp = {
                 "ports":[
                     {
-                        "status": p.status,
-                        "name": p.name,
-                        "allowed_address_pairs": p.allowed_address_pairs,
-                        "admin_state_up": p.admin_state_up,
-                        "network_id": p.network_id,
-                        "tenant_id": p.tenant_id,
-                        "device_owner": p.device_owner,
-                        "mac_address": p.mac_address,
-                        "fixed_ips": p.fixed_ips,
-                        "id": p.id,
-                        "security_groups": p.security_groups,
-                        "device_id": p.device_id
+                        "status": outPort["status"],
+                        "name": outPort["name"],
+                        "allowed_address_pairs": outPort["allowed_address_pairs"],
+                        "admin_state_up": outPort["admin_state_up"],
+                        "network_id": outPort["network_id"],
+                        "tenant_id": outPort["tenant_id"],
+                        "extra_dhcp_opts": outPort["extra_dhcp_opts"],
+                        "device_owner": outPort["device_owner"],
+                        "mac_address": outPort["mac_address"],
+                        "fixed_ips": outPort["fixed_ips"],
+                        "id": outPort["id"],
+                        "security_groups": outPort["security_groups"],
+                        "device_id": outPort["device_id"]
                     }
-                    for p in ports
+                    for outPort in outPorts
                 ]
             }
-
             self.send_json(resp)
             return
 
-        port = self.p.createPort(port["network_id"],
-                port["name"],
-                port["admin_state_up"])
+class PortHandler(NetworkingBaseHandler):
+    def get(self, portID):
+        print "[----------PortHandler GET----------]"
 
-        if port:
-            self.set_status(201)
+        processor = self.get_processor()
+        port = processor.getPort(portID)
+
+        if port is None:
+            self.set_status(401)
+            return
+        else:
+            self.set_status(200)
+
+        resp = {
+            "port":{
+                "status": port["status"],
+                "name": port["name"],
+                "allowed_address_pairs": port["allowed_address_pairs"],
+                "admin_state_up": port["admin_state_up"],
+                "network_id": port["network_id"],
+                "tenant_id": port["tenant_id"],
+                "extra_dhcp_opts": port["extra_dhcp_opts"],
+                "device_owner": port["device_owner"],
+                "mac_address": port["mac_address"],
+                "fixed_ips": port["fixed_ips"],
+                "id": port["id"],
+                "security_groups": port["security_groups"],
+                "device_id": port["device_id"]
+                }
+        }
+
+        self.send_json(resp)
+
+    def put(self, portID):
+        print "[----------PortHandler PUT----------]"
+
+        inPort = json.loads(self.request.body)["port"]
+
+        processor = self.get_processor()
+        outPort = processor.updatePort(portID, inPort)
+
+        if outPort is None:
+            self.set_status(401)
+            return
+        else:
+            self.set_status(200)
+
+        resp = {
+            "port":{
+                "status": outPort["status"],
+                "binding:host_id":outPort["binding:host_id"],
+                "allowed_address_pairs": outPort["allowed_address_pairs"],
+                "extra_dhcp_opts": outPort["extra_dhcp_opts"],
+                "device_owner": outPort["device_owner"],
+                "binding:profile":outPort["binding:profile"],
+                "fixed_ips": outPort["fixed_ips"],
+                "id": outPort["id"],
+                "security_groups": outPort["security_groups"],
+                "device_id": outPort["device_id"],
+                "name": outPort["name"],
+                "admin_state_up": outPort["admin_state_up"],
+                "network_id": outPort["network_id"],
+                "tenant_id": outPort["tenant_id"],
+                "binding:vif_details": outPort["binding:vif_details"],
+                "binding:vnic_type": outPort["binding:vnic_type"],
+                "binding:vif_type": outPort["binding:vif_type"],
+                "mac_address": outPort["mac_address"],
+            }
+        }
+
+        self.send_json(resp)
+
+    def delete(self, portID):
+        print "[----------PortHandler DELETE----------]"
+
+        processor = self.get_processor()
+
+        if processor.deletePort(portID):
+            self.set_status(200)
+            return
         else:
             self.set_status(400)
             return
-
-        resp = {
-            "port" :{
-                "status": port.status,
-                "name": port.name,
-                "allowed_address_pairs": port.allowed_address_pairs,
-                "admin_state_up": port.admin_state_up,
-                "network_id": port.network_id,
-                "tenant_id": port.tenant_id,
-                "extra_dhcp_opts": port.extra_dhcp_opts,
-                "device_owner": port.device_owner,
-                "mac_address": port.mac_address,
-                "fixed_ips": port.fixed_ips,
-                "id": port.id,
-                "security_groups": port.security_groups,
-                "device_id": port.device_id
-            }
-        }
-
-        self.send_json(resp)
-
-class PortHandler(NetworkingBaseHandler):
-    def get(self, port_id):
-        port = self.queryPort(port_id)
-
-        resp = {
-            "port":{
-                "status": port.status,
-                "name": port.name,
-                "allowed_address_pairs": port.allowed_address_pairs,
-                "admin_state_up": port.admin_state_up,
-                "network_id": port.network_id,
-                "tenant_id": port.tenant_id,
-                "extra_dhcp_opts": port.extra_dhcp_opts,
-                "device_owner": port.device_owner,
-                "mac_address": port.mac_address,
-                "fixed_ips": port.fixed_ips,
-                "id": port.id,
-                "security_groups": port.security_groups,
-                "device_id": port.device_id
-            }
-        }
-        
-        self.send_json(resp)
-
-    def put(self, port_id):
-        port = json.loads(self.request.body)
-
-        port = self.p.updatePort(port_id, port)
-
-        resp = {
-            "port":{
-                "status": port.status,
-                "binding:host_id":port.binding_host_id,
-                "allowed_address_pairs": port.allowed_address_pairs,
-                "extra_dhcp_opts": port.extra_dhcp_opts,
-                "device_owner": port.device_owner,
-                "binding:profile":port.binding_profile,
-                "fixed_ips": port.fixed_ips,
-                "id": port.id,
-                "security_groups": port.security_groups,
-                "device_id": port.device_id,
-                "name": port.name,
-                "admin_state_up": port.admin_state_up,
-                "network_id": port.network_id,
-                "tenant_id": port.tenant_id,
-                "binding:vif_details": port.binding_vif_details,
-                "binding:vnic_type": port.binding_vnic_type,
-                "binding:vif_type": port.binding_vif_type,
-                "mac_address": port.mac_address,
-            }
-        }
-
-        self.send_json(resp)
-
-    def delete(self, port_id):
-        if self.p.deletePort(port_id):
-            self.set_status(200)
-        else:
-            self.set_status(400)
 
 class LoadbalancersHandler(NetworkingBaseHandler):
     def get(self):

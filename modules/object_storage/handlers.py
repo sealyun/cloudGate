@@ -1,8 +1,17 @@
 from tornado.gen import coroutine
 from cloudGate.httpbase import HttpBaseHandler
+from api_factory import *
 
 class ObjectStorageBaseHandler(HttpBaseHandler):   
-    #TODO add init a processor
+    #add init a processor
+    def get_processor(self):
+        token = self.request.headers["X-Auth-Token"]
+        print ("-----get token:", token)
+        i = ObjectStorageProcessorFac()
+        self.p = i.create_processor(None, token)
+
+        return self.p
+
     def get(self):
         pass
 
@@ -15,6 +24,8 @@ class ContainerHandler(ObjectStorageBaseHandler):
         format = self.get_argument("format", None)
         delimiter = self.get_argument("delimiter", None)
         path = self.get_argument("path", None)
+
+        self.get_processor()
 
         objects = self.p.queryObjects(account, container, limit,
                 marker, end_marker, prefix, format, delimiter, path)

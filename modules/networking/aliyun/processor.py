@@ -28,16 +28,18 @@ class AliyunNetworkingProcessor(NetworkingProcessorBase):
             print "Unsupport shared network and external network"
             return networks
 
-        request = DescribeVpcsRequest.DescribeVpcsRequest()
-        request.set_PageNumber(1)
-        request.set_PageSize(50)
-        request.set_accept_format('json')
-
+        pagePos = 1
+        pageSize = 50
         while True :
+            request = DescribeVpcsRequest.DescribeVpcsRequest()
+            request.set_PageNumber(pagePos)
+            request.set_PageSize(pageSize)
+            request.set_accept_format('json')
             response = self.clt.do_action(request)
             resp = json.loads(response)
+            pagePos = pagePos + 1
 
-            print resp
+            print "response: ", resp
             ''' response data
             {
               "PageNumber": 1,
@@ -67,7 +69,7 @@ class AliyunNetworkingProcessor(NetworkingProcessorBase):
             if "Vpcs" not in resp.keys():
                 break
 
-            if resp["TotalCount"] <= 0:
+            if len(resp["Vpcs"]["Vpc"]) <= 0:
                 break
 
             for vpc in resp["Vpcs"]["Vpc"]:
@@ -90,25 +92,7 @@ class AliyunNetworkingProcessor(NetworkingProcessorBase):
 
                 networks.append(network)
 
-
-        #test begin
-        network = {}
-        network["status"] = "ACTIVE"
-        network["subnets"] = []
-        network["name"] = "vpcname-qqqqqwwwwww"
-        network["provider:physical_network"] = None
-        network["admin_state_up"] = True
-        network["tenant_id"] = tenantID
-        network["provider:network_type"] = "local"
-        network["router:external"] = False
-        network["mtu"] = 0
-        network["shared"] = False
-        network["id"] = "vpcid-qqqqqwwwwww"
-        network["provider:segmentation_id"] = None
-        networks.append(network)
-        #test end
-
-        print networks
+        print "networks: ", networks
         return networks
 
     def createNetwork(self, inNetwork):
@@ -130,7 +114,7 @@ class AliyunNetworkingProcessor(NetworkingProcessorBase):
         response = self.clt.do_action(request)
         resp = json.loads(response)
 
-        print resp
+        print "response: ", resp
         ''' response data
         {
           "RequestId": "461D0C42-D5D1-4009-9B6A-B3D5888A19A9",
@@ -158,7 +142,256 @@ class AliyunNetworkingProcessor(NetworkingProcessorBase):
 
     def createNetworks(self, inNetworks):
         #TODO
-        pass
+        return []
 
     def getAPIExtensions(self):
         return []
+
+    def getNetwork(self, networkID):
+        #TODO
+        #-----20160218--------
+        return None
+
+    def updateNetwork(self, networkID, inNetwork):
+        #TODO
+        #-----20160218--------
+        return None
+
+    def deleteNetwork(self, networkID):
+        #TODO
+        #-----20160218--------
+        return False
+
+    def getDHCPAgents(self, networkID):
+        #TODO
+        #Aliyun does not support
+        return []
+
+    def getSubsets(self, displayName, networkID, gatewayIP, ipVersion, cidr, id, enableDHCP, ipv6RaMode, ipv6AddressMode):
+        #TODO
+        #Aliyun does not support
+
+        subnets = []
+
+        subnet = {}
+        subnet["name"] = ""
+        subnet["enable_dhcp"] = ""
+        subnet["network_id"] = ""
+        subnet["tenant_id"] = ""
+        subnet["dns_nameservers"] = ""
+        subnet["allocation_pools"] = ""
+        subnet["host_routes"] = ""
+        subnet["ip_version"] = ""
+        subnet["gateway_ip"] = ""
+        subnet["cidr"] = ""
+        subnet["id"] = ""
+
+        subnets.append(subnet)
+        return subnets
+
+    def createSubnet(self, inSubnet):
+        #TODO
+        #Aliyun does not support
+
+        outSubnet = {}
+        outSubnet["name"] = ""
+        outSubnet["enable_dhcp"] = ""
+        outSubnet["network_id"] = ""
+        outSubnet["tenant_id"] = ""
+        outSubnet["dns_nameservers"] = ""
+        outSubnet["allocation_pools"] = ""
+        outSubnet["host_routes"] = ""
+        outSubnet["ip_version"] = ""
+        outSubnet["gateway_ip"] = ""
+        outSubnet["cidr"] = ""
+        outSubnet["id"] = ""
+
+        return outSubnet
+
+    def createSubnets(self, inSubnets):
+        #TODO
+        #Aliyun does not support
+
+        outSubnets = []
+
+        outSubnet = {}
+        outSubnet["name"] = ""
+        outSubnet["enable_dhcp"] = ""
+        outSubnet["network_id"] = ""
+        outSubnet["tenant_id"] = ""
+        outSubnet["dns_nameservers"] = ""
+        outSubnet["allocation_pools"] = ""
+        outSubnet["host_routes"] = ""
+        outSubnet["ip_version"] = ""
+        outSubnet["gateway_ip"] = ""
+        outSubnet["cidr"] = ""
+        outSubnet["id"] = ""
+
+        outSubnets.append(outSubnet)
+        return outSubnets
+
+    def getSubnet(self, subnetID):
+        #TODO
+        #Aliyun does not support
+
+        subnet = {}
+        subnet["name"] = ""
+        subnet["enable_dhcp"] = ""
+        subnet["network_id"] = ""
+        subnet["tenant_id"] = ""
+        subnet["dns_nameservers"] = ""
+        subnet["allocation_pools"] = ""
+        subnet["host_routes"] = ""
+        subnet["ip_version"] = ""
+        subnet["gateway_ip"] = ""
+        subnet["cidr"] = ""
+        subnet["id"] = ""
+
+        return subnet
+
+    def updateSubnet(self, subnetID, inSubnet):
+        #TODO
+        #Aliyun does not support
+
+        outSubnet = {}
+        outSubnet["name"] = ""
+        outSubnet["enable_dhcp"] = ""
+        outSubnet["network_id"] = ""
+        outSubnet["tenant_id"] = ""
+        outSubnet["dns_nameservers"] = ""
+        outSubnet["allocation_pools"] = ""
+        outSubnet["host_routes"] = ""
+        outSubnet["ip_version"] = ""
+        outSubnet["gateway_ip"] = ""
+        outSubnet["cidr"] = ""
+        outSubnet["id"] = ""
+
+        return outSubnet
+
+    def deleteSubnet(self, subnetID):
+        #TODO
+        #Aliyun does not support
+
+        return True
+
+    def getPorts(self, status, displayName, adminState, networkID, tenantID, deviceOwner, macAddress, portID, securityGroups, deviceID):
+        #TODO
+        #Aliyun does not support
+
+        outPorts = []
+
+        outPort = {}
+        outPort["status"] = ""
+        outPort["name"] = ""
+        outPort["allowed_address_pairs"] = ""
+        outPort["admin_state_up"] = ""
+        outPort["network_id"] = ""
+        outPort["tenant_id"] = ""
+        outPort["extra_dhcp_opts"] = ""
+        outPort["device_owner"] = ""
+        outPort["mac_address"] = ""
+        outPort["fixed_ips"] = ""
+        outPort["id"] = ""
+        outPort["security_groups"] = ""
+        outPort["device_id"] = ""
+
+        outPorts.append(outPort)
+        return outPorts
+
+    def createPort(self, inPort):
+        #TODO
+        #Aliyun does not support
+
+        outPort = {}
+        outPort["status"] = ""
+        outPort["name"] = ""
+        outPort["allowed_address_pairs"] = ""
+        outPort["admin_state_up"] = ""
+        outPort["network_id"] = ""
+        outPort["tenant_id"] = ""
+        outPort["extra_dhcp_opts"] = ""
+        outPort["device_owner"] = ""
+        outPort["mac_address"] = ""
+        outPort["fixed_ips"] = ""
+        outPort["id"] = ""
+        outPort["security_groups"] = ""
+        outPort["device_id"] = ""
+
+        return outPort
+
+    def createPorts(self, inPorts):
+        #TODO
+        #Aliyun does not support
+
+        outPorts = []
+
+        outPort = {}
+        outPort["status"] = ""
+        outPort["name"] = ""
+        outPort["allowed_address_pairs"] = ""
+        outPort["admin_state_up"] = ""
+        outPort["network_id"] = ""
+        outPort["tenant_id"] = ""
+        outPort["extra_dhcp_opts"] = ""
+        outPort["device_owner"] = ""
+        outPort["mac_address"] = ""
+        outPort["fixed_ips"] = ""
+        outPort["id"] = ""
+        outPort["security_groups"] = ""
+        outPort["device_id"] = ""
+
+        outPorts.append(outPort)
+        return outPorts
+
+    def getPort(self, portID):
+        #TODO
+        #Aliyun does not support
+
+        port = {}
+        port["status"] = ""
+        port["name"] = ""
+        port["allowed_address_pairs"] = ""
+        port["admin_state_up"] = ""
+        port["network_id"] = ""
+        port["tenant_id"] = ""
+        port["extra_dhcp_opts"] = ""
+        port["device_owner"] = ""
+        port["mac_address"] = ""
+        port["fixed_ips"] = ""
+        port["id"] = ""
+        port["security_groups"] = ""
+        port["device_id"] = ""
+
+        return port
+
+    def updatePort(self, portID, inPort):
+        #TODO
+        #Aliyun does not support
+
+        outPort = {}
+        outPort["status"] = ""
+        outPort["binding:host_id"] = ""
+        outPort["allowed_address_pairs"] = ""
+        outPort["extra_dhcp_opts"] = ""
+        outPort["device_owner"] = ""
+        outPort["binding:profile"] = ""
+        outPort["fixed_ips"] = ""
+        outPort["id"] = ""
+        outPort["security_groups"] = ""
+        outPort["device_id"] = ""
+        outPort["name"] = ""
+        outPort["admin_state_up"] = ""
+        outPort["network_id"] = ""
+        outPort["tenant_id"] = ""
+        outPort["binding:vif_details"] = ""
+        outPort["binding:vnic_type"] = ""
+        outPort["binding:vif_type"] = ""
+        outPort["mac_address"] = ""
+
+        return outPort
+
+    def deletePort(self, portID):
+        #TODO
+        #Aliyun does not support
+
+        return True

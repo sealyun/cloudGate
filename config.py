@@ -8,6 +8,7 @@ IDENTITY={
         "passwd":"admin",
         "access_key":"h66cGGRqSeZuJDrZ",
         "access_secret":"64EOCkx5KCQ4eLwZKeMdlvATrpgczB",
-        "regin":"cn-hangzhou"
+        "regin":"cn-hangzhou",
+        "oss_endpoint":"fanux.oss-cn-hangzhou.aliyuncs.com"
     },
 }
