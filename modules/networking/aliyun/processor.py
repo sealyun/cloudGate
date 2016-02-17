@@ -31,8 +31,6 @@ class AliyunNetworkingProcessor(NetworkingProcessorBase):
         request = DescribeVpcsRequest.DescribeVpcsRequest()
         request.set_PageNumber(1)
         request.set_PageSize(50)
-        if tenantID is not None:
-            request.set_OwnerId(tenantID)
         request.set_accept_format('json')
 
         while True :
@@ -114,7 +112,6 @@ class AliyunNetworkingProcessor(NetworkingProcessorBase):
             return None
 
         request = CreateVpcRequest.CreateVpcRequest()
-        request.set_OwnerId(tenantID)
         request.set_VpcName(name)
         request.set_accept_format('json')
         response = self.clt.do_action(request)
