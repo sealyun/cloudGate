@@ -38,6 +38,31 @@ class AliyunNetworkingProcessor(NetworkingProcessorBase):
             resp = json.loads(response)
 
             print resp
+            ''' response data
+            {
+              "PageNumber": 1,
+              "PageSize": 10,
+              "RequestId": "DA1DAE87-43FA-472F-98BB-4FDBAA4A688D",
+              "TotalCount": 1,
+              "Vpcs": {
+                "Vpc":[
+                  {
+                    "CidrBlock": "172.16.0.0/16",
+                    "CreationTime": "2014-10-29T13:30:19Z",
+                    "Description": "",
+                    "RegionId": "cn-beijing",
+                    "Status": "Available",
+                    "VRouterId": "vrt-25bezkd03",
+                    "VSwitchIds": {
+                      "VSwitchId": []
+                    },
+                    "VpcId": "vpc-257gq642n",
+                    "VpcName": ""
+                  }
+                ]
+              }
+            }
+            '''
 
             if "Vpcs" not in resp.keys():
                 break
@@ -47,18 +72,6 @@ class AliyunNetworkingProcessor(NetworkingProcessorBase):
 
             for vpc in resp["Vpcs"]["Vpc"]:
                 network = {}
-
-                '''
-                network["CidrBlock"] = vpc["CidrBlock"]
-                network["CreationTime"] = vpc["CreationTime"]
-                network["Description"] = vpc["Description"]
-                network["RegionId"] = vpc["RegionId"]
-                network["Status"] = vpc["Status"]
-                network["VRouterId"] = vpc["VRouterId"]
-                network["VSwitchIds"] = vpc["VSwitchIds"]
-                network["VpcId"] = vpc["VpcId"]
-                network["VpcName"] = vpc["VpcName"]
-                '''
 
                 if vpc["Status"] == "Available":
                     network["status"] = "ACTIVE"
@@ -118,8 +131,30 @@ class AliyunNetworkingProcessor(NetworkingProcessorBase):
         resp = json.loads(response)
 
         print resp
+        ''' response data
+        {
+          "RequestId": "461D0C42-D5D1-4009-9B6A-B3D5888A19A9",
+          "RouteTableId": "vtb-25wm68mnh",
+          "VRouterId": "vrt-25bezkd03",
+          "VpcId": "vpc-257gq642n"
+        }
+        '''
 
-        return None
+        if "VpcId" not in resp.keys():
+            return None
+
+        outNetwork = {}
+        outNetwork["status"] = "ACTIVE"
+        outNetwork["subnets"] = []
+        outNetwork["name"] = name
+        outNetwork["admin_state_up"] = adminStateUp
+        outNetwork["tenant_id"] = "ACTIVE"
+        outNetwork["router:external"] = tenantID
+        outNetwork["mtu"] = 0
+        outNetwork["shared"] = shared
+        outNetwork["id"] = resp["VpcId"]
+
+        return outNetwork
 
     def createNetworks(self, inNetworks):
         #TODO
