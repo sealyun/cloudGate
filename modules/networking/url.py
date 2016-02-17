@@ -5,7 +5,7 @@ urls = [
     (NETWORKING_BASE_URL, NetworkingBaseHandler),
     (NETWORKING_BASE_URL + r"/v2.0/networks.json", NetworksHandler),
     (NETWORKING_BASE_URL + r"/v2.0/extensions.json", NetworksExtensionsHandler),
-    (NETWORKING_BASE_URL + r"/v2.0/networks/(.*)", NetworkHandler),
+    (NETWORKING_BASE_URL + r"/v2.0/networks/(.*).json", NetworkHandler),
 
     (NETWORKING_BASE_URL + r"/v2.0/subnets.json", SubnetsHandler),
     (NETWORKING_BASE_URL + r"/v2.0/subnets/(.*)", SubnetHandler),
