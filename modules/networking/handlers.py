@@ -161,8 +161,8 @@ class NetworkHandler(NetworkingBaseHandler):
         self.send_json(resp)
 
     #add decorator fill network, if not exit set None
-    def put(self, networkID):
-        print "[----------NetworkHandler PUT----------]"
+    def post(self, networkID):
+        print "[----------NetworkHandler POST----------]"
 
         inNetwork = json.loads(self.request.body)["network"]
 
