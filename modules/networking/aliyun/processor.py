@@ -193,9 +193,21 @@ class AliyunNetworkingProcessor(NetworkingProcessorBase):
             return None
 
     def updateNetwork(self, networkID, inNetwork):
-        #TODO
-        #-----20160218--------
-        return None
+        networkName = inNetwork["name"]
+
+        request = ModifyVpcAttributeRequest.ModifyVpcAttributeRequest()
+        request.set_VpcName(networkName)
+        request.set_VpcId(networkID)
+        request.set_accept_format('json')
+        response = self.clt.do_action(request)
+        resp = json.loads(response)
+
+        print "response: ", resp
+
+        if "Code" in resp.keys() and "Message" in resp.keys():
+            return None
+
+        return self.getNetwork(networkID)
 
     def deleteNetwork(self, networkID):
         request = DeleteVpcRequest.DeleteVpcRequest()
