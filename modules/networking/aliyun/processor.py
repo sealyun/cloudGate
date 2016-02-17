@@ -37,7 +37,7 @@ class AliyunNetworkingProcessor(NetworkingProcessorBase):
             request.set_accept_format('json')
             response = self.clt.do_action(request)
             resp = json.loads(response)
-            ++pagePos
+            pagePos = pagePos + 1
 
             print "response: ", resp
             ''' response data
