@@ -1,5 +1,6 @@
 from tornado.gen import coroutine
 from cloudGate.httpbase import HttpBaseHandler
+from api_factory import ComputeProcessorFac
 
 
 class Server(object):
@@ -38,9 +39,11 @@ class Server(object):
 
 class ComputeBaseHandler(HttpBaseHandler):
     #the ProcessorFac return the real processor.
-    def prepare(self):
-        #get access key and access secret from Token
-        self.p = ComputeProcessorFac(None, self.get_header("X-Auth-Token"))
+    def get_processor(self):
+        token = self.request.headers["X-Auth-Token"]
+        i = ComputeProcessorFac()
+        self.p = i.create_processor(None, token)
+        return self.p
 
     def get(self):
         #TODO
@@ -48,6 +51,7 @@ class ComputeBaseHandler(HttpBaseHandler):
 
 class ServersHandler(ComputeBaseHandler):
     def get(self, tenant_id):
+        self.get_processor()
         changes_since = self.get_argument("changes_since", None)
         image = self.get_argument("image", None)
         flavor = self.get_argument("flavor", None)
@@ -80,6 +84,7 @@ class ServersHandler(ComputeBaseHandler):
         }
 
     def post(self, tenant_id):
+        self.get_processor()
         server = json.loads(self.request.body)["server"]
 
         server = self.p.createServer(tenant_id, server["name"],
@@ -96,20 +101,21 @@ class ServersHandler(ComputeBaseHandler):
                     {
                         "href": "http://",
                         "rel": "self"
-                    }, 
+                    },
                     {
                         "href": "http://",
                         "rel": "bookmark"
                     }
                 ],
                 "security_groups": server.security_groups
-            } 
+            }
         }
 
         self.send_json(resp)
 
 class ServersDetailHandler(ComputeBaseHandler):
     def get(self, tenant_id):
+        self.get_processor()
         changes_since = self.get_argument("changes_since", None)
         image = self.get_argument("image", None)
         flavor = self.get_argument("flavor", None)
@@ -119,7 +125,7 @@ class ServersDetailHandler(ComputeBaseHandler):
         limit = self.get_argument("limit", None)
         marker = self.get_argument("marker", None)
 
-        servers = self.p.queryServersDetails(tenant_id, changes_since, image, 
+        servers = self.p.queryServersDetails(tenant_id, changes_since, image,
                 flavor, name, status, host, limit, marker)
 
         resp = {
@@ -136,7 +142,7 @@ class ServersDetailHandler(ComputeBaseHandler):
                         {
                             "href": "http://",
                             "rel": "self"
-                        }, 
+                        },
                         {
                             "href": "http://",
                             "rel": "bookmark"
@@ -174,6 +180,7 @@ class ServersDetailHandler(ComputeBaseHandler):
 
 class ServerHandler(ComputeBaseHandler):
     def get(self, tenant_id, server_id):
+        self.get_processor()
         s = self.p.queryServer(tenant_id, server_id)
         resp = {
             "servers":{
@@ -188,7 +195,7 @@ class ServerHandler(ComputeBaseHandler):
                     {
                         "href": "http://",
                         "rel": "self"
-                    }, 
+                    },
                     {
                         "href": "http://",
                         "rel": "bookmark"
@@ -221,8 +228,9 @@ class ServerHandler(ComputeBaseHandler):
         }
 
         self.send_json(resp)
-    
+
     def put(self, tenant_id, server_id):
+        self.get_processor()
         server = json.loads(self.request.body)["server"]
 
         if "name" in server:
@@ -272,9 +280,21 @@ class ServerHandler(ComputeBaseHandler):
         self.send_json(resp)
 
     def delete(self, tenant_id, server_id):
+        self.get_processor()
         self.p.deleteServer(tenant_id, server_id)
 
 class ServerActionHandler(ComputeBaseHandler):
     def post(self, tenant_id, server_id):
+        self.get_processor()
         action = json.loads(self.request.body)
         self.p.ServerAction(tenant_id, server_id, action)
+
+class ExtensionsHandler(ComputeBaseHandler):
+    def get(self, ob):
+        self.get_processor()
+        processor = self.get_processor()
+        extensions = processor.getExtensions()
+        resp = {
+            "extensions":extensions
+        }
+        self.send_json(resp)

@@ -20,11 +20,12 @@ class NetworksHandler(NetworkingBaseHandler):
 
         shared = self.get_argument("shared", None)
         tenantID = self.get_argument("tenant_id", None)
+        routerExternal = self.get_argument("router:external", None)
         print "shared: ", shared
         print "tenant_id: ", tenantID
 
         processor = self.get_processor()
-        networks = processor.queryNetwotks(shared, tenantID)
+        networks = processor.getNetwotks(shared, tenantID, routerExternal)
         if networks is None:
             self.set_status(401)
             return
@@ -119,7 +120,7 @@ class NetworksHandler(NetworkingBaseHandler):
 
 class NetworksExtensionsHandler(NetworkingBaseHandler):
     def get(self):
-        print "NetworksExtensionsHandler POST"
+        print "NetworksExtensionsHandler GET"
 
         processor = self.get_processor()
         extensions = processor.getAPIExtensions()

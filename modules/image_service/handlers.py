@@ -1,3 +1,5 @@
+
+import json
 from tornado.gen import coroutine
 from cloudGate.httpbase import HttpBaseHandler
 from api_factory import ImageServiceProcessorFac
@@ -37,83 +39,53 @@ class ImagesHandler(ImageBaseHandler):
         self.get_processor()
         images = self.p.queryImages(limit, marker, name, visibility, member_status, owner, status,
                                     size_min, size_max, sort_key, sort_dir, sort, tag)
-
         resp = {
-            "images": [
-                {
-                    "status": i['Status'],
-                    "name": i['ImageName'],
-                    "tags": [],
-                    "container_format": '',
-                    "create_at": i['CreationTime'],
-                    "disk_format": '',
-                    "updated_at": '',
-                    "visibility": i['IsSubscribed'],
-                    "self": "/v2/images/" + i['ImageId'],
-                    "min_disk": 0,
-                    "protected": i['IsCopied'],
-                    "id": i['ImageId'],
-                    "file": "/v2/images/" + i['ImageId'] + "/file",
-                    "checksum": None,
-                    "owner": i['ImageOwnerAlias'],
-                    "size": i['Size'],
-                    "min_ram": None,
-                    "schema": '',
-                    "virtual_size": i['Size']
-                }
-                for i in images
+            "images": [{
+                "is_public": i['IsCopied'],
+                "uri": "",
+                "name": i['ImageName'],
+                "disk_format": "",
+                "container_format": "",
+                "size": i['Size'],
+                "checksum": "c2e5db72bd7fd153f53ede5da5a06de3",
+                "created_at": i["CreationTime"],
+                "updated_at": "",
+                "deleted_at": "",
+                "status": "active" if i["Status"] == "Available" else "",
+                "is_public": i['IsSubscribed'],
+                "min_ram": None,
+                "min_disk": None,
+                "owner": i['ImageOwnerAlias'],
+                "properties": {
+                    "distro": i["OSName"],
+                },
+                "id": i["ImageId"],
+            } for i in images
             ]
         }
 
-        self.send_json({
-            "images": [
-                {
-                    "uri": "http://glance.example.com/images/71c675ab-d94f-49cd-a114-e12490b328d9",
-                    "name": "Ubuntu 10.04 Plain 5GB",
-                    "disk_format": "vhd",
-                    "container_format": "ovf",
-                    "size": "5368709120",
-                    "checksum": "c2e5db72bd7fd153f53ede5da5a06de3",
-                    "created_at": "2010-02-03 09:34:01",
-                    "updated_at": "2010-02-03 09:34:01",
-                    "deleted_at": "",
-                    "status": "active",
-                    "is_public": True,
-                    "min_ram": 256,
-                    "min_disk": 5,
-                    "owner": None,
-                    "properties": {
-                        "distro": "Ubuntu 10.04 LTS"
-                    }
-                },
-                {
-                    "uri": "http://glance.example.com/images/71c675ab-d94f-49cd-a114-e12490b328d9",
-                    "name": "Ubuntu 10.04 Plain 5GB",
-                    "disk_format": "vhd",
-                    "container_format": "ovf",
-                    "size": "5368709120",
-                    "checksum": "c2e5db72bd7fd153f53ede5da5a06de3",
-                    "created_at": "2010-02-03 09:34:01",
-                    "updated_at": "2010-02-03 09:34:01",
-                    "deleted_at": "",
-                    "status": "active",
-                    "is_public": True,
-                    "min_ram": 256,
-                    "min_disk": 5,
-                    "owner": None,
-                    "properties": {
-                        "distro": "Ubuntu 10.04 LTS"
-                    }
-                },
-            ]
-        })
+        self.send_json(resp)
 
     def post(self):
-        image = json.loads(self.request.body)
-        i = self.p.createImage(image["container_format"],
-                               image["disk_format"],
-                               image["name"],
-                               image["id"])
+        print('self.request.body', self.request.body)
+
+        # headers = {
+        #     'Content-Length': '0', 'Host': '121.199.9.187:8085', 'Accept-Encoding': 'gzip, deflate',
+        #     'X-Image-Meta-Container_format': 'bare', 'Content-Type': 'application/octet-stream',
+        #     'X-Image-Meta-Min_disk': '1', 'X-Image-Meta-Protected': 'False',
+        #     'Accept': '*/*', 'User-Agent': 'python-glanceclient',
+        #     'Connection': 'keep-alive',
+        #     'X-Image-Meta-Property-Architecture': '11', 'X-Image-Meta-Is_public': 'True', 'X-Image-Meta-Min_ram': '1',
+        #     'X-Auth-Token': 'adminadmin', 'X-Image-Meta-Property-Description': '11', 'X-Image-Meta-Disk_format': 'iso',
+        #     'X-Image-Meta-Name': '11'
+        # }
+
+        i = self.p.createImage(
+            image["name"],
+            image["container_format"],
+            image["disk_format"],
+            image["id"]
+        )
 
         if not i:
             return

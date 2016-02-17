@@ -1,10 +1,5 @@
 #coding=utf-8
-from aliyunsdkcore import client
-
-from aliyunsdkecs.request.v20140526 import DescribeInstancesRequest
-
-from ../handlers import Server
-
+from cloudGate.modules.compute.process_base import ComputeProcessorBase
 
 class AliyunComputeProcessor(ComputeProcessorBase):
     #we can get accessKey and accessSecret from tocken
@@ -12,7 +7,7 @@ class AliyunComputeProcessor(ComputeProcessorBase):
         #TODO we can init aliyun request in ComputeProcessorBase
         self.token = token
 
-    def queryServers(self, tenant_id, changes_since, 
+    def queryServers(self, tenant_id, changes_since,
             image, flavor, name, status, host, limit, marker):
 	request = DescribeInstancesRequest.DescribeInstancesRequest()
 	request.set
@@ -24,7 +19,7 @@ class AliyunComputeProcessor(ComputeProcessorBase):
     def createServer(self, tenant_id, name, imageRef, flavorRef, metadata):
         pass
 
-    def queryServersDetails(self, tenant_id, changes_since, image, 
+    def queryServersDetails(self, tenant_id, changes_since, image,
             flavor, name, status, host, limit, marker):
         pass
 
@@ -46,3 +41,6 @@ class AliyunComputeProcessor(ComputeProcessorBase):
     def ServerAction(self, tenat_id, server_id, action):
         #TODO a real action to aliyun server
         pass
+
+    def getExtensions(self):
+        return []

@@ -9,7 +9,7 @@ MODULES_SWITCH = {
     "compute":0,
     "data_processing":0,
     "database_service":0,
-    "image_service":0,
+    "image_service":1,
     "networking":0,
     "object_storage":0,
     "orchestration":0,
@@ -25,7 +25,7 @@ if MODULES_SWITCH["identity"]:
     URL_SETTINGS = URL_SETTINGS + urls
 
 if MODULES_SWITCH["mould"]:
-    from cloudGate.modules.mould.url import urls 
+    from cloudGate.modules.mould.url import urls
 
     URL_SETTINGS = URL_SETTINGS + urls
 

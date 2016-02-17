@@ -247,21 +247,21 @@ class AuthTokensHandler(IdentityBaseHandler):
                         "endpoints": [
                             {
                                 "region_id": "RegionOne",
-                                "url": "",
+                                "url": "http://"+ HOST + ":" + PORT + BLOCK_STORAGE_BASE_URL,
                                 "region": "RegionOne",
                                 "interface": "admin",
                                 "id": "3654138dc64a45aeb5a8153f2a089c74"
                             },
                             {
                                 "region_id": "RegionOne",
-                                "url": "",
+                                "url": "http://"+ HOST + ":" + PORT + BLOCK_STORAGE_BASE_URL,
                                 "region": "RegionOne",
                                 "interface": "internal",
                                 "id": "7a0d12d0b7314afd9b53d1618ab546ea"
                             },
                             {
                                 "region_id": "RegionOne",
-                                "url": "",
+                                "url": "http://"+ HOST + ":" + PORT + BLOCK_STORAGE_BASE_URL,
                                 "region": "RegionOne",
                                 "interface": "public",
                                 "id": "82b68ff3aedb43e2acc8307234d3fd0b"
@@ -387,21 +387,21 @@ class AuthTokensHandler(IdentityBaseHandler):
                         "endpoints": [
                             {
                                 "region_id": "RegionOne",
-                                "url": "",
+                                "url": "http://"+ HOST + ":" + PORT + BLOCK_STORAGE_BASE_URL + "/v2/tenant_id",
                                 "region": "RegionOne",
                                 "interface": "internal",
                                 "id": "012c78a6694a494995c58d5955fb7822"
                             },
                             {
                                 "region_id": "RegionOne",
-                                "url": "",
+                                "url": "http://"+ HOST + ":" + PORT + BLOCK_STORAGE_BASE_URL + "/v2/tenant_id",
                                 "region": "RegionOne",
                                 "interface": "admin",
                                 "id": "802d5de210874f068ba31c7e27c29d70"
                             },
                             {
                                 "region_id": "RegionOne",
-                                "url": "",
+                                "url": "http://"+ HOST + ":" + PORT + BLOCK_STORAGE_BASE_URL + "/v2/tenant_id",
                                 "region": "RegionOne",
                                 "interface": "public",
                                 "id": "b37ada66e02e44c9a9a7976d77365503"
