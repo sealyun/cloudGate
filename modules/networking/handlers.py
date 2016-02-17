@@ -132,6 +132,7 @@ class NetworkHandler(NetworkingBaseHandler):
     def get(self, network_id):
         print "[----------NetworkHandler GET----------]"
 
+        print "network id: ", network_id
         print "request body: ", self.request.body
 
         shared = self.get_argument("shared", None)
@@ -139,7 +140,7 @@ class NetworkHandler(NetworkingBaseHandler):
         routerExternal = self.get_argument("router:external", None)
 
         processor = self.get_processor()
-        network = processor.getNetwotk(network_id, shared, tenantID, routerExternal)
+        network = processor.getNetwork(network_id, shared, tenantID, routerExternal)
         if network is None:
             self.set_status(401)
             return
