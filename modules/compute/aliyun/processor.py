@@ -23,38 +23,61 @@ class AliyunComputeProcessor(ComputeProcessorBase):
 	
 	print "queryServers"
 	request = DescribeInstancesRequest.DescribeInstancesRequest()
+	request.set_accept_format('json')
+	request.set_ImageId(image) if status else None
+	request.set_Status(status) if status else None
+	request.set_InstanceName(name) if name else None
+	request.set_InstanceIds(host) if host else None
+	request.set_PageSize(limit) if limit else None
 
         response = self.clt.do_action(request)
 
         resp = json.loads(response)
-	print "resp :", resp
-	return resp["Instances"]["Instance"]
+	print "resp :", json.dumps(resp, indent=4)
+	if "Instances" in resp.keys():
+	    return resp["Instances"]["Instance"]
+        else:
+            return []
 	    	
     def createServer(self, tenant_id, name, imageRef, flavorRef, metadata):
-        pass
+	return []
 
     def queryServersDetails(self, tenant_id, changes_since, image,
             flavor, name, status, host, limit, marker):
-        pass
+	request = DescribeInstancesRequest.DescribeInstancesRequest()
+	request.set_accept_format('json')
+	request.set_ImageId(image) if status else None
+	request.set_Status(status) if status else None
+	request.set_InstanceName(name) if name else None
+	request.set_InstanceIds(host) if host else None
+	request.set_PageSize(limit) if limit else None
+
+        response = self.clt.do_action(request)
+
+        resp = json.loads(response)
+	print "resp :", json.dumps(resp, indent=4)
+	if "Instances" in resp.keys():
+	    return resp["Instances"]["Instance"]
+        else:
+            return []
 
     def queryServer(self, tenant_id, server_id):
-        pass
+	return []
 
     def updateServerName(self, tenant_id, server_id, name, imageRef, flavorRef, metadata):
-        pass
+	return []
 
     def updateServerIP(self, tenant_id, server_id, accessIPv4, accessIPv6):
-        pass
+	return []
 
     def updateServerOSDCFdiskConfig(self, tenant_id, server_id, OSDCFdiskConfig):
-        pass
+	return []
 
     def deleteServer(self, tenant_id, server_id):
-        pass
+	return []
 
     def ServerAction(self, tenat_id, server_id, action):
-        #TODO a real action to aliyun server
-        pass
+	return []
 
     def getExtensions(self):
         return []
