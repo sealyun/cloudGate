@@ -77,6 +77,8 @@ class AliyunNetworkingProcessor(NetworkingProcessorBase):
 
                 if vpc["Status"] == "Available":
                     network["status"] = "ACTIVE"
+                else:
+                    network["status"] = vpc["Status"]
                 network["subnets"] = []
                 #network["subnets"].append(vpc["CidrBlock"])
                 network["name"] = vpc["VpcName"]
@@ -170,6 +172,8 @@ class AliyunNetworkingProcessor(NetworkingProcessorBase):
 
             if vpc["Status"] == "Available":
                 network["status"] = "ACTIVE"
+            else:
+                network["status"] = vpc["Status"]
             network["subnets"] = []
             network["name"] = vpc["VpcName"]
             network["router:external"] = False
