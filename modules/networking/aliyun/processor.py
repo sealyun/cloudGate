@@ -180,7 +180,7 @@ class AliyunNetworkingProcessor(NetworkingProcessorBase):
             network["port_security_enabled"] = True
             network["id"] = vpc["VpcId"]
 
-            if networkID["id"] == networkID:
+            if network["id"] == networkID:
                 networks.append(network)
 
         if len(networks) > 0:
