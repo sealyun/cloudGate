@@ -24,7 +24,8 @@ class AliyunNetworkingProcessor(NetworkingProcessorBase):
     def getNetwotks(self, shared, tenantID, routerExternal):
         networks = []
         #Unsupport shared network and external network
-        if shared or routerExternal:
+        if shared is True or routerExternal is True:
+            print "Unsupport shared network and external network"
             return networks
 
         request = DescribeVpcsRequest.DescribeVpcsRequest()
