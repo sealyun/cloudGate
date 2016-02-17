@@ -135,12 +135,8 @@ class NetworkHandler(NetworkingBaseHandler):
         print "network id: ", network_id
         print "request body: ", self.request.body
 
-        shared = self.get_argument("shared", None)
-        tenantID = self.get_argument("tenant_id", None)
-        routerExternal = self.get_argument("router:external", None)
-
         processor = self.get_processor()
-        network = processor.getNetwork(network_id, shared, tenantID, routerExternal)
+        network = processor.getNetwork(network_id)
         if network is None:
             self.set_status(401)
             return
@@ -195,6 +191,14 @@ class NetworkHandler(NetworkingBaseHandler):
         else:
             self.set_status(409)
             return
+
+class DHCPAgentsHandler(NetworkingBaseHandler):
+    def get(self, network):
+        print "[----------DHCPAgentsHandler GET----------]"
+
+        print "Unsupport DHCP agents"
+        resp = {}
+        self.send_json(resp)
 
 class SubnetsHandler(NetworkingBaseHandler):
     def get(self):

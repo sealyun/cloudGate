@@ -6,12 +6,13 @@ urls = [
     (NETWORKING_BASE_URL + r"/v2.0/networks.json", NetworksHandler),
     (NETWORKING_BASE_URL + r"/v2.0/extensions.json", NetworksExtensionsHandler),
     (NETWORKING_BASE_URL + r"/v2.0/networks/(.*).json", NetworkHandler),
+    (NETWORKING_BASE_URL + r"/v2.0/networks/(.*)/dhcp-agents.json", DHCPAgentsHandler),
 
     (NETWORKING_BASE_URL + r"/v2.0/subnets.json", SubnetsHandler),
-    (NETWORKING_BASE_URL + r"/v2.0/subnets/(.*)", SubnetHandler),
+    (NETWORKING_BASE_URL + r"/v2.0/subnets/(.*).json", SubnetHandler),
 
-    (NETWORKING_BASE_URL + r"/v2.0/ports", PortsHandler),
-    (NETWORKING_BASE_URL + r"/v2.0/ports/(.*)", PortHandler),
+    (NETWORKING_BASE_URL + r"/v2.0/ports.json", PortsHandler),
+    (NETWORKING_BASE_URL + r"/v2.0/ports/(.*).json", PortHandler),
 
     (NETWORKING_BASE_URL + r"/v2.0/lbaas/loadbalancers", LoadbalancersHandler),
     (NETWORKING_BASE_URL + r"/v2.0/lbaas/loadbalancers/(.*)", LoadbalancerHandler),

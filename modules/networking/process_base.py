@@ -17,5 +17,5 @@ class NetworkingProcessorBase():
     def getAPIExtensions(self):
         pass
 
-    def getNetwork(self, network_id, shared, tenantID, routerExternal):
+    def getNetwork(self, network_id):
         pass
