@@ -28,12 +28,11 @@ class AliyunNetworkingProcessor(NetworkingProcessorBase):
             print "Unsupport shared network and external network"
             return networks
 
-        request = DescribeVpcsRequest.DescribeVpcsRequest()
-        request.set_PageNumber(1)
-        request.set_PageSize(50)
-        request.set_accept_format('json')
-
         while True :
+            request = DescribeVpcsRequest.DescribeVpcsRequest()
+            request.set_PageNumber(1)
+            request.set_PageSize(50)
+            request.set_accept_format('json')
             response = self.clt.do_action(request)
             resp = json.loads(response)
 
@@ -89,26 +88,6 @@ class AliyunNetworkingProcessor(NetworkingProcessorBase):
                 network["provider:segmentation_id"] = None
 
                 networks.append(network)
-
-
-        #test begin
-        '''
-        network = {}
-        network["status"] = "ACTIVE"
-        network["subnets"] = []
-        network["name"] = "vpcname-qqqqqwwwwww"
-        network["provider:physical_network"] = None
-        network["admin_state_up"] = True
-        network["tenant_id"] = tenantID
-        network["provider:network_type"] = "local"
-        network["router:external"] = False
-        network["mtu"] = 0
-        network["shared"] = False
-        network["id"] = "vpcid-qqqqqwwwwww"
-        network["provider:segmentation_id"] = None
-        networks.append(network)
-        '''
-        #test end
 
         print "networks: ", networks
         return networks
