@@ -100,6 +100,7 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
     
     
     def queryVolumesDetails(self, tenant_id, sort, limit, marker):
+        print "queryVolumesDetails WUJUN Begin ...... , tenant_id is ", tenant_id
         pass
     
     

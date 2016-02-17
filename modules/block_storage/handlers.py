@@ -113,6 +113,7 @@ class VolumesHandler(BlockStorageBaseHandler):
 
 class VolumesDetailHandler(BlockStorageBaseHandler):
     def get(self, tenant_id):
+        self.get_processor()
         sort = self.get_argument("sort",None)
         limit = self.get_argument("limit",None)
         marker = self.get_argument("marker",None)
