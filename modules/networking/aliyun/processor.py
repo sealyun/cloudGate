@@ -28,13 +28,16 @@ class AliyunNetworkingProcessor(NetworkingProcessorBase):
             print "Unsupport shared network and external network"
             return networks
 
+        pagePos = 1
+        pageSize = 50
         while True :
             request = DescribeVpcsRequest.DescribeVpcsRequest()
-            request.set_PageNumber(1)
-            request.set_PageSize(50)
+            request.set_PageNumber(pagePos)
+            request.set_PageSize(pageSize)
             request.set_accept_format('json')
             response = self.clt.do_action(request)
             resp = json.loads(response)
+            ++pagePos
 
             print "response: ", resp
             ''' response data
