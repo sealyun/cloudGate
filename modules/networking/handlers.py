@@ -121,7 +121,7 @@ class NetworksHandler(NetworkingBaseHandler):
 
 class NetworksExtensionsHandler(NetworkingBaseHandler):
     def get(self):
-        print "NetworksExtensionsHandler POST"
+        print "NetworksExtensionsHandler GET"
 
         processor = self.get_processor()
         extensions = processor.getAPIExtensions()

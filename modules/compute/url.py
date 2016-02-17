@@ -3,6 +3,7 @@ from cloudGate.common.define import *
 
 urls_v2_1 = [
     (COMPUTE_BASE_URL, ComputeBaseHandler),
+    (COMPUTE_BASE_URL + r"/v2.1/(.*)/extensions", ExtensionsHandler),
     (COMPUTE_BASE_URL + r"/v2.1/(.*)/servers", ServersHandler),
     (COMPUTE_BASE_URL + r"/v2.1/(.*)/servers/detail", ServersDetailHandler),
     (COMPUTE_BASE_URL + r"/v2.1/(.*)/servers/(.*)", ServerHandler),
