@@ -5,8 +5,8 @@ urls = [
     (NETWORKING_BASE_URL, NetworkingBaseHandler),
     (NETWORKING_BASE_URL + r"/v2.0/networks.json", NetworksHandler),
     (NETWORKING_BASE_URL + r"/v2.0/extensions.json", NetworksExtensionsHandler),
-    (NETWORKING_BASE_URL + r"/v2.0/networks/(^[a-zA-Z0-9\.@\-_]+$).json", NetworkHandler),
-    (NETWORKING_BASE_URL + r"/v2.0/networks/(^[a-zA-Z0-9\.@\-_]+$)/dhcp-agents.json", DHCPAgentsHandler),
+    (NETWORKING_BASE_URL + r"/v2.0/networks/([a-z0-9A-Z\-]+).json", NetworkHandler),
+    (NETWORKING_BASE_URL + r"/v2.0/networks/([a-z0-9A-Z\-]+)/dhcp-agents.json", DHCPAgentsHandler),
 
     (NETWORKING_BASE_URL + r"/v2.0/subnets.json", SubnetsHandler),
     (NETWORKING_BASE_URL + r"/v2.0/subnets/(^[a-zA-Z0-9\.@\-_]+$).json", SubnetHandler),
