@@ -77,6 +77,8 @@ class AliyunNetworkingProcessor(NetworkingProcessorBase):
 
                 if vpc["Status"] == "Available":
                     network["status"] = "ACTIVE"
+                else:
+                    network["status"] = vpc["Status"]
                 network["subnets"] = []
                 #network["subnets"].append(vpc["CidrBlock"])
                 network["name"] = vpc["VpcName"]
@@ -170,6 +172,8 @@ class AliyunNetworkingProcessor(NetworkingProcessorBase):
 
             if vpc["Status"] == "Available":
                 network["status"] = "ACTIVE"
+            else:
+                network["status"] = vpc["Status"]
             network["subnets"] = []
             network["name"] = vpc["VpcName"]
             network["router:external"] = False
@@ -189,14 +193,35 @@ class AliyunNetworkingProcessor(NetworkingProcessorBase):
             return None
 
     def updateNetwork(self, networkID, inNetwork):
-        #TODO
-        #-----20160218--------
-        return None
+        networkName = inNetwork["name"]
+
+        request = ModifyVpcAttributeRequest.ModifyVpcAttributeRequest()
+        request.set_VpcName(networkName)
+        request.set_VpcId(networkID)
+        request.set_accept_format('json')
+        response = self.clt.do_action(request)
+        resp = json.loads(response)
+
+        print "response: ", resp
+
+        if "Code" in resp.keys() and "Message" in resp.keys():
+            return None
+
+        return self.getNetwork(networkID)
 
     def deleteNetwork(self, networkID):
-        #TODO
-        #-----20160218--------
-        return False
+        request = DeleteVpcRequest.DeleteVpcRequest()
+        request.set_VpcId(networkID)
+        request.set_accept_format('json')
+        response = self.clt.do_action(request)
+        resp = json.loads(response)
+
+        print "response: ", resp
+
+        if "Code" in resp.keys() and "Message" in resp.keys():
+            return False
+
+        return True
 
     def getDHCPAgents(self, networkID):
         #TODO
