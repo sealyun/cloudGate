@@ -130,20 +130,34 @@ class NetworksExtensionsHandler(NetworkingBaseHandler):
 
 class NetworkHandler(NetworkingBaseHandler):
     def get(self, network_id):
-        network = self.p.getNetwork(network_id)
+        print "[----------NetworkHandler GET----------]"
+
+        print "request body: ", self.request.body
+
+        shared = self.get_argument("shared", None)
+        tenantID = self.get_argument("tenant_id", None)
+        routerExternal = self.get_argument("router:external", None)
+
+        processor = self.get_processor()
+        network = processor.getNetwotk(network_id, shared, tenantID, routerExternal)
+        if network is None:
+            self.set_status(401)
+            return
+        else:
+            self.set_status(200)
 
         resp = {
             "network":{
-                "status": network.status,
-                "subnets": network.subnets,
-                "name": network.name,
-                "router:external": network.router_external,
-                "admin_state_up": network.admin_state_up,
-                "tenant_id": network.tenant_id,
-                "mtu": network.mtu,
-                "shared": network.shared,
-                "port_security_enabled":network.port_security_enabled,
-                "id": network.id
+                "status": network["status"],
+                "subnets": network["subnets"],
+                "name": network["name"],
+                "router:external": network["router:external"],
+                "admin_state_up": network["admin_state_up"],
+                "tenant_id": network["tenant_id"],
+                "mtu": network["mtu"],
+                "shared": network["shared"],
+                "port_security_enabled":network["port_security_enabled"],
+                "id": network["id"]
             }
         }
 

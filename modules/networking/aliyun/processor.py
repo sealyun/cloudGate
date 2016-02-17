@@ -146,3 +146,6 @@ class AliyunNetworkingProcessor(NetworkingProcessorBase):
 
     def getAPIExtensions(self):
         return []
+
+    def getNetwork(self, network_id, shared, tenantID, routerExternal):
+        return None
