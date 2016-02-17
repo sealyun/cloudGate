@@ -18,10 +18,10 @@ class NetworksHandler(NetworkingBaseHandler):
     def get(self):
         print "NetworksHandler GET"
 
-        shared = bool(self.get_argument("shared", None))
+        shared = self.get_argument("shared", None)
         tenantID = self.get_argument("tenant_id", None)
-        routerExternal = bool(self.get_argument("router:external", None))
-        print "shared: ", shared
+        routerExternal = self.get_argument("router:external", None)
+        print "shared: ", shared, ", type: ", type(shared)
         print "tenant_id: ", tenantID
         print "router:external: ", routerExternal
 

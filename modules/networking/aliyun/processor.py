@@ -24,7 +24,7 @@ class AliyunNetworkingProcessor(NetworkingProcessorBase):
     def getNetwotks(self, shared, tenantID, routerExternal):
         networks = []
         #Unsupport shared network and external network
-        if shared is True or routerExternal is True:
+        if shared == "True" or routerExternal == "True":
             print "Unsupport shared network and external network"
             return networks
 
