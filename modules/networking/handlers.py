@@ -7,7 +7,7 @@ import json
 class NetworkingBaseHandler(HttpBaseHandler):
     def get_processor(self):
         token = self.request.headers["X-Auth-Token"]
-        print ("-----get token:", token)
+        #print ("token:", token)
         factory = NetworkingProcessorFactory()
         return factory.getAliyunProcessor(token)
 
@@ -61,11 +61,10 @@ class NetworksHandler(NetworkingBaseHandler):
 
         processor = self.get_processor()
 
-        print self.request.body
-
+        #print self.request.body
         body = json.loads(self.request.body)
         if "network" in body.keys():
-            print "11111111111"
+            print "create network"
             inNetwork = body["network"]
             outNetwork = processor.createNetwork(inNetwork)
             if outNetwork is None:
@@ -89,7 +88,7 @@ class NetworksHandler(NetworkingBaseHandler):
             self.send_json(resp)
             return
         else:
-            print "2222222222222"
+            print "create networks"
             inNetworks = []
             inNetworks.append(body["networks"])
             outNetworks = processor.createNetworks(inNetworks)
