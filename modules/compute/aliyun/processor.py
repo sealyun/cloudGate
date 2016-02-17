@@ -1,27 +1,35 @@
 #coding=utf-8
 from aliyunsdkcore import client
-
 from aliyunsdkecs.request.v20140526 import DescribeInstancesRequest
 
-from ../handlers import Server
-
+from cloudGate.config import *
 from cloudGate.modules.compute.process_base import ComputeProcessorBase
 
+import json
+
+
 class AliyunComputeProcessor(ComputeProcessorBase):
-    #we can get accessKey and accessSecret from tocken
     def __init__(self, token):
-        #TODO we can init aliyun request in ComputeProcessorBase
         self.token = token
+
+        self.access_key = IDENTITY["aliyun"]["access_key"]
+        self.access_secrect = IDENTITY["aliyun"]["access_secret"]
+        self.regin = IDENTITY["aliyun"]["regin"]
+
+        self.clt = client.AcsClient(self.access_key, self.access_secrect, self.regin)
 
     def queryServers(self, tenant_id, changes_since,
             image, flavor, name, status, host, limit, marker):
+	
+	print "queryServers"
 	request = DescribeInstancesRequest.DescribeInstancesRequest()
-	request.set
-	s = Server()
-	s.id = ""
-	s.name = ""
-	return [s]
 
+        response = self.clt.do_action(request)
+
+        resp = json.loads(response)
+	print "resp :", resp
+	return resp["Instances"]["Instance"]
+	    	
     def createServer(self, tenant_id, name, imageRef, flavorRef, metadata):
         pass
 
