@@ -8,6 +8,8 @@ from aliyunsdkcore import client
 from aliyunsdkecs.request.v20140526 import (
     DescribeImagesRequest,
     CreateImageRequest,
+    DeleteImageRequest,
+    ModifyImageAttributeRequest,
 )
 
 
@@ -89,4 +91,33 @@ class AliyunImageServiceProcessor(ImageServiceProcessorBase):
         response = self.clt.do_action(request)
         resp = json.loads(response)
         print('createImage', resp)
+        return resp
+
+    def queryImageId(self, image_id):
+        request = DescribeImagesRequest.DescribeImagesRequest()
+        request.set_accept_format('json')
+        request.set_ImageId(image_id)
+
+        response = self.clt.do_action(request)
+        resp = json.loads(response)
+        print('queryImageId', resp)
+        if resp['Images']['Image']:
+            return resp['Images']['Image'][0]
+        return None
+
+    def deleteImage(self, image_id):
+        request = DeleteImageRequest.DeleteImageRequest()
+        request.set_accept_format('json')
+        request.set_ImageId(image_id)
+        response = self.clt.do_action(request)
+        resp = json.loads(response)
+        return resp
+
+    def updateImage(self, image_id, image_name):
+        request = ModifyImageAttributeRequest.ModifyImageAttributeRequest()
+        request.set_accept_format('json')
+        request.set_ImageId(image_id)
+        request.set_set_ImageName(image_name)
+        response = self.clt.do_action(request)
+        resp = json.loads(response)
         return resp

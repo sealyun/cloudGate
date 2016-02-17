@@ -11,4 +11,5 @@ urls = [
 
     (IMAGE_SERVICE_BASE_URL + r"/v1/images", ImagesHandler),
     (IMAGE_SERVICE_BASE_URL + r"/v1/images/detail", ImagesHandler),
+    (IMAGE_SERVICE_BASE_URL + r"/v1/images/(.*)", ImageHandler),
 ]
