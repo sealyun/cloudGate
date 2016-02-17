@@ -323,7 +323,7 @@ class SnapshotsHandler(BlockStorageBaseHandler):
 class SnapshotsDetailHandler(BlockStorageBaseHandler):
     def get(self, tenant_id):
         snapshots = self.p.querySnapshotsDetails(tenant_id)
-
+        '''
         resp = {
             "snapshots":[
                 {
@@ -341,7 +341,27 @@ class SnapshotsDetailHandler(BlockStorageBaseHandler):
                 for s in snapshots
             ]
         }
-
+        '''
+        resp = {
+            "snapshots": [
+                {
+                    "status": "available",
+                    "metadata": {
+                        "name": "test"
+                    },
+                    "os-extended-snapshot-attributes:progress": "100%",
+                    "name": "test-volume-snapshot",
+                    "volume_id": "173f7b48-c4c1-4e70-9acc-086b39073506",
+                    "os-extended-snapshot-attributes:project_id": "bab7d5c60cd041a0a36f7c4b6e1dd978",
+                    "created_at": "2015-11-29T02:25:51.000000",
+                    "size": 1,
+                    "id": "b1323cda-8e4b-41c1-afc5-2fc791809c8c",
+                    "description": "volume snapshot"
+                }
+            ]
+        }        
+        
+        print "Final Resp Json is ", resp
         self.send_json(resp)
 
 class SnapshotHandler(BlockStorageBaseHandler):

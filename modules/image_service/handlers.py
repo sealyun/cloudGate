@@ -22,7 +22,7 @@ class ImageBaseHandler(HttpBaseHandler):
 class ImagesHandler(ImageBaseHandler):
 
     def get(self):
-        limit = self.get_argument("limit", None)
+        limit = self.get_argument("limit", 1024)
         marker = self.get_argument("marker", None)
         name = self.get_argument("name", None)
         visibility = self.get_argument("visibility", None)
@@ -59,6 +59,7 @@ class ImagesHandler(ImageBaseHandler):
                     "distro": i["OSName"],
                 },
                 "id": i["ImageId"],
+                "protected": False,
             } for i in images
             ]
         }
@@ -107,75 +108,84 @@ class ImagesHandler(ImageBaseHandler):
 class ImageHandler(ImageBaseHandler):
 
     def get(self, image_id):
+        self.get_processor()
         i = self.p.queryImageId(image_id)
         if not i:
             return
 
         resp = {
-            "status": i.status,
-            "name": i.name,
-            "tags": i.tags,
-            "container_format": i.container_format,
-            "create_at": i.create_at,
-            "disk_format": i.disk_format,
-            "updated_at": i.updated_at,
-            "visibility": i.visibility,
-            "self": "/v2/images/" + i.id,
-            "min_disk": i.min_disk,
-            "protected": i.protected,
-            "id": i.id,
-            "file": "/v2/images/" + i.id + "/file",
-            "checksum": i.checksum,
-            "owner": i.owner,
-            "size": i.size,
-            "min_ram": i.min_ram,
-            "schema": i.schema,
-            "virtual_size": i.virtual_size
+            "images": {
+                "uri": "",
+                "name": i['ImageName'],
+                "disk_format": "",
+                "container_format": "",
+                "size": i['Size'],
+                "checksum": "c2e5db72bd7fd153f53ede5da5a06de3",
+                "created_at": i["CreationTime"],
+                "updated_at": "",
+                "deleted_at": "",
+                "status": "active" if i["Status"] == "Available" else "",
+                "is_public": i['IsSubscribed'],
+                "min_ram": None,
+                "min_disk": None,
+                "owner": i['ImageOwnerAlias'],
+                "properties": {
+                    "distro": i["OSName"],
+                },
+                "id": i["ImageId"],
+            }
         }
-
         self.send_json(resp)
+
+    head = get
 
     def patch(self, image_id):
+        self.get_processor()
         update_list = json.laods(self.request.body)
         #"op" "path" "value"
+        if update_list['op'] == 'replace' and update_list['path'] == 'ImageName':
+            i = self.p.updateImage(image_id, update_list['value'])
 
-        i = updateImage(image_id, update_list)
-
-        resp = {
-            "id": i.id,
-            "name": i.name,
-            "status": i.status,
-            "visibility": i.visibility,
-            "size": i.size,
-            "checksum": i.checksum,
-            "tags": i.tags,
-            "create_at": i.create_at,
-            "updated_at": i.updated_at,
-            "self": "/v2/images/" + i.id,
-            "file": "/v2/images/" + i.id + "/file",
-            "schema": i.schema,
-            "owner": i.owner,
-            "min_ram": i.min_ram,
-            "min_disk": i.min_disk,
-            "disk_format": i.disk_format,
-            "virtual_size": i.virtual_size
-            # "container_format":i.container_format,
-        }
-
-        self.send_json(resp)
+            resp = {
+                "id": i.id,
+                "name": i.name,
+                "status": i.status,
+                "visibility": i.visibility,
+                "size": i.size,
+                "checksum": i.checksum,
+                "tags": i.tags,
+                "create_at": i.create_at,
+                "updated_at": i.updated_at,
+                "self": "/v2/images/" + i.id,
+                "file": "/v2/images/" + i.id + "/file",
+                "schema": i.schema,
+                "owner": i.owner,
+                "min_ram": i.min_ram,
+                "min_disk": i.min_disk,
+                "disk_format": i.disk_format,
+                "virtual_size": i.virtual_size
+                # "container_format":i.container_format,
+            }
+            self.send_json(resp)
+        return
 
     def delete(self, image_id):
+        self.get_processor()
         res = self.p.deleteImage(image_id)
 
         if res:
             self.set_status(204)
         else:
             self.set_status(403)
+        self.send_json({
+            'image_id': image_id,
+        })
 
 
 class ImageActionReactivateHandler(ImageBaseHandler):
 
     def post(self, image_id):
+        self.get_processor()
         i = self.p.reactivateImage(image_id)
         if i:
             self.set_status(204)
@@ -210,6 +220,7 @@ class ImageActionReactivateHandler(ImageBaseHandler):
 class ImageActionDeactivateHandler(ImageBaseHandler):
 
     def post(self, image_id):
+        self.get_processor()
         i = self.p.deactivateImage(image_id)
         if i:
             self.set_status(204)
@@ -246,7 +257,9 @@ class ImageActionDeactivateHandler(ImageBaseHandler):
 class ImageFileHandler(ImageBaseHandler):
 
     def put(self, image_id):
+        self.get_processor()
         pass
 
     def get(self, image_id):
+        self.get_processor()
         pass

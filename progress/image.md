@@ -25,6 +25,7 @@ PATCH
 /v2/images/​{image_id}​
 Update image
 (Since Image API v2.0) Updates an image.
+阿里镜像只允许修改镜像名称和描述. openstack 无描述字段, 因此该接口只能实现修改名称功能.
  
 detail
 DELETE
@@ -57,4 +58,3 @@ GET
 /v2/images/​{image_id}​/file
 Download binary image data
 (Since Image API v2.0) Downloads binary image data.
-

@@ -6,3 +6,12 @@ class ImageServiceProcessorBase:
 
     def createImage(self, container_format, disk_format, name, id):
         pass
+
+    def queryImageId(self, image_id):
+        pass
+
+    def deleteImage(self, image_id):
+        pass
+
+    def updateImage(self):
+        pass
