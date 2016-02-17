@@ -41,7 +41,6 @@ class ImagesHandler(ImageBaseHandler):
                                     size_min, size_max, sort_key, sort_dir, sort, tag)
         resp = {
             "images": [{
-                "is_public": i['IsCopied'],
                 "uri": "",
                 "name": i['ImageName'],
                 "disk_format": "",
@@ -67,53 +66,41 @@ class ImagesHandler(ImageBaseHandler):
         self.send_json(resp)
 
     def post(self):
-        print('self.request.body', self.request.body)
-
-        # headers = {
-        #     'Content-Length': '0', 'Host': '121.199.9.187:8085', 'Accept-Encoding': 'gzip, deflate',
-        #     'X-Image-Meta-Container_format': 'bare', 'Content-Type': 'application/octet-stream',
-        #     'X-Image-Meta-Min_disk': '1', 'X-Image-Meta-Protected': 'False',
-        #     'Accept': '*/*', 'User-Agent': 'python-glanceclient',
-        #     'Connection': 'keep-alive',
-        #     'X-Image-Meta-Property-Architecture': '11', 'X-Image-Meta-Is_public': 'True', 'X-Image-Meta-Min_ram': '1',
-        #     'X-Auth-Token': 'adminadmin', 'X-Image-Meta-Property-Description': '11', 'X-Image-Meta-Disk_format': 'iso',
-        #     'X-Image-Meta-Name': '11'
-        # }
-
-        i = self.p.createImage(
-            image["name"],
-            image["container_format"],
-            image["disk_format"],
-            image["id"]
-        )
-
-        if not i:
-            return
-
+        self.get_processor()
+        name = self.request.headers.get('name')
+        container_format = self.request.headers.get('container_format')
+        disk_format = self.request.headers.get('disk_format')
+        xrid = self.request.headers.get('X-Image-Meta-Property-Ramdisk_id')
+        xkid = self.request.headers.get('X-Image-Meta-Property-Kernel_id')
+        # ('self.request', HTTPServerRequest(protocol='http', host='121.199.9.187:8085', method='POST', uri='/image_service/v1/images', version='HTTP/1.1', remote_ip='121.199.9.187', headers={'Content-Length': '0', 'Host': '121.199.9.187:8085', 'X-Auth-Token': 'adminadmin', 'Accept-Encoding': 'gzip, deflate', 'X-Image-Meta-Container_format': 'aki', 'Content-Type': 'application/octet-stream', 'X-Image-Meta-Property-Architecture': '111', 'Accept': '*/*', 'X-Image-Meta-Protected': 'True', 'X-Image-Meta-Property-Ramdisk_id': 'win2012_64_dataCtr_R2_en_40G_alibase_20150429.vhd', 'Connection': 'keep-alive', 'X-Image-Meta-Min_disk': '1', 'X-Image-Meta-Is_public': 'False', 'X-Image-Meta-Min_ram': '1', 'X-Image-Meta-Property-Kernel_id': 'coreos681_64_20G_aliaegis_20150618.vhd', 'User-Agent': 'python-glanceclient', 'X-Image-Meta-Property-Description': '111', 'X-Image-Meta-Disk_format': 'aki', 'X-Image-Meta-Name': '111'}))
+        i = self.p.createImage(name, container_format, disk_format, xrid)
         resp = {
-            "status": i.status,
-            "name": i.name,
-            "tags": i.tags,
-            "container_format": i.container_format,
-            "create_at": i.create_at,
-            "size": i.size,
-            "disk_format": i.disk_format,
-            "updated_at": i.updated_at,
-            "visibility": i.visibility,
-            "locations": i.locations,
-            "self": "/v2/images/" + i.id,
-            "min_disk": i.min_disk,
-            "protected": i.protected,
-            "id": i.id,
-            "file": "/v2/images/" + i.id + "/file",
-            "checksum": i.checksum,
-            "owner": i.owner,
-            "virtual_size": i.virtual_size,
-            "min_ram": i.min_ram,
-            "schema": i.schema,
+            "image": {
+                "status": "queued",
+                "name": "Ubuntu",
+                "tags": [],
+                "container_format": "bare",
+                "created_at": "2015-11-29T22:21:42Z",
+                "size": None,
+                "disk_format": "raw",
+                "updated_at": "2015-11-29T22:21:42Z",
+                "visibility": "private",
+                "locations": [],
+                "location": "http://www.baidu.com",
+                "self": "/v2/images/b2173dd3-7ad6-4362-baa6-a68bce3565cb",
+                "min_disk": 0,
+                "protected": False,
+                "id": "b2173dd3-7ad6-4362-baa6-a68bce3565cb",
+                "file": "/v2/images/b2173dd3-7ad6-4362-baa6-a68bce3565cb/file",
+                "checksum": None,
+                "owner": "bab7d5c60cd041a0a36f7c4b6e1dd978",
+                "virtual_size": None,
+                "min_ram": 0,
+                "schema": "/v2/schemas/image",
+            }
         }
 
-        self.set_status(201)
+        self.set_status(202)
         self.send_json(resp)
 
 

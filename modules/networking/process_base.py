@@ -8,10 +8,10 @@ class NetworkingProcessorBase():
     def getNetwotks(self, shared, tenantID, routerExternal):
         pass
 
-    def createNetwork(self, shared, tenantID, inNetwork):
+    def createNetwork(self, inNetwork):
         pass
 
-    def createNetworks(self, shared, tenantID, inNetworks):
+    def createNetworks(self, inNetworks):
         pass
 
     def getAPIExtensions(self):

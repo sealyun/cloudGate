@@ -7,7 +7,7 @@ import json
 class NetworkingBaseHandler(HttpBaseHandler):
     def get_processor(self):
         token = self.request.headers["X-Auth-Token"]
-        #print ("-----get token:", token)
+        #print ("token:", token)
         factory = NetworkingProcessorFactory()
         return factory.getAliyunProcessor(token)
 
@@ -16,13 +16,14 @@ class NetworkingBaseHandler(HttpBaseHandler):
 
 class NetworksHandler(NetworkingBaseHandler):
     def get(self):
-        print "NetworksHandler GET"
+        print "[----------NetworksHandler GET----------]"
 
         shared = self.get_argument("shared", None)
         tenantID = self.get_argument("tenant_id", None)
         routerExternal = self.get_argument("router:external", None)
-        print "shared: ", shared
-        print "tenant_id: ", tenantID
+        print "shared: ", shared, ", type: ", type(shared)
+        print "tenant_id: ", tenantID, ", type: ", type(tenantID)
+        print "router:external: ", routerExternal, ", type: ", type(routerExternal)
 
         processor = self.get_processor()
         networks = processor.getNetwotks(shared, tenantID, routerExternal)
@@ -56,19 +57,16 @@ class NetworksHandler(NetworkingBaseHandler):
 
     #maybe bulk
     def post(self):
-        print "NetworksHandler POST"
-
-        shared = self.get_argument("shared", None)
-        tenantID = self.get_argument("tenant_id", None)
-        print "shared: ", shared
-        print "tenant_id: ", tenantID
+        print "[----------NetworksHandler POST----------]"
 
         processor = self.get_processor()
 
+        #print self.request.body
         body = json.loads(self.request.body)
         if "network" in body.keys():
+            print "create network"
             inNetwork = body["network"]
-            outNetwork = processor.createNetworks(shared, tenantID, inNetwork)
+            outNetwork = processor.createNetwork(inNetwork)
             if outNetwork is None:
                 self.set_status(401)
                 return
@@ -90,9 +88,10 @@ class NetworksHandler(NetworkingBaseHandler):
             self.send_json(resp)
             return
         else:
+            print "create networks"
             inNetworks = []
             inNetworks.append(body["networks"])
-            outNetworks = processor.createNetworks(shared, tenantID, inNetworks)
+            outNetworks = processor.createNetworks(inNetworks)
             if outNetworks is None:
                 self.set_status(401)
                 return
@@ -120,7 +119,7 @@ class NetworksHandler(NetworkingBaseHandler):
 
 class NetworksExtensionsHandler(NetworkingBaseHandler):
     def get(self):
-        print "NetworksExtensionsHandler GET"
+        print "[----------NetworksExtensionsHandler GET----------]"
 
         processor = self.get_processor()
         extensions = processor.getAPIExtensions()

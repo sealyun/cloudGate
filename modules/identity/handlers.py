@@ -465,6 +465,9 @@ class AuthTokensHandler(IdentityBaseHandler):
         if "auth" not in auth:
             return
 
+        if "tenantName" in auth["auth"]:
+            return
+
         if "token" in auth["auth"]["identity"]:
             user = self.parse_token(auth["auth"]["identity"]["token"]["id"])
         else:
