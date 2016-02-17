@@ -1,4 +1,9 @@
 #coding=utf-8
+from aliyunsdkcore import client
+
+from aliyunsdkecs.request.v20140526 import DescribeInstancesRequest
+
+from ../handlers import Server
 
 
 class AliyunComputeProcessor(ComputeProcessorBase):
@@ -9,7 +14,12 @@ class AliyunComputeProcessor(ComputeProcessorBase):
 
     def queryServers(self, tenant_id, changes_since, 
             image, flavor, name, status, host, limit, marker):
-        pass
+	request = DescribeInstancesRequest.DescribeInstancesRequest()
+	request.set
+	s = Server()
+	s.id = ""
+	s.name = ""
+	return [s]
 
     def createServer(self, tenant_id, name, imageRef, flavorRef, metadata):
         pass

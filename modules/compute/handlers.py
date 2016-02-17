@@ -1,6 +1,41 @@
 from tornado.gen import coroutine
 from cloudGate.httpbase import HttpBaseHandler
 
+
+class Server(object):
+    def __init__(self):
+	self.addresses = None
+	self.created = None
+	self.flavor = None
+	self.hostId = None
+	self.id = None
+	self.image = None
+	self.key_name = None
+	self.links = None
+	self.metadata = None
+	self.name = None
+	self.progress = None
+	self.security_groups = None
+	self.description = None
+	self.rules = None
+	self.status = None
+	self.host_status = None
+	self.tenant_id = None
+	self.updated = None
+	self.user_id = None
+	self.OS_DCF_diskConfig = None
+	self.OS_EXT_AZ_availability_zone = None
+	self.OS_EXT_SRV_ATTR_host = None
+	self.OS_EXT_SRV_ATTR_hypervisor_hostname = None
+	self.OS_EXT_SRV_ATTR_instance_name = None
+	self.OS_EXT_STS_power_state = None
+	self.OS_EXT_STS_task_state = None
+	self.OS_EXT_STS_vm_state = None
+	self.os_extended_volumes_volumes_attached = None
+	self.OS_SRV_USG_launched_at = None
+	self.OS_SRV_USG_terminated_at = None
+
+
 class ComputeBaseHandler(HttpBaseHandler):
     #the ProcessorFac return the real processor.
     def prepare(self):
