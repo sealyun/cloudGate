@@ -7,6 +7,7 @@ class LowVersionBlockStorageBaseHandler(HttpBaseHandler):
         pass
 
 class BlockStorageBaseHandler(HttpBaseHandler):
+    """
     def __init__(self, *args, **kwargs):
         super(BlockStorageBaseHandler, self).__init__(args[0], args[1], **kwargs)
         token = self.request.headers["X-Auth-Token"]
@@ -14,7 +15,19 @@ class BlockStorageBaseHandler(HttpBaseHandler):
         i = BlockStorageProcessorFac()
         self.p = i.create_processor(None, token)
         print ("--- WU JUN ---self.p:", self.p)
-
+    """
+    def get_processor(self):
+        token = self.request.headers["X-Auth-Token"]
+        print ("--- WU JUN ---get token:", token)
+        i = BlockStorageProcessorFac()
+        self.p = i.create_processor(None, token)
+        print ("--- WU JUN ---self.p:", self.p)
+        return self.p
+    
+    def get(self):
+        #TODO
+        pass
+    
 class VolumesHandler(BlockStorageBaseHandler):
     def get(self, tenant_id):
         sort = self.get_argument("sort", None)
@@ -322,6 +335,7 @@ class SnapshotsHandler(BlockStorageBaseHandler):
 ## "metadata"
 class SnapshotsDetailHandler(BlockStorageBaseHandler):
     def get(self, tenant_id):
+        self.get_processor()
         snapshots = self.p.querySnapshotsDetails(tenant_id)
         '''
         resp = {
