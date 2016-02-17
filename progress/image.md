@@ -12,6 +12,7 @@ POST
 /v2/images
 Create image
 (Since Image API v2.0) Creates a virtual machine (VM) image.
+阿里镜像需要使用 snapshot 来创建, openstack 镜像创建方式与阿里不同, 是通过镜像 url 或本地上传镜像来创建. 该接口目前无法实现.
  
 detail
 GET
