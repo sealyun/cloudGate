@@ -158,4 +158,9 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
         pass
     
     def updataSnapshotMetadata(self, tenant_id, snapshot_id, metadata):
-        pass  
+        pass
+    
+    
+    def queryOsVolumeTransfer(self, tenant_id):
+        print "queryOsVolumeTransfer WUJUN Do Nothing, tenant_id is ", tenant_id
+        pass
