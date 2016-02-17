@@ -69,7 +69,7 @@ class AliyunNetworkingProcessor(NetworkingProcessorBase):
             if "Vpcs" not in resp.keys():
                 break
 
-            if resp["TotalCount"] <= 0:
+            if len(resp["Vpcs"]["Vpc"]) <= 0:
                 break
 
             for vpc in resp["Vpcs"]["Vpc"]:
