@@ -3,42 +3,7 @@ from cloudGate.httpbase import HttpBaseHandler
 from api_factory import ComputeProcessorFac
 
 
-class Server(object):
-    def __init__(self):
-	self.addresses = None
-	self.created = None
-	self.flavor = None
-	self.hostId = None
-	self.id = None
-	self.image = None
-	self.key_name = None
-	self.links = None
-	self.metadata = None
-	self.name = None
-	self.progress = None
-	self.security_groups = None
-	self.description = None
-	self.rules = None
-	self.status = None
-	self.host_status = None
-	self.tenant_id = None
-	self.updated = None
-	self.user_id = None
-	self.OS_DCF_diskConfig = None
-	self.OS_EXT_AZ_availability_zone = None
-	self.OS_EXT_SRV_ATTR_host = None
-	self.OS_EXT_SRV_ATTR_hypervisor_hostname = None
-	self.OS_EXT_SRV_ATTR_instance_name = None
-	self.OS_EXT_STS_power_state = None
-	self.OS_EXT_STS_task_state = None
-	self.OS_EXT_STS_vm_state = None
-	self.os_extended_volumes_volumes_attached = None
-	self.OS_SRV_USG_launched_at = None
-	self.OS_SRV_USG_terminated_at = None
-
-
 class ComputeBaseHandler(HttpBaseHandler):
-    #the ProcessorFac return the real processor.
     def get_processor(self):
         token = self.request.headers["X-Auth-Token"]
         i = ComputeProcessorFac()
@@ -60,13 +25,14 @@ class ServersHandler(ComputeBaseHandler):
         host = self.get_argument("host", None)
         limit = self.get_argument("limit", None)
         marker = self.get_argument("marker", None)
-
+	
+	print "ServersHandler get()"
         servers = self.p.queryServers(tenant_id, changes_since, image, flavor, name, status, host, limit, marker)
 
         resp = {
             "servers":[
                 {
-                    "id":s.id,
+                    "id":s["InstanceId"],
                     "links":[
                         {
                             "href":"http://",
@@ -77,7 +43,7 @@ class ServersHandler(ComputeBaseHandler):
                             "rel":"self"
                         }
                     ],
-                    "name":s.name
+                    "name":s["InstanceName"]
                 }
                 for s in servers
             ]
@@ -115,6 +81,7 @@ class ServersHandler(ComputeBaseHandler):
 
 class ServersDetailHandler(ComputeBaseHandler):
     def get(self, tenant_id):
+	print "ServersDetailHandler get()"
         self.get_processor()
         changes_since = self.get_argument("changes_since", None)
         image = self.get_argument("image", None)
@@ -180,7 +147,8 @@ class ServersDetailHandler(ComputeBaseHandler):
 
 class ServerHandler(ComputeBaseHandler):
     def get(self, tenant_id, server_id):
-        self.get_processor()
+        print "ServerHandler get()"
+	self.get_processor()
         s = self.p.queryServer(tenant_id, server_id)
         resp = {
             "servers":{
@@ -285,12 +253,14 @@ class ServerHandler(ComputeBaseHandler):
 
 class ServerActionHandler(ComputeBaseHandler):
     def post(self, tenant_id, server_id):
+	print "ServerActionHandler post()"
         self.get_processor()
         action = json.loads(self.request.body)
         self.p.ServerAction(tenant_id, server_id, action)
 
 class ExtensionsHandler(ComputeBaseHandler):
     def get(self, ob):
+	print "ExtensionsHandler get()"
         self.get_processor()
         processor = self.get_processor()
         extensions = processor.getExtensions()
