@@ -1,4 +1,10 @@
 #coding=utf-8
+from aliyunsdkcore import client
+
+from aliyunsdkecs.request.v20140526 import DescribeInstancesRequest
+
+from ../handlers import Server
+
 from cloudGate.modules.compute.process_base import ComputeProcessorBase
 
 class AliyunComputeProcessor(ComputeProcessorBase):
