@@ -22,12 +22,17 @@ class AliyunNetworkingProcessor(NetworkingProcessorBase):
         self.clt = client.AcsClient(self.access_key, self.access_secrect, self.regin)
 
     def getNetwotks(self, shared, tenantID, routerExternal):
+        networks = []
+        #Unsupport shared network and external network
+        if shared or routerExternal:
+            return networks
+
         request = DescribeVpcsRequest.DescribeVpcsRequest()
         request.set_PageNumber(1)
         request.set_PageSize(50)
+        if tenantID is not None:
+            request.set_OwnerId(tenantID)
         request.set_accept_format('json')
-
-        networks = []
 
         while True :
             response = self.clt.do_action(request)
@@ -59,14 +64,15 @@ class AliyunNetworkingProcessor(NetworkingProcessorBase):
                 if vpc["Status"] == "Available":
                     network["status"] = "ACTIVE"
                 network["subnets"] = []
+                #network["subnets"].append(vpc["CidrBlock"])
                 network["name"] = vpc["VpcName"]
                 network["provider:physical_network"] = None
                 network["admin_state_up"] = True
                 network["tenant_id"] = tenantID
                 network["provider:network_type"] = "local"
-                network["router:external"] = routerExternal
+                network["router:external"] = False
                 network["mtu"] = 0
-                network["shared"] = shared
+                network["shared"] = False
                 network["id"] = vpc["VpcId"]
                 network["provider:segmentation_id"] = None
 
@@ -82,9 +88,9 @@ class AliyunNetworkingProcessor(NetworkingProcessorBase):
         network["admin_state_up"] = True
         network["tenant_id"] = tenantID
         network["provider:network_type"] = "local"
-        network["router:external"] = routerExternal
+        network["router:external"] = False
         network["mtu"] = 0
-        network["shared"] = shared
+        network["shared"] = False
         network["id"] = "vpcid-qqqqqwwwwww"
         network["provider:segmentation_id"] = None
         networks.append(network)
