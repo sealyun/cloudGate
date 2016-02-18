@@ -73,8 +73,9 @@ class ImagesHandler(ImageBaseHandler):
         disk_format = self.request.headers.get('disk_format')
         xrid = self.request.headers.get('X-Image-Meta-Property-Ramdisk_id')
         xkid = self.request.headers.get('X-Image-Meta-Property-Kernel_id')
+        sid = self.request.headers.get('X-Glance-Api-Copy-From')
         # ('self.request', HTTPServerRequest(protocol='http', host='121.199.9.187:8085', method='POST', uri='/image_service/v1/images', version='HTTP/1.1', remote_ip='121.199.9.187', headers={'Content-Length': '0', 'Host': '121.199.9.187:8085', 'X-Auth-Token': 'adminadmin', 'Accept-Encoding': 'gzip, deflate', 'X-Image-Meta-Container_format': 'aki', 'Content-Type': 'application/octet-stream', 'X-Image-Meta-Property-Architecture': '111', 'Accept': '*/*', 'X-Image-Meta-Protected': 'True', 'X-Image-Meta-Property-Ramdisk_id': 'win2012_64_dataCtr_R2_en_40G_alibase_20150429.vhd', 'Connection': 'keep-alive', 'X-Image-Meta-Min_disk': '1', 'X-Image-Meta-Is_public': 'False', 'X-Image-Meta-Min_ram': '1', 'X-Image-Meta-Property-Kernel_id': 'coreos681_64_20G_aliaegis_20150618.vhd', 'User-Agent': 'python-glanceclient', 'X-Image-Meta-Property-Description': '111', 'X-Image-Meta-Disk_format': 'aki', 'X-Image-Meta-Name': '111'}))
-        i = self.p.createImage(name, container_format, disk_format, xrid)
+        i = self.p.createImage(name, container_format, disk_format, sid)
         resp = {
             "image": {
                 "status": "queued",
@@ -222,30 +223,6 @@ class ImageActionReactivateHandler(ImageBaseHandler):
         else:
             return
 
-        resp = {
-            "status": i.status,
-            "name": i.name,
-            "tags": i.tags,
-            "container_format": i.container_format,
-            "create_at": i.create_at,
-            "disk_format": i.disk_format,
-            "updated_at": i.updated_at,
-            "visibility": i.visibility,
-            "self": "/v2/images/" + i.id,
-            "min_disk": i.min_disk,
-            "protected": i.protected,
-            "id": i.id,
-            "file": "/v2/images/" + i.id + "/file",
-            "checksum": i.checksum,
-            "owner": i.owner,
-            "size": i.size,
-            "min_ram": i.min_ram,
-            "schema": i.schema,
-            "virtual_size": i.virtual_size
-        }
-
-        self.send_json(resp)
-
 
 class ImageActionDeactivateHandler(ImageBaseHandler):
 
@@ -256,30 +233,6 @@ class ImageActionDeactivateHandler(ImageBaseHandler):
             self.set_status(204)
         else:
             return
-
-        resp = {
-            "status": i.status,
-            "name": i.name,
-            "tags": i.tags,
-            "container_format": i.container_format,
-            "create_at": i.create_at,
-            "disk_format": i.disk_format,
-            "updated_at": i.updated_at,
-            "visibility": i.visibility,
-            "self": "/v2/images/" + i.id,
-            "min_disk": i.min_disk,
-            "protected": i.protected,
-            "id": i.id,
-            "file": "/v2/images/" + i.id + "/file",
-            "checksum": i.checksum,
-            "owner": i.owner,
-            "size": i.size,
-            "min_ram": i.min_ram,
-            "schema": i.schema,
-            "virtual_size": i.virtual_size
-        }
-
-        self.send_json(resp)
 
 # TODO need upload download binary file
 
