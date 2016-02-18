@@ -12,7 +12,7 @@ import requests
 
 from cloudGate.modules.image_service.aliyun import processor
 
-run = 'test_create_image'
+run = 'test_list_images'
 
 
 class TestCase(unittest.TestCase):
@@ -21,7 +21,7 @@ class TestCase(unittest.TestCase):
     def test_list_images(self):
         p = processor.AliyunImageServiceProcessor("")
         r = p.queryImages(None, None, None, None, None, None, None, None, None, None, None, None, None,)
-        print('test_list_images', r)
+        print('test_list_images', r, len(r))
 
     @unittest.skipUnless(run == 'test_create_image', 'reason')
     def test_create_image(self):
@@ -34,6 +34,18 @@ class TestCase(unittest.TestCase):
         p = processor.AliyunImageServiceProcessor("")
         r = p.queryImageId('coreos681_64_20G_aliaegis_20150618.vhd')
         print('test_query_image_by_id', r)
+
+    @unittest.skipUnless(run == 'test_delete_image_by_id', 'reason')
+    def test_delete_image_by_id(self):
+        p = processor.AliyunImageServiceProcessor("")
+        r = p.deleteImage('centos5u10_32_20G_aliaegis_20150130.vhd')
+        print('test_delete_image_by_id', r)
+
+    @unittest.skipUnless(run == 'test_update_image_name', 'reason')
+    def test_update_image_name(self):
+        p = processor.AliyunImageServiceProcessor("")
+        r = p.updateImage('coreos681_64_20G_aliaegis_20150618.vhd', 'Mohanson')
+        print('test_update_image_name', r)
 
 if __name__ == '__main__':
     unittest.main()

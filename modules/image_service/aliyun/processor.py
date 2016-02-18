@@ -3,6 +3,7 @@ import json
 from cloudGate.modules.image_service.process_base import ImageServiceProcessorBase
 from cloudGate.config import *
 from aliyunsdkcore import client
+import math
 
 
 from aliyunsdkecs.request.v20140526 import (
@@ -31,6 +32,20 @@ class AliyunImageServiceProcessor(ImageServiceProcessorBase):
 
         response = self.clt.do_action(request)
         resp = json.loads(response)
+
+        count = resp['TotalCount']
+        pagesize = resp['PageSize']
+
+        ps = int(math.floor((count - (pagesize / count)) / pagesize) + 1)
+        images = resp['Images']['Image']
+        for i in range(2, ps):
+            request = DescribeImagesRequest.DescribeImagesRequest()
+            request.set_accept_format('json')
+            request.set_PageNumber(i)
+            response = self.clt.do_action(request)
+            resp = json.loads(response)
+            images += resp['Images']['Image']
+
         """
         {
             u'PageSize': 10,
@@ -80,7 +95,7 @@ class AliyunImageServiceProcessor(ImageServiceProcessorBase):
             }
         }
         """
-        return resp['Images']['Image']
+        return images
 
     def createImage(self, container_format, disk_format, name, snapshot_id):
         request = CreateImageRequest.CreateImageRequest()
@@ -114,7 +129,7 @@ class AliyunImageServiceProcessor(ImageServiceProcessorBase):
         request = ModifyImageAttributeRequest.ModifyImageAttributeRequest()
         request.set_accept_format('json')
         request.set_ImageId(image_id)
-        request.set_set_ImageName(image_name)
+        request.set_ImageName(image_name)
         response = self.clt.do_action(request)
         resp = json.loads(response)
         return resp
