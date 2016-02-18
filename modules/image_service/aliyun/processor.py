@@ -31,7 +31,6 @@ class AliyunImageServiceProcessor(ImageServiceProcessorBase):
 
         response = self.clt.do_action(request)
         resp = json.loads(response)
-        print('queryImages', resp)
         """
         {
             u'PageSize': 10,
@@ -90,7 +89,6 @@ class AliyunImageServiceProcessor(ImageServiceProcessorBase):
 
         response = self.clt.do_action(request)
         resp = json.loads(response)
-        print('createImage', resp)
         return resp
 
     def queryImageId(self, image_id):
@@ -100,7 +98,6 @@ class AliyunImageServiceProcessor(ImageServiceProcessorBase):
 
         response = self.clt.do_action(request)
         resp = json.loads(response)
-        print('queryImageId', resp)
         if resp['Images']['Image']:
             return resp['Images']['Image'][0]
         return None
