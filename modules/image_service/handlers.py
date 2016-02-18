@@ -108,6 +108,7 @@ class ImagesHandler(ImageBaseHandler):
 class ImageHandler(ImageBaseHandler):
 
     def get(self, image_id):
+        self.set_header('Content-Type', 'application/json')
         self.get_processor()
         i = self.p.queryImageId(image_id)
         if not i:
@@ -172,14 +173,7 @@ class ImageHandler(ImageBaseHandler):
     def delete(self, image_id):
         self.get_processor()
         res = self.p.deleteImage(image_id)
-
-        if res:
-            self.set_status(204)
-        else:
-            self.set_status(403)
-        self.send_json({
-            'image_id': image_id,
-        })
+        self.set_status(204)
 
 
 class ImageActionReactivateHandler(ImageBaseHandler):

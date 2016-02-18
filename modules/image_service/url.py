@@ -1,4 +1,4 @@
-from handlers import *
+from cloudGate.modules.image_service.handlers import *
 from cloudGate.common.define import IMAGE_SERVICE_BASE_URL
 
 urls = [
