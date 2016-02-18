@@ -143,8 +143,11 @@ class AliyunNetworkingProcessor(NetworkingProcessorBase):
         return outNetwork
 
     def createNetworks(self, inNetworks):
-        #TODO
-        return []
+        outNetworks = []
+        for inNetwork in inNetworks:
+            outNetwork = self.createNetwork(inNetwork)
+            outNetworks.append(outNetwork)
+        return outNetworks
 
     def getAPIExtensions(self):
         return []
