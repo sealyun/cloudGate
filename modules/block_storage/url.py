@@ -17,8 +17,13 @@ urls_v2 = [
     (BLOCK_STORAGE_BASE_URL + r"/v2/(.*)/snapshots/detail", SnapshotsDetailHandler),
     (BLOCK_STORAGE_BASE_URL + r"/v2/(.*)/snapshots/(.*)", SnapshotHandler),
     (BLOCK_STORAGE_BASE_URL + r"/v2/(.*)/snapshots/(.*)/metadata", SnapshotMetadataHandler),
+    
+    ####### new Add handler ############
+    (BLOCK_STORAGE_BASE_URL + r"/v2/(.*)/os-volume-transfer/detail", OsVolumeTransferDetailHandler),
 
-    (BLOCK_STORAGE_BASE_URL + r"/v2/(.*)/os-volume-transfer/detail", OsVolumeTransferHandler),
+    (BLOCK_STORAGE_BASE_URL + r"/v2/(.*)/qos-specs", QosSpecsHandler),
+
+    (BLOCK_STORAGE_BASE_URL + r"/v2/(.*)/types", TypesHandler),
 ]
 
 urls = urls_low_version + urls_v2

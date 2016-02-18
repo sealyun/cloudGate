@@ -35,7 +35,7 @@ class VolumesHandler(BlockStorageBaseHandler):
         marker = self.get_argument("marker", None)
         
         resp = self.p.queryVolumes(tenant_id, sort, limit, marker)
-        print "VolumesHandler GET Resp Json: ========"
+        print "VolumesHandler queryVolumes GET Resp Json: ========"
         print json.dumps(resp, indent=4)
         print "==========================================" 
         self.send_json(resp)
@@ -101,48 +101,18 @@ class VolumesDetailHandler(BlockStorageBaseHandler):
         marker = self.get_argument("marker",None)
 
         resp = self.p.queryVolumesDetails(tenant_id, sort, limit, marker)
-        print "VolumesDetailHandler GET Resp Json: ========"
+        print "VolumesDetailHandler queryVolumesDetails GET Resp Json: ========"
         print json.dumps(resp, indent=4)
         print "==========================================" 
         self.send_json(resp)
 
 class VolumeHandler(BlockStorageBaseHandler):
     def get(self, tenant_id, volume_id):
-
-        volume = self.p.queryVolume(tenant_id, volume_id)
-
-        resp = {
-            "volume":{
-                "status":volume.status,
-                "attachments": volume.attachments,
-                "links": [
-                        {
-                            "href": "http://",
-                            "rel": "self"
-                        },
-                        {
-                            "href": "http://",
-                            "rel": "bookmark"
-                        }
-                ],
-                "availability_zone": volume.availability_zone,
-                "bootable": volume.bootable,
-                "os-vol-host-attr:host":volume.os_vol_host_attr_host,
-                "source_volid": volume.source_volid,
-                "snapshot_id": volume.snapshot_id,
-                "id": volume.id,
-                "description": volume.description,
-                "name": volume.name,
-                "created_at": volume.create_at,
-                "volume_type": volume.volume_type,
-                "os-vol-tenant-attr:tenant_id":volume.os_vol_tenant_attr_tenant_id,
-                "size": volume.size,
-                "os-volume-replication:driver_data": volume.os_volume_replication_driver_data,
-                "os-volume-replication:extended_status": volume.os_volume_replication_extended_status,
-                "metadata": volume.metadata,
-            }
-        }
-
+        
+        resp = self.p.queryVolume(tenant_id, volume_id)
+        print "VolumeHandler queryVolume GET Resp Json: ========"
+        print json.dumps(resp, indent=4)
+        print "==========================================" 
         self.send_json(resp)
 
     def put(self, tenant_id, volume_id):
@@ -278,7 +248,7 @@ class SnapshotsHandler(BlockStorageBaseHandler):
 class SnapshotsDetailHandler(BlockStorageBaseHandler):
     def get(self, tenant_id):
         resp = self.p.querySnapshotsDetails(tenant_id)
-        print "SnapshotsDetailHandler GET Resp Json: ========"
+        print "SnapshotsDetailHandler querySnapshotsDetails GET Resp Json: ========"
         print json.dumps(resp, indent=4)
         print "=========================================="
         self.send_json(resp)
@@ -357,11 +327,40 @@ class SnapshotMetadataHandler(BlockStorageBaseHandler):
 
 
 
-class OsVolumeTransferHandler(BlockStorageBaseHandler):
+class OsVolumeTransferDetailHandler(BlockStorageBaseHandler):
     def get(self, tenant_id):
-        resp = self.p.queryOsVolumeTransfer(tenant_id)
-        print "OsVolumeTransferHandler GET Resp Json: ========"
+        resp = self.p.queryOsVolumeTransferDetail(tenant_id)
+        print "OsVolumeTransferDetailHandler queryOsVolumeTransferDetail GET Resp Json: ========"
         print json.dumps(resp, indent=4)
         print "=========================================="
         self.send_json(resp)        
         pass
+    
+    
+class QosSpecsHandler(BlockStorageBaseHandler):
+    def get(self, tenant_id):
+        sort_key = self.get_argument("sort_key", None)
+        sort_dir = self.get_argument("sort_dir", None)
+        limit = self.get_argument("limit", None)
+        marker = self.get_argument("marker", None)  
+        
+        resp = self.p.queryQosSpecs(tenant_id, sort_key, sort_dir, limit, marker)
+        print "QosSpecsHandler queryQosSpecs GET Resp Json: ========"
+        print json.dumps(resp, indent=4)
+        print "=========================================="
+        self.send_json(resp)        
+        pass    
+    
+class TypesHandler(BlockStorageBaseHandler):
+    def get(self, tenant_id):
+        sort_key = self.get_argument("sort_key", None)
+        sort_dir = self.get_argument("sort_dir", None)
+        limit = self.get_argument("limit", None)
+        marker = self.get_argument("marker", None)  
+        
+        resp = self.p.queryTypes(tenant_id, sort_key, sort_dir, limit, marker)
+        print "TypesHandler queryTypes GET Resp Json: ========"
+        print json.dumps(resp, indent=4)
+        print "=========================================="
+        self.send_json(resp)        
+        pass  

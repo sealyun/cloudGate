@@ -104,8 +104,8 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
             r.set_accept_format('json')
             response = self.clt.do_action(r)
             resp = json.loads(response)
-            print "queryVolumes WUJUN response:", json.dumps(resp, indent=4)
-            volumes = resp["Disks"]["Disk"]            
+            ## print "queryVolumes WUJUN response:", json.dumps(resp, indent=4)
+            volumesdetail = resp["Disks"]["Disk"]            
             resp = {
                 "volumes":[
                     {
@@ -122,7 +122,7 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
                         ],
                         "name":v["DiskName"]
                     }
-                    for v in volumes
+                    for v in volumesdetail
                 ]
             }
         return resp
@@ -154,7 +154,7 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
     
     
     def queryVolumesDetails(self, tenant_id, sort, limit, marker):
-        print "queryVolumesDetails WUJUN Begin ...... , tenant_id is ", tenant_id , "  sort is ", sort, "  limit is ", limit, "   marker is ", marker
+        print "queryVolumesDetails WUJUN Begin ...... , tenant_id is ", tenant_id, "  sort is ", sort, "  limit is ", limit, "   marker is ", marker
         if TEST_FLAG:
             resp = {
                 "volumes": [
@@ -264,7 +264,7 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
             r.set_accept_format('json')
             response = self.clt.do_action(r)
             resp = json.loads(response)
-            print "queryVolumesDetails WUJUN response:", json.dumps(resp, indent=4)
+            ## print "queryVolumesDetails WUJUN response:", json.dumps(resp, indent=4)
             volumesdetail = resp["Disks"]["Disk"]             
             
             resp = {
@@ -314,7 +314,84 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
     
     
     def queryVolume(self, tenant_id, volume_id):
-        
+        if TEST_FLAG:
+            resp = {
+                "volume": {
+                    "status": "available",
+                    "attachments": [],
+                    "links": [
+                        {
+                            "href": "http://localhost:8776/v2/0c2eba2c5af04d3f9e9d0d410b371fde/volumes/5aa119a8-d25b-45a7-8d1b-88e127885635",
+                            "rel": "self"
+                        },
+                        {
+                            "href": "http://localhost:8776/0c2eba2c5af04d3f9e9d0d410b371fde/volumes/5aa119a8-d25b-45a7-8d1b-88e127885635",
+                            "rel": "bookmark"
+                        }
+                    ],
+                    "availability_zone": "nova",
+                    "bootable": "True",
+                    "os-vol-host-attr:host": "ip-10-168-107-25",
+                    "source_volid": None,
+                    "snapshot_id": None,
+                    "id": "5aa119a8-d25b-45a7-8d1b-88e127885635",
+                    "description": "Super volume.",
+                    "name": "vol-002",
+                    "created_at": "2013-02-25T02:40:21.000000",
+                    "volume_type": "None",
+                    "os-vol-tenant-attr:tenant_id": "0c2eba2c5af04d3f9e9d0d410b371fde",
+                    "size": 1,
+                    "os-volume-replication:driver_data": None,
+                    "os-volume-replication:extended_status": None,
+                    "metadata": {
+                        "contents": "not junk"
+                    }
+                }
+            }            
+            pass
+        else:
+            r = DescribeDisksRequest.DescribeDisksRequest()
+            
+            r.set_accept_format('json')
+            response = self.clt.do_action(r)
+            resp = json.loads(response)
+            ## print "queryVolume WUJUN response:", json.dumps(resp, indent=4)
+            volumesdetail = resp["Disks"]["Disk"]              
+            resp = {
+                "volume": {
+                    "status": v["Status"],
+                    "attachments": [],
+                    "links": [
+                        {
+                            "href": "http://",
+                            "rel": "self"
+                        },
+                        {
+                            "href": "http://",
+                            "rel": "bookmark"
+                        }
+                    ],
+                    "availability_zone": v["ZoneId"],
+                    "bootable": "True",
+                    "os-vol-host-attr:host": "ip-10-168-107-25",
+                    "source_volid": None,
+                    "snapshot_id": v["SourceSnapshotId"],
+                    "id":  v["DiskId"],
+                    "description": v["Description"],
+                    "name": v["DiskName"],
+                    "created_at": v["CreationTime"],
+                    "volume_type": v["Type"],
+                    "os-vol-tenant-attr:tenant_id": "0c2eba2c5af04d3f9e9d0d410b371fde",
+                    "size": v["Size"],
+                    "os-volume-replication:driver_data": None,
+                    "os-volume-replication:extended_status": None,
+                    "metadata": {
+                        "contents": "not junk"
+                    }
+                }  for v in volumesdetail if v["DiskId"] == volume_id
+            }           
+            pass
+        return resp
         pass
     
     def updateVolume(self, tenant_id, volume_id, name, description):
@@ -370,7 +447,7 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
             r.set_accept_format('json')
             response = self.clt.do_action(r)
             resp = json.loads(response)
-            print "querySnapshotsDetails WUJUN response:", json.dumps(resp, indent=4)
+            ##print "querySnapshotsDetails WUJUN response:", json.dumps(resp, indent=4)
             snapshots = resp["Snapshots"]["Snapshot"] 
             
             resp = {
@@ -410,8 +487,8 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
         pass
     
     
-    def queryOsVolumeTransfer(self, tenant_id):
-        print "queryOsVolumeTransfer WUJUN Do Nothing, tenant_id is ", tenant_id        
+    def queryOsVolumeTransferDetail(self, tenant_id):
+        print "queryOsVolumeTransferDetail WUJUN Do Nothing, tenant_id is ", tenant_id        
         ## if TEST_FLAG:
         if 1:
             ## faked data
@@ -452,3 +529,58 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
                 ]
             }
         return resp
+        
+        
+    def queryQosSpecs(self, tenant_id, sort_key, sort_dir, limit, marker):
+        print "queryQosSpecs WUJUN Do Nothing, tenant_id is ", tenant_id, "  sort_key is ", sort_key, "  sort_dir is ", sort_dir, "  limit is ", limit, "   marker is ", marker         
+        ## if TEST_FLAG:
+        if 1:
+            resp = {
+                "qos_specs": [
+                    {
+                        "specs": {
+                            "availability": "100",
+                            "numberOfFailures": "0"
+                        },
+                        "consumer": "back-end",
+                        "name": "reliability-spec",
+                        "id": "0388d6c6-d5d4-42a3-b289-95205c50dd15"
+                    },
+                    {
+                        "specs": {
+                            "delay": "0",
+                            "throughput": "100"
+                        },
+                        "consumer": "back-end",
+                        "name": "performance-spec",
+                        "id": "ecfc6e2e-7117-44a4-8eec-f84d04f531a8"
+                    }
+                ]
+            }            
+            pass
+        return resp
+        pass
+    
+    
+    def queryTypes(self, tenant_id, sort_key, sort_dir, limit, marker):
+        print "queryTypes WUJUN Do Nothing, tenant_id is ", tenant_id, "  sort_key is ", sort_key, "  sort_dir is ", sort_dir, "  limit is ", limit, "   marker is ", marker        
+        ## if TEST_FLAG:
+        if 1:
+            {
+                "volume_types": [
+                    {
+                        "extra_specs": {
+                            "capabilities": "gpu"
+                        },
+                        "id": "6685584b-1eac-4da6-b5c3-555430cf68ff",
+                        "name": "SSD"
+                    },
+                    {
+                        "extra_specs": {},
+                        "id": "8eb69a46-df97-4e41-9586-9a40a7533803",
+                        "name": "SATA"
+                    }
+                ]
+            }            
+            pass
+        pass          
