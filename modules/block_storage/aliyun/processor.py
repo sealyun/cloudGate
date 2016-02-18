@@ -35,7 +35,7 @@ from aliyunsdkecs.request.v20140526 import DescribeSnapshotsRequest
 from aliyunsdkecs.request.v20140526 import ModifyAutoSnapshotPolicyRequest
 from aliyunsdkecs.request.v20140526 import DescribeAutoSnapshotPolicyRequest
 
-TEST_FLAG = 1
+TEST_FLAG = 0
 
 import json
 
@@ -53,26 +53,79 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
         self.clt = client.AcsClient(self.access_key, self.access_secrect, self.regin)
     
     def queryVolumes(self, tenant_id, sort, limit, marker):
-        print "queryVolumes WUJUN begin ...."
-        print "WUJUN tenant_id is ", tenant_id, "  limit is ", limit, "   marker is ", marker
-        r = DescribeDisksRequest.DescribeDisksRequest()
-        ##### r.set_ZoneId(self.regin)
-        ## r.set_DiskIds()
-        '''
-        r.set_InstanceId()
-        r.set_DiskType()
-        r.set_Category()
-        r.set_Status()
-        r.set_SnapshotId()
-        r.set_Portable()
-        r.set_PageNumber()
-        r.set_PageSize()
-        r.set_DiskName()
-        '''
-        r.set_accept_format('json')
-        response = self.clt.do_action(r)
-        print "queryVolumes WUJUN response is ", response
-        return response
+        print "queryVolumes WUJUN Begin ...... , tenant_id is ", tenant_id, "  sort is ", sort, "  limit is ", limit, "   marker is ", marker
+        if TEST_FLAG:
+            resp = {
+                "volumes": [
+                    {
+                        "id": "45baf976-c20a-4894-a7c3-c94b7376bf55",
+                        "links": [
+                            {
+                                "href": "http://localhost:8776/v2/0c2eba2c5af04d3f9e9d0d410b371fde/volumes/45baf976-c20a-4894-a7c3-c94b7376bf55",
+                                "rel": "self"
+                            },
+                            {
+                                "href": "http://localhost:8776/0c2eba2c5af04d3f9e9d0d410b371fde/volumes/45baf976-c20a-4894-a7c3-c94b7376bf55",
+                                "rel": "bookmark"
+                            }
+                        ],
+                        "name": "vol-004"
+                    },
+                    {
+                        "id": "5aa119a8-d25b-45a7-8d1b-88e127885635",
+                        "links": [
+                            {
+                                "href": "http://localhost:8776/v2/0c2eba2c5af04d3f9e9d0d410b371fde/volumes/5aa119a8-d25b-45a7-8d1b-88e127885635",
+                                "rel": "self"
+                            },
+                            {
+                                "href": "http://localhost:8776/0c2eba2c5af04d3f9e9d0d410b371fde/volumes/5aa119a8-d25b-45a7-8d1b-88e127885635",
+                                "rel": "bookmark"
+                            }
+                        ],
+                        "name": "vol-003"
+                    }
+                ]
+            }            
+            pass
+        else:
+            r = DescribeDisksRequest.DescribeDisksRequest()
+            '''
+            r.set_InstanceId()
+            r.set_DiskType()
+            r.set_Category()
+            r.set_Status()
+            r.set_SnapshotId()
+            r.set_Portable()
+            r.set_PageNumber()
+            r.set_PageSize()
+            r.set_DiskName()
+            '''
+            r.set_accept_format('json')
+            response = self.clt.do_action(r)
+            resp = json.loads(response)
+            print "queryVolumes WUJUN response:", json.dumps(resp, indent=4)
+            volumes = resp["Disks"]["Disk"]            
+            resp = {
+                "volumes":[
+                    {
+                        "id":v["DiskId"],
+                        "links":[
+                            {
+                                "href":"http://",
+                                "rel":"self"
+                            },
+                            {
+                                "href":"http://",
+                                "rel":"bookmark"
+                            }
+                        ],
+                        "name":v["DiskName"]
+                    }
+                    for v in volumes
+                ]
+            }
+        return resp
         pass
     
     def createVolume(self, tenant_id, size, availability_zone, source_volid,
@@ -101,7 +154,7 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
     
     
     def queryVolumesDetails(self, tenant_id, sort, limit, marker):
-        print "queryVolumesDetails WUJUN Begin ...... , tenant_id is ", tenant_id
+        print "queryVolumesDetails WUJUN Begin ...... , tenant_id is ", tenant_id , "  sort is ", sort, "  limit is ", limit, "   marker is ", marker
         if TEST_FLAG:
             resp = {
                 "volumes": [

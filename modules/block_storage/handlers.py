@@ -33,29 +33,11 @@ class VolumesHandler(BlockStorageBaseHandler):
         sort = self.get_argument("sort", None)
         limit = self.get_argument("limit", None)
         marker = self.get_argument("marker", None)
-
-        volumes = self.p.queryVolumes(tenant_id, sort, limit, marker)
-
-        resp = {
-            "volumes":[
-                {
-                    "id":v.id,
-                    "links":[
-                        {
-                            "href":"http://",
-                            "rel":"self"
-                        },
-                        {
-                            "href":"http://",
-                            "rel":"bookmark"
-                        }
-                    ],
-                    "name":v.name
-                }
-                for v in volumes
-            ]
-        }
-
+        
+        resp = self.p.queryVolumes(tenant_id, sort, limit, marker)
+        print "VolumesHandler GET Resp Json: ========"
+        print json.dumps(resp, indent=4)
+        print "==========================================" 
         self.send_json(resp)
 
     def post(self, tenant_id):
