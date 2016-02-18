@@ -113,32 +113,68 @@ class ImageHandler(ImageBaseHandler):
         i = self.p.queryImageId(image_id)
         if not i:
             return
-
         resp = {
-            "images": {
-                "uri": "",
-                "name": i['ImageName'],
-                "disk_format": "",
-                "container_format": "",
-                "size": i['Size'],
-                "checksum": "c2e5db72bd7fd153f53ede5da5a06de3",
-                "created_at": i["CreationTime"],
-                "updated_at": "",
-                "deleted_at": "",
-                "status": "active" if i["Status"] == "Available" else "",
-                "is_public": i['IsSubscribed'],
-                "min_ram": None,
-                "min_disk": None,
-                "owner": i['ImageOwnerAlias'],
-                "properties": {
-                    "distro": i["OSName"],
-                },
-                "id": i["ImageId"],
-            }
+            "images": [
+                {
+                    "uri": "",
+                    "name": i['ImageName'],
+                    "disk_format": "",
+                    "container_format": "",
+                    "size": i['Size'],
+                    "checksum": "c2e5db72bd7fd153f53ede5da5a06de3",
+                    "created_at": i["CreationTime"],
+                    "updated_at": "",
+                    "deleted_at": "",
+                    "status": "active" if i["Status"] == "Available" else "",
+                    "is_public": i['IsSubscribed'],
+                    "min_ram": None,
+                    "min_disk": None,
+                    "owner": i['ImageOwnerAlias'],
+                    "properties": {
+                        "distro": i["OSName"],
+                    },
+                    "id": i["ImageId"],
+                }
+            ]
         }
         self.send_json(resp)
 
-    head = get
+    def head(self, image_id):
+        self.set_header('Content-Type', 'application/json')
+        self.get_processor()
+        i = self.p.queryImageId(image_id)
+        if not i:
+            return
+        resp = {
+            "images": [
+                {
+                    "uri": "",
+                    "name": i['ImageName'],
+                    "disk_format": "",
+                    "container_format": "",
+                    "size": i['Size'],
+                    "checksum": "c2e5db72bd7fd153f53ede5da5a06de3",
+                    "created_at": i["CreationTime"],
+                    "updated_at": "",
+                    "deleted_at": "",
+                    "status": "active" if i["Status"] == "Available" else "",
+                    "is_public": i['IsSubscribed'],
+                    "min_ram": None,
+                    "min_disk": None,
+                    "owner": i['ImageOwnerAlias'],
+                    "properties": {
+                        "distro": i["OSName"],
+                    },
+                    "id": i["ImageId"],
+                }
+            ]
+        }
+        for k, v in resp['images'][0].items():
+            try:
+                self.set_header(k, v)
+            except:
+                pass
+        self.send_json(resp)
 
     def patch(self, image_id):
         self.get_processor()

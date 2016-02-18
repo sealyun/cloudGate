@@ -95,6 +95,11 @@ class AliyunImageServiceProcessor(ImageServiceProcessorBase):
             }
         }
         """
+        if name:
+            images = [i for i in images if name in i['ImageName']]
+        if status:
+            mapper = {'Available': 'Active'}
+            images = [i for i in images if status in mapper.get(i['Status'])]
         return images
 
     def createImage(self, container_format, disk_format, name, snapshot_id):
