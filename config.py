@@ -4,11 +4,11 @@ PORT="8085"
 
 IDENTITY={
     "aliyun":{
-        "user_name":"admin",
-        "passwd":"admin",
-        "access_key":"h66cGGRqSeZuJDrZ",
-        "access_secret":"64EOCkx5KCQ4eLwZKeMdlvATrpgczB",
-        "regin":"cn-hangzhou",
+        "user_name":"admintest",
+        "passwd":"admintest",
+        "access_key":"xvKzzHdiemKVZqtI",
+        "access_secret":"2QNDzyOD9EXNPm2KIrk1foWZLCcIoj",
+        "regin":"cn-hongkong",
         "oss_endpoint":"fanux.oss-cn-hangzhou.aliyuncs.com"
     },
 }
