@@ -106,6 +106,7 @@ class AliyunImageServiceProcessor(ImageServiceProcessorBase):
         request = CreateImageRequest.CreateImageRequest()
         request.set_accept_format('json')
         request.set_SnapshotId(snapshot_id)
+        request.set_ImageName(name)
 
         response = self.clt.do_action(request)
         resp = json.loads(response)
@@ -138,3 +139,9 @@ class AliyunImageServiceProcessor(ImageServiceProcessorBase):
         response = self.clt.do_action(request)
         resp = json.loads(response)
         return resp
+
+    def reactivateImage(self, image_id):
+        return True
+
+    def deactivateImage(self, image_id):
+        return True

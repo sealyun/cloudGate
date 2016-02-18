@@ -15,3 +15,6 @@ class ImageServiceProcessorBase:
 
     def updateImage(self):
         pass
+
+    def reactivateImage(self):
+        pass
