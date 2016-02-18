@@ -546,6 +546,21 @@ class UsersHandler(IdentityBaseHandler):
         user = json.loads(self.request.body)["user"]
 
         self.get_processor()
+
+        if "default_project_id" not in user:
+            user["default_project_id"] = None
+        if "description" not in user:
+            user["description"] = None
+        if "domain_id" not in user:
+            user["domain_id"] = None
+        if "email" not in user:
+            user["email"] = None
+        if "enabled" not in user:
+            user["enabled"] = None
+        if "name" not in user:
+            user["name"] = None
+        if "password" not in user:
+            user["password"] = None
         
         u = self.p.createUser(user["default_project_id"], 
                 user["description"], 
