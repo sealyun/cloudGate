@@ -2,6 +2,7 @@
 from cloudGate.common.define import *
 from cloudGate.httpbase import HttpBaseHandler
 from cloudGate.config import *
+from cloudGate.common.tools import *
 from api_factory import *
 
 import sys
@@ -546,6 +547,26 @@ class UsersHandler(IdentityBaseHandler):
         user = json.loads(self.request.body)["user"]
 
         self.get_processor()
+
+        user = checkKey(user, "default_project_id", "description", "domain_id", "email",
+                "enabled", "name", "password")
+
+        """
+        if "default_project_id" not in user:
+            user["default_project_id"] = None
+        if "description" not in user:
+            user["description"] = None
+        if "domain_id" not in user:
+            user["domain_id"] = None
+        if "email" not in user:
+            user["email"] = None
+        if "enabled" not in user:
+            user["enabled"] = None
+        if "name" not in user:
+            user["name"] = None
+        if "password" not in user:
+            user["password"] = None
+        """
         
         u = self.p.createUser(user["default_project_id"], 
                 user["description"], 
@@ -600,6 +621,8 @@ class UserHandler(IdentityBaseHandler):
         user = json.loads(self.request.body)["user"]
 
         self.get_processor()
+
+        user = checkKey(user, "default_project_id", "description", "email", "enabled")
 
         u = self.p.updateUser(user_name, 
                 user["default_project_id"],

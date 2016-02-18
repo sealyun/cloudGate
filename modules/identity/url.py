@@ -9,9 +9,9 @@ urls = [
     (IDENTITY_BASE_URL + r"/v3/tokens", AuthTokensHandler),
 
     (IDENTITY_BASE_URL + r"/v3/users", UsersHandler),
-    (IDENTITY_BASE_URL + r"/v3/users/(^[a-zA-Z0-9\.@\-_]+$)", UserHandler),
+    (IDENTITY_BASE_URL + r"/v3/users/([a-zA-Z0-9\-]+)", UserHandler),
     #(IDENTITY_BASE_URL + r"/v3/users/(^[a-zA-Z0-9\.@\-_]+$)/password", UserPasswordHandler),
-    (IDENTITY_BASE_URL + r"/v3/users/(^[a-zA-Z0-9\.@\-_]+$)/groups", UserGroupsHandler),
+    (IDENTITY_BASE_URL + r"/v3/users/([a-zA-Z0-9\-]+)/groups", UserGroupsHandler),
     (IDENTITY_BASE_URL + r"/v3/users/([a-zA-Z0-9]+)/projects", UserProjectsHandler),
 
     (IDENTITY_BASE_URL + r"/v3/roles", RolesHandler),
