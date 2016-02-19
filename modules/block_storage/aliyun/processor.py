@@ -86,8 +86,7 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
                         "name": "vol-003"
                     }
                 ]
-            }            
-            pass
+            }
         else:
             r = DescribeDisksRequest.DescribeDisksRequest()
             '''
@@ -105,7 +104,7 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
             response = self.clt.do_action(r)
             resp = json.loads(response)
             ## print "queryVolumes WUJUN response:", json.dumps(resp, indent=4)
-            volumesdetail = resp["Disks"]["Disk"]            
+            volumesdetail = resp["Disks"]["Disk"]
             resp = {
                 "volumes":[
                     {
@@ -126,31 +125,64 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
                 ]
             }
         return resp
-        pass
     
     def createVolume(self, tenant_id, size, availability_zone, source_volid,
                 description, multiattach, snapshot_id, name, imageRef,
                 volume_type, metadata, source_replica, consistencygroup_id):
-        r = CreateDiskRequest.CreateDiskRequest()
-        ## r.set_OwnerId(owner_id)
-        ## r.set_ResourceOwnerAccount(resource_owner_account)
-        ## r.set_ResourceOwnerId(resource_owner_id)
-        ##### r.set_ZoneId(self.regin)
-        ## r.set_SnapshotId(snapshot_id)
-        r.set_DiskName(name)
-        r.set_Size(size)
-        ## r.set_DiskCategory(disk_category)
-        r.set_Description(description)
-        ### r.set_ClientToken(self.token)
-        ### r.set_OwnerAccount("wj")  ## wj or admin       
-        r.set_accept_format('json')
-        
-        ### response = self.clt.do_action(r)
-        
-        print "createVolume WUJUN response is ", response
-        return True
-                    
-        pass
+        print "createVolume WUJUN Begin ...... "
+        if 1:
+            resp = {
+                "volume": {
+                    "status": "creating",
+                    "migration_status": None,
+                    "user_id": "0eea4eabcf184061a3b6db1e0daaf010",
+                    "attachments": [],
+                    "links": [
+                        {
+                            "href": "http://23.253.248.171:8776/v2/bab7d5c60cd041a0a36f7c4b6e1dd978/volumes/6edbc2f4-1507-44f8-ac0d-eed1d2608d38",
+                            "rel": "self"
+                        },
+                        {
+                            "href": "http://23.253.248.171:8776/bab7d5c60cd041a0a36f7c4b6e1dd978/volumes/6edbc2f4-1507-44f8-ac0d-eed1d2608d38",
+                            "rel": "bookmark"
+                        }
+                    ],
+                    "availability_zone": "nova",
+                    "bootable": "false",
+                    "encrypted": False,
+                    "created_at": "2015-11-29T03:01:44.000000",
+                    "description": None,
+                    "updated_at": None,
+                    "volume_type": "lvmdriver-1",
+                    "name": "test-volume-attachments",
+                    "replication_status": "disabled",
+                    "consistencygroup_id": None,
+                    "source_volid": None,
+                    "snapshot_id": None,
+                    "multiattach": False,
+                    "metadata": {},
+                    "id": "6edbc2f4-1507-44f8-ac0d-eed1d2608d38",
+                    "size": 2
+                }
+            }
+        else:
+            r = CreateDiskRequest.CreateDiskRequest()
+            ## r.set_OwnerId(owner_id)
+            ## r.set_ResourceOwnerAccount(resource_owner_account)
+            ## r.set_ResourceOwnerId(resource_owner_id)
+            ##### r.set_ZoneId(self.regin)
+            ## r.set_SnapshotId(snapshot_id)
+            r.set_DiskName(name)
+            r.set_Size(size)
+            ## r.set_DiskCategory(disk_category)
+            r.set_Description(description)
+            ### r.set_ClientToken(self.token)
+            ### r.set_OwnerAccount("wj")  ## wj or admin       
+            r.set_accept_format('json')
+            ### response = self.clt.do_action(r)
+            print "createVolume WUJUN response is ", response
+            return True
+        return resp
     
     
     def queryVolumesDetails(self, tenant_id, sort, limit, marker):
@@ -192,7 +224,7 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
                         "os-vol-tenant-attr:tenant_id": "bab7d5c60cd041a0a36f7c4b6e1dd978",
                         "os-vol-mig-status-attr:migstat": None,
                         "metadata": {
-                            "readonly": "False",
+                            "readonly": "false",
                             "attached_mode": "rw"
                         },
                         "status": "in-use",
@@ -203,7 +235,7 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
                         "consistencygroup_id": None,
                         "os-vol-mig-status-attr:name_id": None,
                         "name": "test-volume-attachments",
-                        "bootable": "False",
+                        "bootable": "false",
                         "created_at": "2015-11-29T03:01:44.000000",
                         "volume_type": "lvmdriver-1"
                     },
@@ -252,7 +284,7 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
                         "consistencygroup_id": None,
                         "os-vol-mig-status-attr:name_id": None,
                         "name": "test-volume",
-                        "bootable": "True",
+                        "bootable": "true",
                         "created_at": "2015-11-29T02:25:18.000000",
                         "volume_type": "lvmdriver-1"
                     }
@@ -260,11 +292,10 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
             }
         else:    
             r = DescribeDisksRequest.DescribeDisksRequest()
-            
             r.set_accept_format('json')
             response = self.clt.do_action(r)
             resp = json.loads(response)
-            ## print "queryVolumesDetails WUJUN response:", json.dumps(resp, indent=4)
+            print "queryVolumesDetails WUJUN Origin Data *********####### response:", json.dumps(resp, indent=4)
             volumesdetail = resp["Disks"]["Disk"]             
             
             resp = {
@@ -302,7 +333,7 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
                         "consistencygroup_id": None,
                         "os-vol-mig-status-attr:name_id": None,
                         "name": v["DiskName"],
-                        "bootable": "True",
+                        "bootable": "true",
                         "created_at": v["CreationTime"],
                         "volume_type": v["Type"]
                     }
@@ -330,7 +361,7 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
                         }
                     ],
                     "availability_zone": "nova",
-                    "bootable": "True",
+                    "bootable": "true",
                     "os-vol-host-attr:host": "ip-10-168-107-25",
                     "source_volid": None,
                     "snapshot_id": None,
@@ -351,46 +382,47 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
             pass
         else:
             r = DescribeDisksRequest.DescribeDisksRequest()
-            
             r.set_accept_format('json')
             response = self.clt.do_action(r)
             resp = json.loads(response)
             ## print "queryVolume WUJUN response:", json.dumps(resp, indent=4)
-            volumesdetail = resp["Disks"]["Disk"]              
-            resp = {
-                "volume": {
-                    "status": v["Status"],
-                    "attachments": [],
-                    "links": [
-                        {
-                            "href": "http://",
-                            "rel": "self"
-                        },
-                        {
-                            "href": "http://",
-                            "rel": "bookmark"
-                        }
-                    ],
-                    "availability_zone": v["ZoneId"],
-                    "bootable": "True",
-                    "os-vol-host-attr:host": "ip-10-168-107-25",
-                    "source_volid": None,
-                    "snapshot_id": v["SourceSnapshotId"],
-                    "id":  v["DiskId"],
-                    "description": v["Description"],
-                    "name": v["DiskName"],
-                    "created_at": v["CreationTime"],
-                    "volume_type": v["Type"],
-                    "os-vol-tenant-attr:tenant_id": "0c2eba2c5af04d3f9e9d0d410b371fde",
-                    "size": v["Size"],
-                    "os-volume-replication:driver_data": None,
-                    "os-volume-replication:extended_status": None,
-                    "metadata": {
-                        "contents": "not junk"
+            volumesdetail = resp["Disks"]["Disk"]  
+            resp = { "volume": {} }
+            for v in volumesdetail:
+                if v["DiskId"]==volume_id:
+                    resp = {
+                        "volume": {
+                            "status": v["Status"],
+                            "attachments": [],
+                            "links": [
+                                {
+                                    "href": "http://",
+                                    "rel": "self"
+                                },
+                                {
+                                    "href": "http://",
+                                    "rel": "bookmark"
+                                }
+                            ],
+                            "availability_zone": v["ZoneId"],
+                            "bootable": "true",
+                            "os-vol-host-attr:host": None, ##"ip-10-168-107-25",
+                            "source_volid": None,
+                            "snapshot_id": v["SourceSnapshotId"],
+                            "id":  v["DiskId"],
+                            "description": v["Description"],
+                            "name": v["DiskName"],
+                            "created_at": v["CreationTime"],
+                            "volume_type": v["Type"],
+                            "os-vol-tenant-attr:tenant_id": None, ## "0c2eba2c5af04d3f9e9d0d410b371fde",
+                            "size": v["Size"],
+                            "os-volume-replication:driver_data": None,
+                            "os-volume-replication:extended_status": None,
+                            "metadata": {
+                                "contents": "not junk"
+                            }
+                        }  
                     }
-                }  for v in volumesdetail if v["DiskId"] == volume_id
-            }           
-            pass
         return resp
         pass
     
@@ -409,6 +441,30 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
     
     
     def volumeAction(self, tenant_id, volume_id, action):
+        print "$$$$$$$$$$$  Volume Action is ", json.dumps(action, indent=4)
+        if action.has_key("os-reset_status"):
+            """
+            {
+                "os-reset_status": {
+                    "status": "available",
+                    "attach_status": "detached",
+                    "migration_status": "migrating"
+                }
+            }            
+            """
+            print "volumeAction WUJUN begin ...."        
+            r = ModifyDiskAttributeRequest.ModifyDiskAttributeRequest()
+            r.set_accept_format('json')
+            r.set_DiskId(volume_id);
+            ## r.set_DiskName("");
+            r.set_Description("ModifyDescription ... test ...");
+            response = self.clt.do_action(r)
+            resp = json.loads(response) 
+            print "volumeAction WUJUN response:", json.dumps(resp, indent=4)
+            pass
+        else:
+            return False
+        return True
         pass
 
     
@@ -454,11 +510,11 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
                 "snapshots":[
                     {
                         "status":s["Status"],
-                        "metadata":None,
+                        "metadata":{},
                         "os-extended-snapshot-attributes:progress": s["Progress"],
                         "name": s["SnapshotName"],
                         "volume_id": s["SourceDiskId"],
-                        "os-extended-snapshot-attributes:project_id":s["ProductCode"],
+                        "os-extended-snapshot-attributes:project_id": None, ##s["ProductCode"],
                         "created_at": s["CreationTime"],    
                         "size":s["SourceDiskSize"],
                         "id":s["SnapshotId"],
@@ -471,9 +527,62 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
     
     
     def querySnapshot(self, tenant_id, snapshot_id):
+        if TEST_FLAG:
+            ## faked data for test
+            resp = {
+                "snapshot": {
+                    "status": s["Status"],
+                    "os-extended-snapshot-attributes:progress": "100%",
+                    "description": "Daily backup",
+                    "created_at": "2013-02-25T04:13:17.000000",
+                    "metadata": {},
+                    "volume_id": "5aa119a8-d25b-45a7-8d1b-88e127885635",
+                    "os-extended-snapshot-attributes:project_id": "0c2eba2c5af04d3f9e9d0d410b371fde",
+                    "size": 1,
+                    "id": "2bb856e1-b3d8-4432-a858-09e4ce939389",
+                    "name": "snap-001"
+                }
+            }              
+            pass
+        else:
+            print "querySnapshot WUJUN begin ...."        
+            r = DescribeSnapshotsRequest.DescribeSnapshotsRequest()
+            
+            r.set_accept_format('json')
+            response = self.clt.do_action(r)
+            resp = json.loads(response)
+            ##print "querySnapshotsDetails WUJUN response:", json.dumps(resp, indent=4)
+            snapshots = resp["Snapshots"]["Snapshot"]
+
+            resp = { "snapshot": {} }
+            for s in snapshots:
+                if s["SnapshotId"]==snapshot_id:                        
+                    resp = {
+                        "snapshot": {
+                            "status": "available",
+                            "os-extended-snapshot-attributes:progress": s["Progress"],
+                            "description": s["Description"],
+                            "created_at": s["CreationTime"],
+                            "metadata": {},
+                            "volume_id": s["SourceDiskId"],
+                            "os-extended-snapshot-attributes:project_id": None, ##"0c2eba2c5af04d3f9e9d0d410b371fde",
+                            "size": s["SourceDiskSize"],
+                            "id": s["SnapshotId"],
+                            "name": s["SnapshotName"]
+                        }
+                    }
+        return resp
         pass
     
     def deleteSnapshot(self, tenant_id, snapshot_id):
+        print "deleteSnapshot WUJUN begin .... snapshot_id is ", snapshot_id        
+        r = DeleteSnapshotRequest.DeleteSnapshotRequest()
+        r.set_SnapshotId(snapshot_id)
+        r.set_accept_format('json')
+        response = self.clt.do_action(r)
+        resp = json.loads(response)
+        print "deleteSnapshot WUJUN response:", json.dumps(resp, indent=4)       
+        return True
         pass 
     
     def updateSnapshot(self, tenant_id, snapshot_id, name, description):
