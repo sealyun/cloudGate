@@ -441,6 +441,30 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
     
     
     def volumeAction(self, tenant_id, volume_id, action):
+        print "$$$$$$$$$$$  Volume Action is ", json.dumps(resp, indent=4)
+        if action.has_key("os-reset_status"):
+            """
+            {
+                "os-reset_status": {
+                    "status": "available",
+                    "attach_status": "detached",
+                    "migration_status": "migrating"
+                }
+            }            
+            """
+            print "volumeAction WUJUN begin ...."        
+            r = ModifyDiskAttributeRequest.ModifyDiskAttributeRequest()
+            r.set_accept_format('json')
+            ## r.set_DiskId("");
+            ## r.set_DiskName("");
+            r.set_Description("ModifyDescription ... test ...");
+            response = self.clt.do_action(r)
+            resp = json.loads(response) 
+            print "volumeAction WUJUN response:", json.dumps(resp, indent=4)
+            pass
+        else:
+            return False
+        return True
         pass
 
     

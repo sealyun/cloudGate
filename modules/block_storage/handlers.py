@@ -163,9 +163,10 @@ class VolumeActionHandler(BlockStorageBaseHandler):
         action = json.loads(self.request.body)
 
         if self.p.volumeAction(tenant_id, volume_id, action):
-            #HTTP 202
+            self.set_status(202)
             pass
         else:
+            self.set_status(403)
             pass
 
 class SnapshotsHandler(BlockStorageBaseHandler):
