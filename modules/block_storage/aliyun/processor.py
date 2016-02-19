@@ -427,9 +427,29 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
         pass
     
     def updateVolume(self, tenant_id, volume_id, name, description):
+        ### NOCALL
+        print "there is no called"
+        print "updateVolume WUJUN begin ...."        
+        r = ModifyDiskAttributeRequest.ModifyDiskAttributeRequest()
+        r.set_accept_format('json')
+        r.set_DiskId(volume_id);
+        r.set_DiskName(name);
+        r.set_Description(description);
+        response = self.clt.do_action(r)
+        resp = json.loads(response) 
+        print "updateVolume WUJUN response:", json.dumps(resp, indent=4)
+        ######TODO......       
         pass
     
     def deleteVolume(self, tenant_id, volume_id):
+        print "deleteVolume WUJUN begin .... tenant_id is ", tenant_id, "  volume_id is ", volume_id     
+        r = DeleteDiskRequest.DeleteDiskRequest()
+        r.set_DiskId(volume_id)
+        r.set_accept_format('json')
+        response = self.clt.do_action(r)
+        resp = json.loads(response)
+        print "deleteVolume WUJUN response:", json.dumps(resp, indent=4) 
+        return True         
         pass    
     
     
@@ -452,7 +472,7 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
                 }
             }            
             """
-            print "volumeAction WUJUN begin ...."        
+            print "volumeAction os-reset_status WUJUN begin ...."        
             r = ModifyDiskAttributeRequest.ModifyDiskAttributeRequest()
             r.set_accept_format('json')
             r.set_DiskId(volume_id);
@@ -460,7 +480,48 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
             r.set_Description("ModifyDescription ... test ...");
             response = self.clt.do_action(r)
             resp = json.loads(response) 
-            print "volumeAction WUJUN response:", json.dumps(resp, indent=4)
+            print "volumeAction os-reset_status WUJUN response:", json.dumps(resp, indent=4)
+            pass
+        elif action.has_key("os-attach"):
+            ### NOTEST
+            """
+            {
+                "os-attach": {
+                    "instance_uuid": "95D9EF50-507D-11E5-B970-0800200C9A66",
+                    "mountpoint": "/dev/vdc"
+                }
+            } 
+            """
+            r = AttachDiskRequest.AttachDiskRequest()
+            r.set_InstanceId(action["os-attach"]["instance_uuid"])
+            r.set_DiskId(volume_id)
+            r.set_Device(action["os-attach"]["mountpoint"])
+            ## r.set_DeleteWithInstance(True)  ## or False
+            response = self.clt.do_action(r)
+            resp = json.loads(response) 
+            print "volumeAction os-attach WUJUN response:", json.dumps(resp, indent=4)
+            pass
+        elif action.has_key("os-force_detach"):
+            ### NOTEST    NOMATCH
+            ### aliyun need instanceID and diskID but opengstack is attachment_id
+            ### solve the way attachment_id real value is instanceID
+            """
+            {
+                "os-force_detach": {
+                    "attachment_id": "d8777f54-84cf-4809-a679-468ffed56cf1",
+                    "connector": {
+                        "initiator": "iqn.2012-07.org.fake:01"
+                    }
+                }
+            }            
+            """
+            r = DetachDiskRequest.DetachDiskRequest()
+            r.set_InstanceId(action["os-force_detach"]["attachment_id"])
+            r.set_DiskId(volume_id)
+            ## r.set_DeleteWithInstance(True)  ## or False
+            response = self.clt.do_action(r)
+            resp = json.loads(response) 
+            print "volumeAction os-force_detach WUJUN response:", json.dumps(resp, indent=4)            
             pass
         else:
             return False

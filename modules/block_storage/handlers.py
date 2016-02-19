@@ -133,7 +133,12 @@ class VolumeHandler(BlockStorageBaseHandler):
         self.send_json(resp)
 
     def delete(self, tenant_id, volume_id):
-        self.p.deleteVolume(tenant_id, volume_id)
+        if self.p.deleteVolume(tenant_id, volume_id):
+            self.set_status(202)
+            pass
+        else:
+            self.set_status(403)
+            pass        
 
 class VolumeMetadataHandler(BlockStorageBaseHandler):
     def get(self, tenant_id, volume_id):
