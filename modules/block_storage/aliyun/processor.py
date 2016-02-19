@@ -131,25 +131,63 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
     def createVolume(self, tenant_id, size, availability_zone, source_volid,
                 description, multiattach, snapshot_id, name, imageRef,
                 volume_type, metadata, source_replica, consistencygroup_id):
-        r = CreateDiskRequest.CreateDiskRequest()
-        ## r.set_OwnerId(owner_id)
-        ## r.set_ResourceOwnerAccount(resource_owner_account)
-        ## r.set_ResourceOwnerId(resource_owner_id)
-        ##### r.set_ZoneId(self.regin)
-        ## r.set_SnapshotId(snapshot_id)
-        r.set_DiskName(name)
-        r.set_Size(size)
-        ## r.set_DiskCategory(disk_category)
-        r.set_Description(description)
-        ### r.set_ClientToken(self.token)
-        ### r.set_OwnerAccount("wj")  ## wj or admin       
-        r.set_accept_format('json')
-        
-        ### response = self.clt.do_action(r)
-        
-        print "createVolume WUJUN response is ", response
-        return True
-                    
+        print "createVolume WUJUN Begin ...... "
+        if 1:
+            resp = {
+                "volume": {
+                    "status": "creating",
+                    "migration_status": None,
+                    "user_id": "0eea4eabcf184061a3b6db1e0daaf010",
+                    "attachments": [],
+                    "links": [
+                        {
+                            "href": "http://23.253.248.171:8776/v2/bab7d5c60cd041a0a36f7c4b6e1dd978/volumes/6edbc2f4-1507-44f8-ac0d-eed1d2608d38",
+                            "rel": "self"
+                        },
+                        {
+                            "href": "http://23.253.248.171:8776/bab7d5c60cd041a0a36f7c4b6e1dd978/volumes/6edbc2f4-1507-44f8-ac0d-eed1d2608d38",
+                            "rel": "bookmark"
+                        }
+                    ],
+                    "availability_zone": "nova",
+                    "bootable": "False",
+                    "encrypted": False,
+                    "created_at": "2015-11-29T03:01:44.000000",
+                    "description": None,
+                    "updated_at": None,
+                    "volume_type": "lvmdriver-1",
+                    "name": "test-volume-attachments",
+                    "replication_status": "disabled",
+                    "consistencygroup_id": None,
+                    "source_volid": None,
+                    "snapshot_id": None,
+                    "multiattach": False,
+                    "metadata": {},
+                    "id": "6edbc2f4-1507-44f8-ac0d-eed1d2608d38",
+                    "size": 2
+                }
+            }
+            pass
+        else:
+            r = CreateDiskRequest.CreateDiskRequest()
+            ## r.set_OwnerId(owner_id)
+            ## r.set_ResourceOwnerAccount(resource_owner_account)
+            ## r.set_ResourceOwnerId(resource_owner_id)
+            ##### r.set_ZoneId(self.regin)
+            ## r.set_SnapshotId(snapshot_id)
+            r.set_DiskName(name)
+            r.set_Size(size)
+            ## r.set_DiskCategory(disk_category)
+            r.set_Description(description)
+            ### r.set_ClientToken(self.token)
+            ### r.set_OwnerAccount("wj")  ## wj or admin       
+            r.set_accept_format('json')
+            
+            ### response = self.clt.do_action(r)
+            
+            print "createVolume WUJUN response is ", response
+            return True
+        return resp
         pass
     
     

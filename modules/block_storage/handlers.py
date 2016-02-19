@@ -42,8 +42,8 @@ class VolumesHandler(BlockStorageBaseHandler):
 
     def post(self, tenant_id):
         volume = json.loads(self.request.body)["volume"]
-
-        volume = self.p.createVolume(tenant_id, volume["size"],
+        print "createVolume Input Params is ", json.dumps(volume, indent=4)
+        resp = self.p.createVolume(tenant_id, volume["size"],
                 volume["availability_zone"],
                 volume["source_volid"],
                 volume["description"],
@@ -55,42 +55,9 @@ class VolumesHandler(BlockStorageBaseHandler):
                 volume["metadata"],
                 volume["source_replica"],
                 volume["consistencygroup_id"])
-
-        resp = {
-            "volume":{
-                "status":volume.status,
-                "migration_status": volume.migration_status,
-                "user_id": volume.user_id,
-                "attachments": volume.attachments,
-                "links": [
-                        {
-                            "href": "http://",
-                            "rel": "self"
-                        },
-                        {
-                            "href": "http://",
-                            "rel": "bookmark"
-                        }
-                ],
-                "availability_zone": volume.availability_zone,
-                "bootable": volume.bootable,
-                "encrypted": volume.encrypted,
-                "created_at": volume.create_at,
-                "description": volume.description,
-                "updated_at": volume.updated_at,
-                "volume_type": volume.volume_type,
-                "name": volume.name,
-                "replication_status": volume.replication_status,
-                "consistencygroup_id": volume.consistencygroup_id,
-                "source_volid": volume.source_volid,
-                "snapshot_id": volume.snapshot_id,
-                "multiattach": volume.multiattach,
-                "metadata": volume.metadata,
-                "id": volume.id,
-                "size": volume.size
-            }
-        }
-
+        print "VolumesHandler createVolume GET Resp Json: ========"
+        print json.dumps(resp, indent=4)
+        print "==========================================" 
         self.send_json(resp)
 
 class VolumesDetailHandler(BlockStorageBaseHandler):
