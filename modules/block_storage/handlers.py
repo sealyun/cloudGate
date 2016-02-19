@@ -77,6 +77,12 @@ class VolumeHandler(BlockStorageBaseHandler):
     def get(self, tenant_id, volume_id):
         
         resp = self.p.queryVolume(tenant_id, volume_id)
+        if resp is None:
+            self.set_status(401)
+            return
+        else:
+            self.set_status(200)            
+            
         print "VolumeHandler queryVolume GET Resp Json: ========"
         print json.dumps(resp, indent=4)
         print "==========================================" 
@@ -222,7 +228,11 @@ class SnapshotsDetailHandler(BlockStorageBaseHandler):
 
 class SnapshotHandler(BlockStorageBaseHandler):
     def get(self, tenant_id, snapshot_id):
-        s = self.p.querySnapshot(tenant_id, snapshot_id)
+        resp = self.p.querySnapshot(tenant_id, snapshot_id)
+        print "SnapshotHandler querySnapshot GET Resp Json: ========"
+        print json.dumps(resp, indent=4)
+        print "=========================================="
+        self.send_json(resp)
 
         resp = {
             "snapshot":{
