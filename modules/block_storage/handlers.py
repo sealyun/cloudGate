@@ -236,9 +236,10 @@ class SnapshotHandler(BlockStorageBaseHandler):
 
     def delete(self, tenant_id, snapshot_id):
         if self.p.deleteSnapshot(tenant_id, snapshot_id):
-            #http 202
+            self.set_status(202)
             pass
         else:
+            self.set_status(403)
             pass
 
     def put(self, tenant_id, snapshot_id):
@@ -285,6 +286,18 @@ class SnapshotMetadataHandler(BlockStorageBaseHandler):
 
         self.send_json(resp)
 
+
+"""
+class SnapshotsActionHandler(BlockStorageBaseHandler):
+    def post(self, tenant_id, snapshot_id):
+        action = json.loads(self.request.body)
+
+        if self.p.snapshotsAction(tenant_id, volume_id, action):
+            #HTTP 202
+            pass
+        else:
+            pass
+"""
 
 
 class OsVolumeTransferDetailHandler(BlockStorageBaseHandler):

@@ -295,7 +295,7 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
             r.set_accept_format('json')
             response = self.clt.do_action(r)
             resp = json.loads(response)
-            ## print "queryVolumesDetails WUJUN response:", json.dumps(resp, indent=4)
+            print "queryVolumesDetails WUJUN Origin Data *********####### response:", json.dumps(resp, indent=4)
             volumesdetail = resp["Disks"]["Disk"]             
             
             resp = {
@@ -551,6 +551,14 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
         pass
     
     def deleteSnapshot(self, tenant_id, snapshot_id):
+        print "deleteSnapshot WUJUN begin .... snapshot_id is ", snapshot_id        
+        r = DeleteSnapshotRequest.DeleteSnapshotRequest()
+        r.set_SnapshotId(snapshot_id)
+        r.set_accept_format('json')
+        response = self.clt.do_action(r)
+        resp = json.loads(response)
+        print "deleteSnapshot WUJUN response:", json.dumps(resp, indent=4)       
+        return True
         pass 
     
     def updateSnapshot(self, tenant_id, snapshot_id, name, description):
