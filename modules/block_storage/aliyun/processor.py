@@ -148,7 +148,7 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
                         }
                     ],
                     "availability_zone": "nova",
-                    "bootable": "False",
+                    "bootable": "false",
                     "encrypted": False,
                     "created_at": "2015-11-29T03:01:44.000000",
                     "description": None,
@@ -224,7 +224,7 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
                         "os-vol-tenant-attr:tenant_id": "bab7d5c60cd041a0a36f7c4b6e1dd978",
                         "os-vol-mig-status-attr:migstat": None,
                         "metadata": {
-                            "readonly": "False",
+                            "readonly": "false",
                             "attached_mode": "rw"
                         },
                         "status": "in-use",
@@ -235,7 +235,7 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
                         "consistencygroup_id": None,
                         "os-vol-mig-status-attr:name_id": None,
                         "name": "test-volume-attachments",
-                        "bootable": "False",
+                        "bootable": "false",
                         "created_at": "2015-11-29T03:01:44.000000",
                         "volume_type": "lvmdriver-1"
                     },
@@ -284,7 +284,7 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
                         "consistencygroup_id": None,
                         "os-vol-mig-status-attr:name_id": None,
                         "name": "test-volume",
-                        "bootable": "True",
+                        "bootable": "true",
                         "created_at": "2015-11-29T02:25:18.000000",
                         "volume_type": "lvmdriver-1"
                     }
@@ -333,7 +333,7 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
                         "consistencygroup_id": None,
                         "os-vol-mig-status-attr:name_id": None,
                         "name": v["DiskName"],
-                        "bootable": "True",
+                        "bootable": "true",
                         "created_at": v["CreationTime"],
                         "volume_type": v["Type"]
                     }
@@ -361,7 +361,7 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
                         }
                     ],
                     "availability_zone": "nova",
-                    "bootable": "True",
+                    "bootable": "true",
                     "os-vol-host-attr:host": "ip-10-168-107-25",
                     "source_volid": None,
                     "snapshot_id": None,
@@ -405,7 +405,7 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
                                 }
                             ],
                             "availability_zone": v["ZoneId"],
-                            "bootable": "True",
+                            "bootable": "true",
                             "os-vol-host-attr:host": "ip-10-168-107-25",
                             "source_volid": None,
                             "snapshot_id": v["SourceSnapshotId"],

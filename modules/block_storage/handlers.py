@@ -234,23 +234,6 @@ class SnapshotHandler(BlockStorageBaseHandler):
         print "=========================================="
         self.send_json(resp)
 
-        resp = {
-            "snapshot":{
-                "status":s.status,
-                "os-extended-snapshot-attributes:progress": s.os_extended_snapshot_attributes_progress,
-                "description":s.description,
-                "created_at": s.create_at,    
-                "metadata":s.metadata,
-                "volume_id": s.volume_id,
-                "os-extended-snapshot-attributes:project_id":s.os_extended_snapshot_attributes_project_id,
-                "size":s.size,
-                "id":s.id,
-                "name": s.name,
-            }
-        }
-
-        self.send_json(resp)
-
     def delete(self, tenant_id, snapshot_id):
         if self.p.deleteSnapshot(tenant_id, snapshot_id):
             #http 202
