@@ -35,7 +35,7 @@ from aliyunsdkecs.request.v20140526 import DescribeSnapshotsRequest
 from aliyunsdkecs.request.v20140526 import ModifyAutoSnapshotPolicyRequest
 from aliyunsdkecs.request.v20140526 import DescribeAutoSnapshotPolicyRequest
 
-TEST_FLAG = 1
+TEST_FLAG = 0
 
 import json
 
@@ -441,7 +441,7 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
     
     
     def volumeAction(self, tenant_id, volume_id, action):
-        print "$$$$$$$$$$$  Volume Action is ", json.dumps(resp, indent=4)
+        print "$$$$$$$$$$$  Volume Action is ", json.dumps(action, indent=4)
         if action.has_key("os-reset_status"):
             """
             {

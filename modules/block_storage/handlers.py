@@ -160,9 +160,9 @@ class VolumeMetadataHandler(BlockStorageBaseHandler):
 
 class VolumeActionHandler(BlockStorageBaseHandler):
     def post(self, tenant_id, volume_id):
-        print "AAAAAAAAAAAAAAAAA  VolumeActionHandler"
+        ## print "AAAAAAAAAAAAAAAAA  VolumeActionHandler"
         action = json.loads(self.request.body)
-        print "BBBBBBBBBBBBBBBBB  VolumeActionHandler"
+        ## print "BBBBBBBBBBBBBBBBB  VolumeActionHandler"
 
         if self.p.volumeAction(tenant_id, volume_id, action):
             self.set_status(202)
