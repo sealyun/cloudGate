@@ -546,9 +546,8 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
                             "id": s["SnapshotId"],
                             "name": s["SnapshotName"]
                         }
-                    }            
-            pass
-         return resp
+                    }
+        return resp
         pass
     
     def deleteSnapshot(self, tenant_id, snapshot_id):
