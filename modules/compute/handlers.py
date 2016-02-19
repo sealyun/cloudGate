@@ -40,26 +40,7 @@ class ServersHandler(ComputeBaseHandler):
                 server["flavorRef"],
                 server["metadata"])
 
-        resp = {
-            "server": {
-                "OS-DCF:diskConfig": server.diskConfig,
-                "adminPass": server.adminPass,
-                "id": server.id,
-                "links": [
-                    {
-                        "href": "http://",
-                        "rel": "self"
-                    },
-                    {
-                        "href": "http://",
-                        "rel": "bookmark"
-                    }
-                ],
-                "security_groups": server.security_groups
-            }
-        }
-
-        self.send_json(resp)
+        self.send_json(server)
 
 class ServersDetailHandler(ComputeBaseHandler):
     def get(self, tenant_id):
@@ -88,7 +69,7 @@ class ServerHandler(ComputeBaseHandler):
     def put(self, tenant_id, server_id):
         self.get_processor()
         server = json.loads(self.request.body)["server"]
-
+	s = {}
         if "name" in server:
             s = self.p.updateServerName(tenant_id, server_id,
                     server["name"],
@@ -105,35 +86,7 @@ class ServerHandler(ComputeBaseHandler):
             s = self.p.updateServerOSDCFdiskConfig(tenant_id, server_id,
                     server[r"OS-DCF:diskConfig"])
 
-        resp = {
-            "id":s.id,
-            "tenant_id":tenant_id,
-            "user_id":s.user_id,
-            "name":s.name,
-            "created":s.created,
-            "updated":s.updated,
-            "hostId":s.hostId,
-            "accessIPv4":s.accessIPv4,
-            "accessIPv6":s.accessIPv6,
-            "progress":s.progress,
-            "status":s.status,
-            "image":s.image,
-            "flavor":s.flavor,
-            "metadata":s.metadata,
-            "addresses":s.addresses,
-            "links":[
-                {
-                    "rel":"self",
-                    "href":"http://"
-                },
-                {
-                    "rel":"bookmark",
-                    "href":"http://"
-                },
-            ]
-        }
-
-        self.send_json(resp)
+        self.send_json(s)
 
     def delete(self, tenant_id, server_id):
         self.get_processor()

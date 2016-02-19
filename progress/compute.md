@@ -45,12 +45,19 @@ PUT
 /v2.1/{tenant_id}/servers/{server_id}
 Update server
 Updates the editable attributes of a server.
+Progress: OK
+Remark:
+Input params- "flavorRef", "metadata", "accessIPv6", "OSDCFdiskConfig"
+Output params- 
  
 detail
 DELETE
 /v2.1/{tenant_id}/servers/{server_id}
 Delete server
 Deletes a server.
+Progress: OK
+Remark:
+how process http error code
 
 
 Servers actions (servers, action)
@@ -194,12 +201,14 @@ POST
 /v2.1/{tenant_id}/servers/{server_id}/action
 Start server (os-start action)
 Starts a stopped server and changes its status toACTIVE.
+Progress: OK
  
 detail
 POST
 /v2.1/{tenant_id}/servers/{server_id}/action
 Stop server (os-stop action)
 Stops a running server and changes its status toSHUTOFF.
+Progress: OK
  
 detail
 POST

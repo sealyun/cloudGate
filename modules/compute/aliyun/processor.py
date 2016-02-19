@@ -1,6 +1,15 @@
 #coding=utf-8
 from aliyunsdkcore import client
 from aliyunsdkecs.request.v20140526 import DescribeInstancesRequest
+from aliyunsdkecs.request.v20140526 import CreateInstanceRequest
+from aliyunsdkecs.request.v20140526 import ModifyInstanceAttributeRequest
+from aliyunsdkecs.request.v20140526 import ModifyInstanceVpcAttributeRequest
+from aliyunsdkecs.request.v20140526 import DeleteInstanceRequest
+from aliyunsdkecs.request.v20140526 import StartInstanceRequest
+from aliyunsdkecs.request.v20140526 import StopInstanceRequest
+from aliyunsdkecs.request.v20140526 import RebootInstanceRequest
+from aliyunsdkecs.request.v20140526 import JoinSecurityGroupRequest
+from aliyunsdkecs.request.v20140526 import LeaveSecurityGroupRequest
 
 from cloudGate.config import *
 from cloudGate.modules.compute.process_base import ComputeProcessorBase
@@ -24,8 +33,8 @@ class AliyunComputeProcessor(ComputeProcessorBase):
 		"private": [
 		    {
 			"addr": ip,
-			"OS-EXT-IPS-MAC:mac_addr": "",
-			"OS-EXT-IPS:type": "fixed",
+			"OS-EXT-IPS-MAC:mac_addr": "",  #todo
+			"OS-EXT-IPS:type": "fixed",  #todo
 			"version": 4
 		    }
 		    for ip in s["InnerIpAddress"]["IpAddress"]
@@ -33,16 +42,16 @@ class AliyunComputeProcessor(ComputeProcessorBase):
 		"public": [
 		    {
 			"addr": ip,
-			"OS-EXT-IPS-MAC:mac_addr": "",
-			"OS-EXT-IPS:type": "fixed",
+			"OS-EXT-IPS-MAC:mac_addr": "",  #todo
+			"OS-EXT-IPS:type": "fixed",  #todo
 			"version": 4
 		    }
 		    for ip in s["PublicIpAddress"]["IpAddress"]
 		]
 	    },
 	    "created": s["CreationTime"],
-	    "flavor": {
-		"id": "1", #todo
+	    "flavor": {  #todo
+		"id": "1",  
 		"links": [
 		    {
 			"href": "http://openstack.example.com/openstack/flavors/1",
@@ -54,15 +63,15 @@ class AliyunComputeProcessor(ComputeProcessorBase):
 	    "id": s["InstanceId"],
 	    "image": {
 		"id": s["ImageId"],
-		"links": [
+		"links": [  #todo
 		    {
 			"href": "http://",
 			"rel": "bookmark"
 		    }
 		]
 	    },
-	    "key_name": "",
-	    "links": [
+	    "key_name": "",  #todo
+	    "links": [  #todo
 		{
 		    "href": "http://",
 		    "rel": "self"
@@ -76,21 +85,21 @@ class AliyunComputeProcessor(ComputeProcessorBase):
 		"My Server Name": s["InstanceName"]
 	    },
 	    "name": s["InstanceName"],
-	    "accessIPv4": "",
-	    "accessIPv6": "",
-	    "config_drive": "",
-	    "OS-DCF:diskConfig": "AUTO",
+	    "accessIPv4": "",  #todo
+	    "accessIPv6": "",  #todo
+	    "config_drive": "",  #todo
+	    "OS-DCF:diskConfig": "AUTO",  #todo
 	    "OS-EXT-AZ:availability_zone": s["ZoneId"],
 	    "OS-EXT-SRV-ATTR:host": s["HostName"],
 	    "OS-EXT-SRV-ATTR:hypervisor_hostname": s["HostName"],
 	    "OS-EXT-SRV-ATTR:instance_name": s["InstanceName"],
 	    "OS-EXT-STS:power_state": 1 if s["DeviceAvailable"] else 0,
-	    "OS-EXT-STS:task_state": "",
-	    "OS-EXT-STS:vm_state": "active",
-	    "os-extended-volumes:volumes_attached": [],
-	    "OS-SRV-USG:launched_at": "",
-	    "OS-SRV-USG:terminated_at": "",
-	    "progress": 0,
+	    "OS-EXT-STS:task_state": "",  #todo
+	    "OS-EXT-STS:vm_state": "active",  #todo
+	    "os-extended-volumes:volumes_attached": [],  #todo
+	    "OS-SRV-USG:launched_at": "",  #todo
+	    "OS-SRV-USG:terminated_at": "",  #todo
+	    "progress": 0,  #todo
 	    "security_groups": [
 		{
 		    "name": name
@@ -98,57 +107,52 @@ class AliyunComputeProcessor(ComputeProcessorBase):
 		for name in s["SecurityGroupIds"]["SecurityGroupId"]
 	    ],
 	    "status": s["Status"],
-	    "host_status": "UP",
-	    "tenant_id": "openstack",
+	    "host_status": "UP",  #todo
+	    "tenant_id": "openstack",  #todo
 	    "updated": s["ExpiredTime"],
-	    "user_id": "fake"
+	    "user_id": "fake"  #todo
 	}
-
-    def _convert_servers(self, servers):
-	return {
-	    "servers": [
-		{
-		    "id": s["InstanceId"],
-		    "links": [
-			{
-			    "href": "http://",
-			    "rel": "self"
-			},
-			{
-			    "href": "http://",
-			    "rel": "bookmark"
-			}
-		    ],
-		    "name": s["InstanceName"]
-		}
-		for s in servers
-	    ]
-	}
-	
 
     def queryServers(self, tenant_id, changes_since,
             image, flavor, name, status, host, limit, marker):
-	
 	print "queryServers"
-	request = DescribeInstancesRequest.DescribeInstancesRequest()
+	servers = self.query_ServersDetails(tenant_id, changes_since, image,
+		flavor, name, status, host, limit, marker)
+	return {
+    		"servers": [
+			{
+			    "id": s["id"],
+			    "links": s["links"],
+			    "name": s["name"]
+			}
+			for s in servers
+		    ]
+	        }
+	    	
+    def createServer(self, tenant_id, name, imageRef, flavorRef, metadata):
+	request = CreateInstancesRequest.CreateInstancesRequest()
 	request.set_accept_format('json')
-	request.set_ImageId(image) if status else None
-	request.set_Status(status) if status else None
-	request.set_InstanceName(name) if name else None
-	request.set_InstanceIds(host) if host else None
-	request.set_PageSize(limit) if limit else None
-
+	request.set_InstanceName(name)
+	request.set_ImageId(imageRef)
+	#todo set flavorRef
+	#todo set metadata
         response = self.clt.do_action(request)
 
         resp = json.loads(response)
 	print "resp :", json.dumps(resp, indent=4)
-	if "Instances" in resp.keys():
-	    return self._convert_servers(resp["Instances"]["Instance"])
-        else:
-            return {}
-	    	
-    def createServer(self, tenant_id, name, imageRef, flavorRef, metadata):
-	return []
+	if "InstanceId" in resp:
+	    s = self.query_server(tenant_id, resp["InstanceId"])
+	    return {
+		    "server": {
+			"OS-DCF:diskConfig": s["OS-DCF:diskConfig"],
+			"adminPass": "zPnp2GseTqG4", #todo
+			"id": s["id"],
+			"links": s["links"],
+			"security_groups": s["security_groups"]
+		    }
+	        }
+	else:
+  	    return {}
 
     def queryServersDetails(self, tenant_id, changes_since, image,
             flavor, name, status, host, limit, marker):
@@ -187,19 +191,90 @@ class AliyunComputeProcessor(ComputeProcessorBase):
             return {}
 
     def updateServerName(self, tenant_id, server_id, name, imageRef, flavorRef, metadata):
-	return []
+	request = ModifyInstanceAttributeRequest.ModifyInstanceAttributeRequest()
+	request.set_accept_format('json')
+	request.set_InstanceId(server_id)
+	request.set_InstanceName(name)
+	request.set_ImageId(imageRef)
+	#todo set flavorRef
+	request.set_HostName(metadata["My Server Name"])
+	
+        self.clt.do_action(request)
+	
+	return self.queryServer(tenant_id, server_id)
 
     def updateServerIP(self, tenant_id, server_id, accessIPv4, accessIPv6):
-	return []
+       	request = ModifyInstanceVpcAttributeRequest.ModifyInstanceVpcAttributeRequest()
+	request.set_accept_format("json")
+	request.set_InstanceId(server_id)
+	request.set_PrivateIpAddress(accessIPv4)
+	#todo set accessIPv6
+
+	self.clt.do_action(request)
+
+	return self.queryServer(tenant_id, server_id)
 
     def updateServerOSDCFdiskConfig(self, tenant_id, server_id, OSDCFdiskConfig):
-	return []
+	#todo
+	return self.queryServer(tenant_id, server_id)
 
     def deleteServer(self, tenant_id, server_id):
-	return []
+       	request = DeleteInstanceRequest.DeleteInstanceRequest()
+	request.set_accept_format("json")
+	request.set_InstanceId(server_id)
+
+	self.clt.do_action(request)
 
     def ServerAction(self, tenat_id, server_id, action):
-	return []
+	if "addFixedIp" in action:  # depend network 
+	    pass 
+	if "addFloatingIp" in action:  # depend network
+	    pass
+	if "attach" in action:  # depend volume
+	    pass
+	if "confirmResize" in action:
+	    pass
+	if "createImage" in action:  # depend image
+	    pass
+	if "evacuate" in action:
+	    pass
+	if "forceDelete" in action:
+  	    pass
+        if "lock" in action:
+	    pass
+        if "pause" in action:
+	    pass
+	if "reboot" in action:
+	    request = RebootInstanceRequest.RebootInstanceRequest()
+	    request.set_accept_format("json")
+	    request.set_InstanceId(server_id)
+	    self.clt.do_action(request)
+	if "os-start" in action:
+	    request = StartInstanceRequest.StartInstanceRequest()
+	    request.set_accept_format("json")
+	    request.set_InstanceId(server_id)
+            self.clt.do_action(request)
+	if "os-stop" in action:
+	    request = StopInstanceRequest.StopInstanceRequest()
+	    request.set_accept_format("json")
+	    request.set_InstanceId(server_id)
+	    self.clt.do_action(request)
+	if "unlock" in action:
+	    pass
+	if "unpause" in action:
+	    pass
+	if "unrescue" in action:
+	    pass
+	if "addSecurityGroup" in action:
+	    request = JoinSecurityGroupRequest.JoinSecurityGroupRequest()
+	    request.set_accept_format("json")
+	    request.set_InstanceId(server_id)
+	    self.clt.do_action(request)
+	if "removeSecurityGroup" in action:
+	    request = LeaveSecurityGroupRequest.LeaveSecurityGroupRequest()
+	    request.set_accept_format("json")
+	    request.set_InstanceId(server_id)
+	    self.clt.do_action(request)
 
     def getExtensions(self):
         return []
