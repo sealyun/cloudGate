@@ -295,7 +295,7 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
             r.set_accept_format('json')
             response = self.clt.do_action(r)
             resp = json.loads(response)
-            ## print "queryVolumesDetails WUJUN Origin Data *********####### response:", json.dumps(resp, indent=4)
+            print "queryVolumesDetails WUJUN Origin Data *********####### response:", json.dumps(resp, indent=4)
             volumesdetail = resp["Disks"]["Disk"]             
             
             resp = {
@@ -455,7 +455,7 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
             print "volumeAction WUJUN begin ...."        
             r = ModifyDiskAttributeRequest.ModifyDiskAttributeRequest()
             r.set_accept_format('json')
-            ## r.set_DiskId("");
+            r.set_DiskId(volume_id);
             ## r.set_DiskName("");
             r.set_Description("ModifyDescription ... test ...");
             response = self.clt.do_action(r)
