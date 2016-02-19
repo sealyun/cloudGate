@@ -36,7 +36,7 @@ class VolumesHandler(BlockStorageBaseHandler):
         
         resp = self.p.queryVolumes(tenant_id, sort, limit, marker)
         print "VolumesHandler queryVolumes GET Resp Json: ========"
-        print json.dumps(resp, indent=4)
+        ## print json.dumps(resp, indent=4)
         print "==========================================" 
         self.send_json(resp)
 
@@ -56,7 +56,7 @@ class VolumesHandler(BlockStorageBaseHandler):
                 volume["source_replica"],
                 volume["consistencygroup_id"])
         print "VolumesHandler createVolume GET Resp Json: ========"
-        print json.dumps(resp, indent=4)
+        ## print json.dumps(resp, indent=4)
         print "==========================================" 
         self.send_json(resp)
 
@@ -69,7 +69,7 @@ class VolumesDetailHandler(BlockStorageBaseHandler):
 
         resp = self.p.queryVolumesDetails(tenant_id, sort, limit, marker)
         print "VolumesDetailHandler queryVolumesDetails GET Resp Json: ========"
-        print json.dumps(resp, indent=4)
+        ## print json.dumps(resp, indent=4)
         print "==========================================" 
         self.send_json(resp)
 
@@ -84,7 +84,7 @@ class VolumeHandler(BlockStorageBaseHandler):
             self.set_status(200)            
             
         print "VolumeHandler queryVolume GET Resp Json: ========"
-        print json.dumps(resp, indent=4)
+        ## print json.dumps(resp, indent=4)
         print "==========================================" 
         self.send_json(resp)
 
@@ -222,7 +222,7 @@ class SnapshotsDetailHandler(BlockStorageBaseHandler):
     def get(self, tenant_id):
         resp = self.p.querySnapshotsDetails(tenant_id)
         print "SnapshotsDetailHandler querySnapshotsDetails GET Resp Json: ========"
-        print json.dumps(resp, indent=4)
+        ## print json.dumps(resp, indent=4)
         print "=========================================="
         self.send_json(resp)
 
@@ -230,7 +230,7 @@ class SnapshotHandler(BlockStorageBaseHandler):
     def get(self, tenant_id, snapshot_id):
         resp = self.p.querySnapshot(tenant_id, snapshot_id)
         print "SnapshotHandler querySnapshot GET Resp Json: ========"
-        print json.dumps(resp, indent=4)
+        ## print json.dumps(resp, indent=4)
         print "=========================================="
         self.send_json(resp)
 
@@ -304,7 +304,7 @@ class OsVolumeTransferDetailHandler(BlockStorageBaseHandler):
     def get(self, tenant_id):
         resp = self.p.queryOsVolumeTransferDetail(tenant_id)
         print "OsVolumeTransferDetailHandler queryOsVolumeTransferDetail GET Resp Json: ========"
-        print json.dumps(resp, indent=4)
+        ## print json.dumps(resp, indent=4)
         print "=========================================="
         self.send_json(resp)        
         pass
@@ -319,7 +319,7 @@ class QosSpecsHandler(BlockStorageBaseHandler):
         
         resp = self.p.queryQosSpecs(tenant_id, sort_key, sort_dir, limit, marker)
         print "QosSpecsHandler queryQosSpecs GET Resp Json: ========"
-        print json.dumps(resp, indent=4)
+        ## print json.dumps(resp, indent=4)
         print "=========================================="
         self.send_json(resp)        
         pass    
@@ -333,7 +333,7 @@ class TypesHandler(BlockStorageBaseHandler):
         
         resp = self.p.queryTypes(tenant_id, sort_key, sort_dir, limit, marker)
         print "TypesHandler queryTypes GET Resp Json: ========"
-        print json.dumps(resp, indent=4)
+        ## print json.dumps(resp, indent=4)
         print "=========================================="
         self.send_json(resp)        
         pass  
