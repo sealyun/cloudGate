@@ -29,6 +29,8 @@ urls_v2 = [
     (BLOCK_STORAGE_BASE_URL + r"/v2/([^/]+)/types/([^/]+)", VolumeTypeDetailHandler),
 
     (BLOCK_STORAGE_BASE_URL + r"/v2/([^/]+)/limits", BlockStorageLimitsHandler),
+
+    (BLOCK_STORAGE_BASE_URL + r"/v2/([^/]+)/extensions", BlockStorageExtensionsHandler),
 ]
 
 urls = urls_low_version + urls_v2

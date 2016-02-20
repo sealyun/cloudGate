@@ -367,3 +367,14 @@ class BlockStorageLimitsHandler(BlockStorageBaseHandler):
         print "=========================================="
         self.send_json(resp)         
         pass
+    
+
+class BlockStorageExtensionsHandler(BlockStorageBaseHandler):
+    def get(self, tenant_id):
+        resp = self.p.queryBlockStorageExtensions(tenant_id)
+        print "BlockStorageExtensionsHandler queryBlockStorageExtensions GET Resp Json: ========"
+        print json.dumps(resp, indent=4)
+        print "=========================================="
+        self.send_json(resp)           
+        pass
+    
