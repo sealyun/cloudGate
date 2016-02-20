@@ -414,7 +414,7 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
                             "name": v["DiskName"],
                             "created_at": v["CreationTime"],
                             "volume_type": v["Type"],
-                            "os-vol-tenant-attr:tenant_id": None, ## "0c2eba2c5af04d3f9e9d0d410b371fde",
+                            "os-vol-tenant-attr:tenant_id": "0c2eba2c5af04d3f9e9d0d410b371fde", #None
                             "size": v["Size"],
                             "os-volume-replication:driver_data": None,
                             "os-volume-replication:extended_status": None,
@@ -575,7 +575,7 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
                         "os-extended-snapshot-attributes:progress": s["Progress"],
                         "name": s["SnapshotName"],
                         "volume_id": s["SourceDiskId"],
-                        "os-extended-snapshot-attributes:project_id": None, ##s["ProductCode"],
+                        "os-extended-snapshot-attributes:project_id": "bab7d5c60cd041a0a36f7c4b6e1dd978",##None ##s["ProductCode"],
                         "created_at": s["CreationTime"],    
                         "size":s["SourceDiskSize"],
                         "id":s["SnapshotId"],
