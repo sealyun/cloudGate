@@ -35,7 +35,7 @@ from aliyunsdkecs.request.v20140526 import DescribeSnapshotsRequest
 from aliyunsdkecs.request.v20140526 import ModifyAutoSnapshotPolicyRequest
 from aliyunsdkecs.request.v20140526 import DescribeAutoSnapshotPolicyRequest
 
-TEST_FLAG = 0
+TEST_FLAG = 1
 
 import json
 
