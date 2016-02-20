@@ -312,7 +312,7 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
                         "os-vol-tenant-attr:tenant_id":"bab7d5c60cd041a0a36f7c4b6e1dd978",
                         "os-vol-mig-status-attr:migstat": None,
                         "metadata": {},
-                        "status": _convertDiskStatus2VolumeStatus(v["Status"]), ###"in-use", ###v["Status"],
+                        "status": self._convertDiskStatus2VolumeStatus(v["Status"]), ###"in-use", ###v["Status"],
                         "description": v["Description"],
                         "multiattach": False,
                         "os-volume-replication:driver_data": None,
@@ -379,7 +379,7 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
                 if v["DiskId"]==volume_id:
                     resp = {
                         "volume": {
-                            "status": _convertDiskStatus2VolumeStatus(v["Status"]), ###v["Status"],
+                            "status": self._convertDiskStatus2VolumeStatus(v["Status"]), ###v["Status"],
                             "attachments": [],
                             "links": [
                                 {
@@ -433,9 +433,9 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
         r = DeleteDiskRequest.DeleteDiskRequest()
         r.set_DiskId(volume_id)
         r.set_accept_format('json')
-        response = self.clt.do_action(r)
-        resp = json.loads(response)
-        print "deleteVolume WUJUN response:", json.dumps(resp, indent=4) 
+        ## response = self.clt.do_action(r)
+        ## resp = json.loads(response)
+        ## print "deleteVolume WUJUN response:", json.dumps(resp, indent=4) 
         return True         
         pass    
     
