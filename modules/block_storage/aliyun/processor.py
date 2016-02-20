@@ -35,7 +35,7 @@ from aliyunsdkecs.request.v20140526 import DescribeSnapshotsRequest
 from aliyunsdkecs.request.v20140526 import ModifyAutoSnapshotPolicyRequest
 from aliyunsdkecs.request.v20140526 import DescribeAutoSnapshotPolicyRequest
 
-TEST_FLAG = 1
+TEST_FLAG = 0
 
 import json
 
@@ -53,172 +53,166 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
         self.clt = client.AcsClient(self.access_key, self.access_secrect, self.regin)
     
     def queryVolumes(self, tenant_id, sort, limit, marker):
-        print "queryVolumes WUJUN begin ...."
-        print "WUJUN tenant_id is ", tenant_id, "  limit is ", limit, "   marker is ", marker
-        r = DescribeDisksRequest.DescribeDisksRequest()
-        ##### r.set_ZoneId(self.regin)
-        ## r.set_DiskIds()
-        '''
-        r.set_InstanceId()
-        r.set_DiskType()
-        r.set_Category()
-        r.set_Status()
-        r.set_SnapshotId()
-        r.set_Portable()
-        r.set_PageNumber()
-        r.set_PageSize()
-        r.set_DiskName()
-        '''
-        r.set_accept_format('json')
-        response = self.clt.do_action(r)
-        print "queryVolumes WUJUN response is ", response
-        return response
-        pass
+        print "queryVolumes WUJUN Begin ...... , tenant_id is ", tenant_id, "  sort is ", sort, "  limit is ", limit, "   marker is ", marker
+        if TEST_FLAG:
+            resp = {
+                "volumes": [
+                    {
+                        "id": "45baf976-c20a-4894-a7c3-c94b7376bf55",
+                        "links": [
+                            {
+                                "href": "http://localhost:8776/v2/0c2eba2c5af04d3f9e9d0d410b371fde/volumes/45baf976-c20a-4894-a7c3-c94b7376bf55",
+                                "rel": "self"
+                            },
+                            {
+                                "href": "http://localhost:8776/0c2eba2c5af04d3f9e9d0d410b371fde/volumes/45baf976-c20a-4894-a7c3-c94b7376bf55",
+                                "rel": "bookmark"
+                            }
+                        ],
+                        "name": "vol-004"
+                    },
+                    {
+                        "id": "5aa119a8-d25b-45a7-8d1b-88e127885635",
+                        "links": [
+                            {
+                                "href": "http://localhost:8776/v2/0c2eba2c5af04d3f9e9d0d410b371fde/volumes/5aa119a8-d25b-45a7-8d1b-88e127885635",
+                                "rel": "self"
+                            },
+                            {
+                                "href": "http://localhost:8776/0c2eba2c5af04d3f9e9d0d410b371fde/volumes/5aa119a8-d25b-45a7-8d1b-88e127885635",
+                                "rel": "bookmark"
+                            }
+                        ],
+                        "name": "vol-003"
+                    }
+                ]
+            }
+        else:
+            r = DescribeDisksRequest.DescribeDisksRequest()
+            '''
+            r.set_InstanceId()
+            r.set_DiskType()
+            r.set_Category()
+            r.set_Status()
+            r.set_SnapshotId()
+            r.set_Portable()
+            r.set_PageNumber()
+            r.set_PageSize()
+            r.set_DiskName()
+            '''
+            r.set_accept_format('json')
+            response = self.clt.do_action(r)
+            resp = json.loads(response)
+            ## print "queryVolumes WUJUN response:", json.dumps(resp, indent=4)
+            volumesdetail = resp["Disks"]["Disk"]
+            resp = {
+                "volumes":[
+                    {
+                        "id":v["DiskId"],
+                        "links":[
+                            {
+                                "href":"http://",
+                                "rel":"self"
+                            },
+                            {
+                                "href":"http://",
+                                "rel":"bookmark"
+                            }
+                        ],
+                        "name":v["DiskName"]
+                    }
+                    for v in volumesdetail
+                ]
+            }
+        return resp
     
     def createVolume(self, tenant_id, size, availability_zone, source_volid,
                 description, multiattach, snapshot_id, name, imageRef,
                 volume_type, metadata, source_replica, consistencygroup_id):
-        r = CreateDiskRequest.CreateDiskRequest()
-        ## r.set_OwnerId(owner_id)
-        ## r.set_ResourceOwnerAccount(resource_owner_account)
-        ## r.set_ResourceOwnerId(resource_owner_id)
-        ##### r.set_ZoneId(self.regin)
-        ## r.set_SnapshotId(snapshot_id)
-        r.set_DiskName(name)
-        r.set_Size(size)
-        ## r.set_DiskCategory(disk_category)
-        r.set_Description(description)
-        ### r.set_ClientToken(self.token)
-        ### r.set_OwnerAccount("wj")  ## wj or admin       
-        r.set_accept_format('json')
-        
-        ### response = self.clt.do_action(r)
-        
-        print "createVolume WUJUN response is ", response
-        return True
-                    
-        pass
+        print "createVolume WUJUN Begin ...... "
+        if 1:
+            resp = {
+                "volume": {
+                    "status": "creating",
+                    "migration_status": None,
+                    "user_id": "0eea4eabcf184061a3b6db1e0daaf010",
+                    "attachments": [],
+                    "links": [
+                        {
+                            "href": "http://23.253.248.171:8776/v2/bab7d5c60cd041a0a36f7c4b6e1dd978/volumes/6edbc2f4-1507-44f8-ac0d-eed1d2608d38",
+                            "rel": "self"
+                        },
+                        {
+                            "href": "http://23.253.248.171:8776/bab7d5c60cd041a0a36f7c4b6e1dd978/volumes/6edbc2f4-1507-44f8-ac0d-eed1d2608d38",
+                            "rel": "bookmark"
+                        }
+                    ],
+                    "availability_zone": "nova",
+                    "bootable": "false",
+                    "encrypted": False,
+                    "created_at": "2015-11-29T03:01:44.000000",
+                    "description": None,
+                    "updated_at": None,
+                    "volume_type": "lvmdriver-1",
+                    "name": "test-volume-attachments",
+                    "replication_status": "disabled",
+                    "consistencygroup_id": None,
+                    "source_volid": None,
+                    "snapshot_id": None,
+                    "multiattach": False,
+                    "metadata": {},
+                    "id": "6edbc2f4-1507-44f8-ac0d-eed1d2608d38",
+                    "size": 2
+                }
+            }
+        else:
+            r = CreateDiskRequest.CreateDiskRequest()
+            ## r.set_OwnerId(owner_id)
+            ## r.set_ResourceOwnerAccount(resource_owner_account)
+            ## r.set_ResourceOwnerId(resource_owner_id)
+            ##### r.set_ZoneId(self.regin)
+            ## r.set_SnapshotId(snapshot_id)
+            r.set_DiskName(name)
+            r.set_Size(size)
+            ## r.set_DiskCategory(disk_category)
+            r.set_Description(description)
+            ### r.set_ClientToken(self.token)
+            ### r.set_OwnerAccount("wj")  ## wj or admin       
+            r.set_accept_format('json')
+            ### response = self.clt.do_action(r)
+            print "createVolume WUJUN response is ", response
+            return True
+        return resp
     
     
     def queryVolumesDetails(self, tenant_id, sort, limit, marker):
-        print "queryVolumesDetails WUJUN Begin ...... , tenant_id is ", tenant_id
-        if TEST_FLAG:
+        print "queryVolumesDetails WUJUN Begin ...... , tenant_id is ", tenant_id, "  sort is ", sort, "  limit is ", limit, "   marker is ", marker
+        ###if TEST_FLAG:
+        '''
+        "links": [
+            {
+                "href": "http://23.253.248.171:8776/v2/bab7d5c60cd041a0a36f7c4b6e1dd978/volumes/6edbc2f4-1507-44f8-ac0d-eed1d2608d38",
+                "rel": "self"
+            },
+            {
+                "href": "http://23.253.248.171:8776/bab7d5c60cd041a0a36f7c4b6e1dd978/volumes/6edbc2f4-1507-44f8-ac0d-eed1d2608d38",
+                "rel": "bookmark"
+            }
+        ],
+        '''       
+        '''
+                        "metadata": {
+                            "readonly": "false",
+                            "attached_mode": "rw"
+                        },        
+        '''
+        if 1:
             resp = {
                 "volumes": [
                     {
                         "migration_status": None,
                         "attachments": [
-                            {
-                                "server_id": "f4fda93b-06e0-4743-8117-bc8bcecd651b",
-                                "attachment_id": "3b4db356-253d-4fab-bfa0-e3626c0b8405",
-                                "host_name": None,
-                                "volume_id": "6edbc2f4-1507-44f8-ac0d-eed1d2608d38",
-                                "device": "/dev/vdb",
-                                "id": "6edbc2f4-1507-44f8-ac0d-eed1d2608d38"
-                            }
                         ],
-                        "links": [
-                            {
-                                "href": "http://23.253.248.171:8776/v2/bab7d5c60cd041a0a36f7c4b6e1dd978/volumes/6edbc2f4-1507-44f8-ac0d-eed1d2608d38",
-                                "rel": "self"
-                            },
-                            {
-                                "href": "http://23.253.248.171:8776/bab7d5c60cd041a0a36f7c4b6e1dd978/volumes/6edbc2f4-1507-44f8-ac0d-eed1d2608d38",
-                                "rel": "bookmark"
-                            }
-                        ],
-                        "availability_zone": "nova",
-                        "os-vol-host-attr:host": "difleming@lvmdriver-1#lvmdriver-1",
-                        "encrypted": False,
-                        "os-volume-replication:extended_status": None,
-                        "replication_status": "disabled",
-                        "snapshot_id": None,
-                        "id": "6edbc2f4-1507-44f8-ac0d-eed1d2608d38",
-                        "size": 2,
-                        "user_id": "32779452fcd34ae1a53a797ac8a1e064",
-                        "os-vol-tenant-attr:tenant_id": "bab7d5c60cd041a0a36f7c4b6e1dd978",
-                        "os-vol-mig-status-attr:migstat": None,
-                        "metadata": {
-                            "readonly": "False",
-                            "attached_mode": "rw"
-                        },
-                        "status": "in-use",
-                        "description": None,
-                        "multiattach": True,
-                        "os-volume-replication:driver_data": None,
-                        "source_volid": None,
-                        "consistencygroup_id": None,
-                        "os-vol-mig-status-attr:name_id": None,
-                        "name": "test-volume-attachments",
-                        "bootable": "False",
-                        "created_at": "2015-11-29T03:01:44.000000",
-                        "volume_type": "lvmdriver-1"
-                    },
-                    {
-                        "migration_status": None,
-                        "attachments": [],
-                        "links": [
-                            {
-                                "href": "http://23.253.248.171:8776/v2/bab7d5c60cd041a0a36f7c4b6e1dd978/volumes/173f7b48-c4c1-4e70-9acc-086b39073506",
-                                "rel": "self"
-                            },
-                            {
-                                "href": "http://23.253.248.171:8776/bab7d5c60cd041a0a36f7c4b6e1dd978/volumes/173f7b48-c4c1-4e70-9acc-086b39073506",
-                                "rel": "bookmark"
-                            }
-                        ],
-                        "availability_zone": "nova",
-                        "os-vol-host-attr:host": "difleming@lvmdriver-1#lvmdriver-1",
-                        "encrypted": False,
-                        "os-volume-replication:extended_status": None,
-                        "replication_status": "disabled",
-                        "snapshot_id": None,
-                        "id": "173f7b48-c4c1-4e70-9acc-086b39073506",
-                        "size": 1,
-                        "user_id": "32779452fcd34ae1a53a797ac8a1e064",
-                        "os-vol-tenant-attr:tenant_id": "bab7d5c60cd041a0a36f7c4b6e1dd978",
-                        "os-vol-mig-status-attr:migstat": None,
-                        "metadata": {},
-                        "status": "available",
-                        "volume_image_metadata": {
-                            "kernel_id": "8a55f5f1-78f7-4477-8168-977d8519342c",
-                            "checksum": "eb9139e4942121f22bbc2afc0400b2a4",
-                            "min_ram": "0",
-                            "ramdisk_id": "5f6bdf8a-92db-4988-865b-60bdd808d9ef",
-                            "disk_format": "ami",
-                            "image_name": "cirros-0.3.4-x86_64-uec",
-                            "image_id": "b48c53e1-9a96-4a5a-a630-2e74ec54ddcc",
-                            "container_format": "ami",
-                            "min_disk": "0",
-                            "size": "25165824"
-                        },
-                        "description": "",
-                        "multiattach": False,
-                        "os-volume-replication:driver_data": None,
-                        "source_volid": None,
-                        "consistencygroup_id": None,
-                        "os-vol-mig-status-attr:name_id": None,
-                        "name": "test-volume",
-                        "bootable": "True",
-                        "created_at": "2015-11-29T02:25:18.000000",
-                        "volume_type": "lvmdriver-1"
-                    }
-                ]
-            }
-        else:    
-            r = DescribeDisksRequest.DescribeDisksRequest()
-            
-            r.set_accept_format('json')
-            response = self.clt.do_action(r)
-            resp = json.loads(response)
-            print "queryVolumesDetails WUJUN response:", json.dumps(resp, indent=4)
-            volumesdetail = resp["Disks"]["Disk"]             
-            
-            resp = {
-                "volumes":[
-                    {
-                        "migration_status": None,
-                        "attachments": [],
                         "links": [ 
                             {
                                 "href": "http://",
@@ -229,7 +223,68 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
                                 "rel": "bookmark"
                             },
                         ],
-                        "availability_zone": v["ZoneId"],
+                        "availability_zone": "nova",
+                        "os-vol-host-attr:host": None,##"difleming@lvmdriver-1#lvmdriver-1",
+                        "encrypted": False,
+                        "os-volume-replication:extended_status": None,
+                        "replication_status": "disabled",
+                        "snapshot_id": None,
+                        "id": "6edbc2f4-1507-44f8-ac0d-eed1d2608d38",
+                        "size": 2,
+                        "user_id": "32779452fcd34ae1a53a797ac8a1e064",
+                        "os-vol-tenant-attr:tenant_id": "bab7d5c60cd041a0a36f7c4b6e1dd978",
+                        "os-vol-mig-status-attr:migstat": None,
+                        "metadata": {
+                        },
+                        "status": "in-use",
+                        "description": None,
+                        "multiattach": True,
+                        "os-volume-replication:driver_data": None,
+                        "source_volid": None,
+                        "consistencygroup_id": None,
+                        "os-vol-mig-status-attr:name_id": None,
+                        "name": "test-volume-attachments",
+                        "bootable": "false",
+                        "created_at": "2015-11-29T03:01:44.000000",
+                        "volume_type": "system"##"lvmdriver-1"
+                    }
+                ]
+            }
+        else:    
+            r = DescribeDisksRequest.DescribeDisksRequest()
+            r.set_accept_format('json')
+            response = self.clt.do_action(r)
+            resp = json.loads(response)
+            print "queryVolumesDetails WUJUN Origin Data *********####### response:", json.dumps(resp, indent=4)
+            volumesdetail = resp["Disks"]["Disk"]             
+            
+            resp = {
+                "volumes":[
+                    {
+                        "migration_status": None,
+                        "attachments": [
+
+                            {
+                                "server_id": "f4fda93b-06e0-4743-8117-bc8bcecd651b",
+                                "attachment_id": "3b4db356-253d-4fab-bfa0-e3626c0b8405",
+                                "host_name": None,
+                                "volume_id": "6edbc2f4-1507-44f8-ac0d-eed1d2608d38",
+                                "device": "/dev/vdb",
+                                "id": "6edbc2f4-1507-44f8-ac0d-eed1d2608d38"
+                            }
+                        
+                        ],
+                        "links": [ 
+                            {
+                                "href": "http://",
+                                "rel": "self"
+                            },
+                            {
+                                "href": "http://",
+                                "rel": "bookmark"
+                            },
+                        ],
+                        "availability_zone": "nova", ##v["ZoneId"],
                         "os-vol-host-attr:host": "difleming@lvmdriver-1#lvmdriver-1",
                         "encrypted": False,
                         "os-volume-replication:extended_status": None,
@@ -249,7 +304,7 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
                         "consistencygroup_id": None,
                         "os-vol-mig-status-attr:name_id": None,
                         "name": v["DiskName"],
-                        "bootable": "True",
+                        "bootable": "true",
                         "created_at": v["CreationTime"],
                         "volume_type": v["Type"]
                     }
@@ -261,13 +316,111 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
     
     
     def queryVolume(self, tenant_id, volume_id):
-        
+        if TEST_FLAG:
+            resp = {
+                "volume": {
+                    "status": "available",
+                    "attachments": [],
+                    "links": [
+                        {
+                            "href": "http://localhost:8776/v2/0c2eba2c5af04d3f9e9d0d410b371fde/volumes/5aa119a8-d25b-45a7-8d1b-88e127885635",
+                            "rel": "self"
+                        },
+                        {
+                            "href": "http://localhost:8776/0c2eba2c5af04d3f9e9d0d410b371fde/volumes/5aa119a8-d25b-45a7-8d1b-88e127885635",
+                            "rel": "bookmark"
+                        }
+                    ],
+                    "availability_zone": "nova",
+                    "bootable": "true",
+                    "os-vol-host-attr:host": "ip-10-168-107-25",
+                    "source_volid": None,
+                    "snapshot_id": None,
+                    "id": "5aa119a8-d25b-45a7-8d1b-88e127885635",
+                    "description": "Super volume.",
+                    "name": "vol-002",
+                    "created_at": "2013-02-25T02:40:21.000000",
+                    "volume_type": "None",
+                    "os-vol-tenant-attr:tenant_id": "0c2eba2c5af04d3f9e9d0d410b371fde",
+                    "size": 1,
+                    "os-volume-replication:driver_data": None,
+                    "os-volume-replication:extended_status": None,
+                    "metadata": {
+                        "contents": "not junk"
+                    }
+                }
+            }            
+            pass
+        else:
+            r = DescribeDisksRequest.DescribeDisksRequest()
+            r.set_accept_format('json')
+            response = self.clt.do_action(r)
+            resp = json.loads(response)
+            ## print "queryVolume WUJUN response:", json.dumps(resp, indent=4)
+            volumesdetail = resp["Disks"]["Disk"]  
+            resp = { "volume": {} }
+            for v in volumesdetail:
+                if v["DiskId"]==volume_id:
+                    resp = {
+                        "volume": {
+                            "status": v["Status"],
+                            "attachments": [],
+                            "links": [
+                                {
+                                    "href": "http://",
+                                    "rel": "self"
+                                },
+                                {
+                                    "href": "http://",
+                                    "rel": "bookmark"
+                                }
+                            ],
+                            "availability_zone": "nova", ##v["ZoneId"],
+                            "bootable": "true",
+                            "os-vol-host-attr:host": "ip-10-168-107-25", ##None,
+                            "source_volid": None,
+                            "snapshot_id": v["SourceSnapshotId"],
+                            "id":  v["DiskId"],
+                            "description": v["Description"],
+                            "name": v["DiskName"],
+                            "created_at": v["CreationTime"],
+                            "volume_type": v["Type"],
+                            "os-vol-tenant-attr:tenant_id": "0c2eba2c5af04d3f9e9d0d410b371fde", #None
+                            "size": v["Size"],
+                            "os-volume-replication:driver_data": None,
+                            "os-volume-replication:extended_status": None,
+                            "metadata": {
+                                "contents": "not junk"
+                            }
+                        }  
+                    }
+        return resp
         pass
     
     def updateVolume(self, tenant_id, volume_id, name, description):
+        ### NOCALL
+        print "there is no called"
+        print "updateVolume WUJUN begin ...."        
+        r = ModifyDiskAttributeRequest.ModifyDiskAttributeRequest()
+        r.set_accept_format('json')
+        r.set_DiskId(volume_id);
+        r.set_DiskName(name);
+        r.set_Description(description);
+        response = self.clt.do_action(r)
+        resp = json.loads(response) 
+        print "updateVolume WUJUN response:", json.dumps(resp, indent=4)
+        ######TODO......       
         pass
     
     def deleteVolume(self, tenant_id, volume_id):
+        print "deleteVolume WUJUN begin .... tenant_id is ", tenant_id, "  volume_id is ", volume_id     
+        r = DeleteDiskRequest.DeleteDiskRequest()
+        r.set_DiskId(volume_id)
+        r.set_accept_format('json')
+        response = self.clt.do_action(r)
+        resp = json.loads(response)
+        print "deleteVolume WUJUN response:", json.dumps(resp, indent=4) 
+        return True         
         pass    
     
     
@@ -279,6 +432,71 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
     
     
     def volumeAction(self, tenant_id, volume_id, action):
+        print "$$$$$$$$$$$  Volume Action is ", json.dumps(action, indent=4)
+        if action.has_key("os-reset_status"):
+            """
+            {
+                "os-reset_status": {
+                    "status": "available",
+                    "attach_status": "detached",
+                    "migration_status": "migrating"
+                }
+            }            
+            """
+            print "volumeAction os-reset_status WUJUN begin ...."        
+            r = ModifyDiskAttributeRequest.ModifyDiskAttributeRequest()
+            r.set_accept_format('json')
+            r.set_DiskId(volume_id);
+            ## r.set_DiskName("");
+            r.set_Description("ModifyDescription ... test ...");
+            response = self.clt.do_action(r)
+            resp = json.loads(response) 
+            print "volumeAction os-reset_status WUJUN response:", json.dumps(resp, indent=4)
+            pass
+        elif action.has_key("os-attach"):
+            ### NOTEST
+            """
+            {
+                "os-attach": {
+                    "instance_uuid": "95D9EF50-507D-11E5-B970-0800200C9A66",
+                    "mountpoint": "/dev/vdc"
+                }
+            } 
+            """
+            r = AttachDiskRequest.AttachDiskRequest()
+            r.set_InstanceId(action["os-attach"]["instance_uuid"])
+            r.set_DiskId(volume_id)
+            r.set_Device(action["os-attach"]["mountpoint"])
+            ## r.set_DeleteWithInstance(True)  ## or False
+            response = self.clt.do_action(r)
+            resp = json.loads(response) 
+            print "volumeAction os-attach WUJUN response:", json.dumps(resp, indent=4)
+            pass
+        elif action.has_key("os-force_detach"):
+            ### NOTEST    NOMATCH
+            ### aliyun need instanceID and diskID but opengstack is attachment_id
+            ### solve the way attachment_id real value is instanceID
+            """
+            {
+                "os-force_detach": {
+                    "attachment_id": "d8777f54-84cf-4809-a679-468ffed56cf1",
+                    "connector": {
+                        "initiator": "iqn.2012-07.org.fake:01"
+                    }
+                }
+            }            
+            """
+            r = DetachDiskRequest.DetachDiskRequest()
+            r.set_InstanceId(action["os-force_detach"]["attachment_id"])
+            r.set_DiskId(volume_id)
+            ## r.set_DeleteWithInstance(True)  ## or False
+            response = self.clt.do_action(r)
+            resp = json.loads(response) 
+            print "volumeAction os-force_detach WUJUN response:", json.dumps(resp, indent=4)            
+            pass
+        else:
+            return False
+        return True
         pass
 
     
@@ -317,18 +535,18 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
             r.set_accept_format('json')
             response = self.clt.do_action(r)
             resp = json.loads(response)
-            print "querySnapshotsDetails WUJUN response:", json.dumps(resp, indent=4)
+            ##print "querySnapshotsDetails WUJUN response:", json.dumps(resp, indent=4)
             snapshots = resp["Snapshots"]["Snapshot"] 
             
             resp = {
                 "snapshots":[
                     {
                         "status":s["Status"],
-                        "metadata":None,
+                        "metadata":{},
                         "os-extended-snapshot-attributes:progress": s["Progress"],
                         "name": s["SnapshotName"],
                         "volume_id": s["SourceDiskId"],
-                        "os-extended-snapshot-attributes:project_id":s["ProductCode"],
+                        "os-extended-snapshot-attributes:project_id": "bab7d5c60cd041a0a36f7c4b6e1dd978",##None ##s["ProductCode"],
                         "created_at": s["CreationTime"],    
                         "size":s["SourceDiskSize"],
                         "id":s["SnapshotId"],
@@ -341,9 +559,62 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
     
     
     def querySnapshot(self, tenant_id, snapshot_id):
+        if TEST_FLAG:
+            ## faked data for test
+            resp = {
+                "snapshot": {
+                    "status": s["Status"],
+                    "os-extended-snapshot-attributes:progress": "100%",
+                    "description": "Daily backup",
+                    "created_at": "2013-02-25T04:13:17.000000",
+                    "metadata": {},
+                    "volume_id": "5aa119a8-d25b-45a7-8d1b-88e127885635",
+                    "os-extended-snapshot-attributes:project_id": "0c2eba2c5af04d3f9e9d0d410b371fde",
+                    "size": 1,
+                    "id": "2bb856e1-b3d8-4432-a858-09e4ce939389",
+                    "name": "snap-001"
+                }
+            }              
+            pass
+        else:
+            print "querySnapshot WUJUN begin ...."        
+            r = DescribeSnapshotsRequest.DescribeSnapshotsRequest()
+            
+            r.set_accept_format('json')
+            response = self.clt.do_action(r)
+            resp = json.loads(response)
+            ##print "querySnapshotsDetails WUJUN response:", json.dumps(resp, indent=4)
+            snapshots = resp["Snapshots"]["Snapshot"]
+
+            resp = { "snapshot": {} }
+            for s in snapshots:
+                if s["SnapshotId"]==snapshot_id:                        
+                    resp = {
+                        "snapshot": {
+                            "status": "available",
+                            "os-extended-snapshot-attributes:progress": s["Progress"],
+                            "description": s["Description"],
+                            "created_at": s["CreationTime"],
+                            "metadata": {},
+                            "volume_id": s["SourceDiskId"],
+                            "os-extended-snapshot-attributes:project_id": None, ##"0c2eba2c5af04d3f9e9d0d410b371fde",
+                            "size": s["SourceDiskSize"],
+                            "id": s["SnapshotId"],
+                            "name": s["SnapshotName"]
+                        }
+                    }
+        return resp
         pass
     
     def deleteSnapshot(self, tenant_id, snapshot_id):
+        print "deleteSnapshot WUJUN begin .... snapshot_id is ", snapshot_id        
+        r = DeleteSnapshotRequest.DeleteSnapshotRequest()
+        r.set_SnapshotId(snapshot_id)
+        r.set_accept_format('json')
+        response = self.clt.do_action(r)
+        resp = json.loads(response)
+        print "deleteSnapshot WUJUN response:", json.dumps(resp, indent=4)       
+        return True
         pass 
     
     def updateSnapshot(self, tenant_id, snapshot_id, name, description):
@@ -357,8 +628,8 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
         pass
     
     
-    def queryOsVolumeTransfer(self, tenant_id):
-        print "queryOsVolumeTransfer WUJUN Do Nothing, tenant_id is ", tenant_id        
+    def queryOsVolumeTransferDetail(self, tenant_id):
+        print "queryOsVolumeTransferDetail WUJUN Do Nothing, tenant_id is ", tenant_id        
         ## if TEST_FLAG:
         if 1:
             ## faked data
@@ -399,3 +670,328 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
                 ]
             }
         return resp
+        
+        
+    def queryQosSpecs(self, tenant_id, sort_key, sort_dir, limit, marker):
+        print "queryQosSpecs WUJUN Do Nothing, tenant_id is ", tenant_id, "  sort_key is ", sort_key, "  sort_dir is ", sort_dir, "  limit is ", limit, "   marker is ", marker         
+        ## if TEST_FLAG:
+        if 1:
+            resp = {
+                "qos_specs": [
+                    {
+                        "specs": {
+                            "availability": "100",
+                            "numberOfFailures": "0"
+                        },
+                        "consumer": "back-end",
+                        "name": "reliability-spec",
+                        "id": "0388d6c6-d5d4-42a3-b289-95205c50dd15"
+                    },
+                    {
+                        "specs": {
+                            "delay": "0",
+                            "throughput": "100"
+                        },
+                        "consumer": "back-end",
+                        "name": "performance-spec",
+                        "id": "ecfc6e2e-7117-44a4-8eec-f84d04f531a8"
+                    }
+                ]
+            }            
+            pass
+        return resp
+        pass
+    
+    
+    def queryVolumeTypes(self, tenant_id, sort_key, sort_dir, limit, marker):
+        print "queryTypes WUJUN Do Nothing, tenant_id is ", tenant_id, "  sort_key is ", sort_key, "  sort_dir is ", sort_dir, "  limit is ", limit, "   marker is ", marker        
+        ## if TEST_FLAG:
+        if 1:
+            resp = {
+                "volume_types": [
+                    {
+                        "extra_specs": { },
+                        "id": "6685584b-1eac-4da6-b5c3-555430cf68ff",
+                        "name": "data cloud_efficiency"
+                    }
+                ]
+            }
+        return resp
+
+
+    def queryVolumeTypeDetail(self, tenant_id, volume_type_id):
+        print "queryVolumeTypeDetail WUJUN Do Nothing, tenant_id is ", tenant_id, "  volume_type_id is ", volume_type_id       
+        ## if TEST_FLAG:
+        if 1:
+            if volume_type_id == "6685584b-1eac-4da6-b5c3-555430cf68ff":
+                resp = {
+                    "volume_type": {
+                        "id": "6685584b-1eac-4da6-b5c3-555430cf68ff",
+                        "name": "vol-type-001",
+                        "description": "volume type 001",
+                        "is_public": "true",
+                        "extra_specs": {
+                        }
+                    }
+                }
+            elif volume_type_id == "default":
+                print "enter default volume type"
+                resp = {
+                    "volume_type": {
+                        "id": "6685584b-1eac-4da6-b5c3-555430cf68ff",
+                        "name": "vol-type-001",
+                        "description": "volume type 001",
+                        "is_public": "true",
+                        "extra_specs": {
+                        }
+                    }
+                }                
+                pass
+        return resp        
+        pass
+    
+    
+    def queryBlockStorageLimits(self, tenant_id):
+        print "queryBlockStorageLimits WUJUN Do Nothing, tenant_id is ", tenant_id      
+        ## if TEST_FLAG:
+        if 1:
+            resp = {
+                "limits": {
+                    "rate": [],
+                    "absolute": {
+                        "totalSnapshotsUsed": 0,
+                        "maxTotalBackups": 10,
+                        "maxTotalVolumeGigabytes": 1000,
+                        "maxTotalSnapshots": 10,
+                        "maxTotalBackupGigabytes": 1000,
+                        "totalBackupGigabytesUsed": 0,
+                        "maxTotalVolumes": 10,
+                        "totalVolumesUsed": 0,
+                        "totalBackupsUsed": 0,
+                        "totalGigabytesUsed": 0
+                    }
+                }
+            }
+        return resp         
+        pass
+    
+    
+    def queryBlockStorageExtensions(self, tenant_id):
+        print "queryBlockStorageExtensions WUJUN Do Nothing, tenant_id is ", tenant_id      
+        ## if TEST_FLAG:
+        if 1:
+            resp = {
+                "extensions": [
+                    {
+                        "updated": "2013-04-18T00:00:00+00:00",
+                        "name": "SchedulerHints",
+                        "links": [],
+                        "namespace": "http://docs.openstack.org/block-service/ext/scheduler-hints/api/v2",
+                        "alias": "OS-SCH-HNT",
+                        "description": "Pass arbitrary key/value pairs to the scheduler."
+                    },
+                    {
+                        "updated": "2011-06-29T00:00:00+00:00",
+                        "name": "Hosts",
+                        "links": [],
+                        "namespace": "http://docs.openstack.org/volume/ext/hosts/api/v1.1",
+                        "alias": "os-hosts",
+                        "description": "Admin-only host administration."
+                    },
+                    {
+                        "updated": "2011-11-03T00:00:00+00:00",
+                        "name": "VolumeTenantAttribute",
+                        "links": [],
+                        "namespace": "http://docs.openstack.org/volume/ext/volume_tenant_attribute/api/v1",
+                        "alias": "os-vol-tenant-attr",
+                        "description": "Expose the internal project_id as an attribute of a volume."
+                    },
+                    {
+                        "updated": "2011-08-08T00:00:00+00:00",
+                        "name": "Quotas",
+                        "links": [],
+                        "namespace": "http://docs.openstack.org/volume/ext/quotas-sets/api/v1.1",
+                        "alias": "os-quota-sets",
+                        "description": "Quota management support."
+                    },
+                    {
+                        "updated": "2011-08-24T00:00:00+00:00",
+                        "name": "TypesManage",
+                        "links": [],
+                        "namespace": "http://docs.openstack.org/volume/ext/types-manage/api/v1",
+                        "alias": "os-types-manage",
+                        "description": "Types manage support."
+                    },
+                    {
+                        "updated": "2013-07-10T00:00:00+00:00",
+                        "name": "VolumeEncryptionMetadata",
+                        "links": [],
+                        "namespace": "http://docs.openstack.org/volume/ext/os-volume-encryption-metadata/api/v1",
+                        "alias": "os-volume-encryption-metadata",
+                        "description": "Volume encryption metadata retrieval support."
+                    },
+                    {
+                        "updated": "2012-12-12T00:00:00+00:00",
+                        "name": "Backups",
+                        "links": [],
+                        "namespace": "http://docs.openstack.org/volume/ext/backups/api/v1",
+                        "alias": "backups",
+                        "description": "Backups support."
+                    },
+                    {
+                        "updated": "2013-07-16T00:00:00+00:00",
+                        "name": "SnapshotActions",
+                        "links": [],
+                        "namespace": "http://docs.openstack.org/volume/ext/snapshot-actions/api/v1.1",
+                        "alias": "os-snapshot-actions",
+                        "description": "Enable snapshot manager actions."
+                    },
+                    {
+                        "updated": "2012-05-31T00:00:00+00:00",
+                        "name": "VolumeActions",
+                        "links": [],
+                        "namespace": "http://docs.openstack.org/volume/ext/volume-actions/api/v1.1",
+                        "alias": "os-volume-actions",
+                        "description": "Enable volume actions\n    "
+                    },
+                    {
+                        "updated": "2013-10-03T00:00:00+00:00",
+                        "name": "UsedLimits",
+                        "links": [],
+                        "namespace": "http://docs.openstack.org/volume/ext/used-limits/api/v1.1",
+                        "alias": "os-used-limits",
+                        "description": "Provide data on limited resources that are being used."
+                    },
+                    {
+                        "updated": "2012-05-31T00:00:00+00:00",
+                        "name": "VolumeUnmanage",
+                        "links": [],
+                        "namespace": "http://docs.openstack.org/volume/ext/volume-unmanage/api/v1.1",
+                        "alias": "os-volume-unmanage",
+                        "description": "Enable volume unmanage operation."
+                    },
+                    {
+                        "updated": "2011-11-03T00:00:00+00:00",
+                        "name": "VolumeHostAttribute",
+                        "links": [],
+                        "namespace": "http://docs.openstack.org/volume/ext/volume_host_attribute/api/v1",
+                        "alias": "os-vol-host-attr",
+                        "description": "Expose host as an attribute of a volume."
+                    },
+                    {
+                        "updated": "2013-07-01T00:00:00+00:00",
+                        "name": "VolumeTypeEncryption",
+                        "links": [],
+                        "namespace": "http://docs.openstack.org/volume/ext/volume-type-encryption/api/v1",
+                        "alias": "encryption",
+                        "description": "Encryption support for volume types."
+                    },
+                    {
+                        "updated": "2013-06-27T00:00:00+00:00",
+                        "name": "AvailabilityZones",
+                        "links": [],
+                        "namespace": "http://docs.openstack.org/volume/ext/os-availability-zone/api/v1",
+                        "alias": "os-availability-zone",
+                        "description": "Describe Availability Zones."
+                    },
+                    {
+                        "updated": "2013-08-02T00:00:00+00:00",
+                        "name": "Qos_specs_manage",
+                        "links": [],
+                        "namespace": "http://docs.openstack.org/volume/ext/qos-specs/api/v1",
+                        "alias": "qos-specs",
+                        "description": "QoS specs support."
+                    },
+                    {
+                        "updated": "2011-08-24T00:00:00+00:00",
+                        "name": "TypesExtraSpecs",
+                        "links": [],
+                        "namespace": "http://docs.openstack.org/volume/ext/types-extra-specs/api/v1",
+                        "alias": "os-types-extra-specs",
+                        "description": "Type extra specs support."
+                    },
+                    {
+                        "updated": "2013-08-08T00:00:00+00:00",
+                        "name": "VolumeMigStatusAttribute",
+                        "links": [],
+                        "namespace": "http://docs.openstack.org/volume/ext/volume_mig_status_attribute/api/v1",
+                        "alias": "os-vol-mig-status-attr",
+                        "description": "Expose migration_status as an attribute of a volume."
+                    },
+                    {
+                        "updated": "2012-08-13T00:00:00+00:00",
+                        "name": "CreateVolumeExtension",
+                        "links": [],
+                        "namespace": "http://docs.openstack.org/volume/ext/image-create/api/v1",
+                        "alias": "os-image-create",
+                        "description": "Allow creating a volume from an image in the Create Volume v1 API."
+                    },
+                    {
+                        "updated": "2014-01-10T00:00:00-00:00",
+                        "name": "ExtendedServices",
+                        "links": [],
+                        "namespace": "http://docs.openstack.org/volume/ext/extended_services/api/v2",
+                        "alias": "os-extended-services",
+                        "description": "Extended services support."
+                    },
+                    {
+                        "updated": "2012-06-19T00:00:00+00:00",
+                        "name": "ExtendedSnapshotAttributes",
+                        "links": [],
+                        "namespace": "http://docs.openstack.org/volume/ext/extended_snapshot_attributes/api/v1",
+                        "alias": "os-extended-snapshot-attributes",
+                        "description": "Extended SnapshotAttributes support."
+                    },
+                    {
+                        "updated": "2012-12-07T00:00:00+00:00",
+                        "name": "VolumeImageMetadata",
+                        "links": [],
+                        "namespace": "http://docs.openstack.org/volume/ext/volume_image_metadata/api/v1",
+                        "alias": "os-vol-image-meta",
+                        "description": "Show image metadata associated with the volume."
+                    },
+                    {
+                        "updated": "2012-03-12T00:00:00+00:00",
+                        "name": "QuotaClasses",
+                        "links": [],
+                        "namespace": "http://docs.openstack.org/volume/ext/quota-classes-sets/api/v1.1",
+                        "alias": "os-quota-class-sets",
+                        "description": "Quota classes management support."
+                    },
+                    {
+                        "updated": "2013-05-29T00:00:00+00:00",
+                        "name": "VolumeTransfer",
+                        "links": [],
+                        "namespace": "http://docs.openstack.org/volume/ext/volume-transfer/api/v1.1",
+                        "alias": "os-volume-transfer",
+                        "description": "Volume transfer management support."
+                    },
+                    {
+                        "updated": "2014-02-10T00:00:00+00:00",
+                        "name": "VolumeManage",
+                        "links": [],
+                        "namespace": "http://docs.openstack.org/volume/ext/os-volume-manage/api/v1",
+                        "alias": "os-volume-manage",
+                        "description": "Allows existing backend storage to be 'managed' by Cinder."
+                    },
+                    {
+                        "updated": "2012-08-25T00:00:00+00:00",
+                        "name": "AdminActions",
+                        "links": [],
+                        "namespace": "http://docs.openstack.org/volume/ext/admin-actions/api/v1.1",
+                        "alias": "os-admin-actions",
+                        "description": "Enable admin actions."
+                    },
+                    {
+                        "updated": "2012-10-28T00:00:00-00:00",
+                        "name": "Services",
+                        "links": [],
+                        "namespace": "http://docs.openstack.org/volume/ext/services/api/v2",
+                        "alias": "os-services",
+                        "description": "Services support."
+                    }
+                ]
+            }
+        return resp
+
+        

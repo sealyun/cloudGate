@@ -12,7 +12,7 @@ import requests
 
 from cloudGate.modules.image_service.aliyun import processor
 
-run = 'test_list_images'
+run = 'test_create_image'
 
 
 class TestCase(unittest.TestCase):
@@ -26,7 +26,7 @@ class TestCase(unittest.TestCase):
     @unittest.skipUnless(run == 'test_create_image', 'reason')
     def test_create_image(self):
         p = processor.AliyunImageServiceProcessor("")
-        r = p.createImage(None, None, 'NewImage', 'coreos681_64_20G_aliaegis_20150618.vhd')
+        r = p.createImage(None, None, 'NewImage', 's-62ev59pgw')
         print('test_create_image', r)
 
     @unittest.skipUnless(run == 'test_query_image_by_id', 'reason')

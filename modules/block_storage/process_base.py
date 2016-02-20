@@ -63,5 +63,26 @@ class BlockStorageProcessorBase():
     def updataSnapshotMetadata(self, tenant_id, snapshot_id, metadata):
         pass  
 
-    def queryOsVolumeTransfer(self, tenant_id):
+
+    def queryOsVolumeTransferDetail(self, tenant_id):
+        pass
+
+
+    def queryQosSpecs(self, tenant_id, sort_key, sort_dir, limit, marker):
+        pass
+    
+    
+    def queryVolumeTypes(self, tenant_id, sort_key, sort_dir, limit, marker):
+        pass
+    
+    
+    def queryVolumeTypeDetail(self, tenant_id, volume_type_id):
+        pass
+    
+    
+    def queryBlockStorageLimits(self, tenant_id):
+        pass
+    
+    
+    def queryBlockStorageExtensions(self, tenant_id):
         pass    
