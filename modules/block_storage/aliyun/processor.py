@@ -35,7 +35,7 @@ from aliyunsdkecs.request.v20140526 import DescribeSnapshotsRequest
 from aliyunsdkecs.request.v20140526 import ModifyAutoSnapshotPolicyRequest
 from aliyunsdkecs.request.v20140526 import DescribeAutoSnapshotPolicyRequest
 
-TEST_FLAG = 1
+TEST_FLAG = 0
 
 import json
 
@@ -302,7 +302,18 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
                 "volumes":[
                     {
                         "migration_status": None,
-                        "attachments": [],
+                        "attachments": [
+
+                            {
+                                "server_id": "f4fda93b-06e0-4743-8117-bc8bcecd651b",
+                                "attachment_id": "3b4db356-253d-4fab-bfa0-e3626c0b8405",
+                                "host_name": None,
+                                "volume_id": "6edbc2f4-1507-44f8-ac0d-eed1d2608d38",
+                                "device": "/dev/vdb",
+                                "id": "6edbc2f4-1507-44f8-ac0d-eed1d2608d38"
+                            }
+                        
+                        ],
                         "links": [ 
                             {
                                 "href": "http://",
