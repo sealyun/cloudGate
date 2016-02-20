@@ -56,6 +56,7 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
         ## Aliyun       In_use | Available | Attaching | Detaching | Creating | ReIniting | All
         ## Openstack    creating | available | attaching | in-use | deleting | error | error_deleting
         ##              backing-up | restoring-backup | error_restoring | error_extending
+        #### PARAM NOMATCH
         """
         volume_status = "available"
         if disk_status == "In_use":
@@ -76,7 +77,8 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
         return volume_status
         """
         ### for test
-        return "available"
+        ## return "available"
+        return "in-use"
     
     def _convertVolumeStatus2DiskStatus(self, volume_status):
         """
@@ -86,7 +88,7 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
         elif volume_status == "in-use":
             disk_status = "In_use"
         elif volume_status == "attaching":
-            disk_status = "attaching"
+            disk_status = "Attaching"
         elif volume_status == "deleting":
             disk_status = "Detaching"
         elif volume_status == "creating":
@@ -95,7 +97,8 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
         return disk_status
         """
         ### for test
-        return "available"
+        ## return "Available"
+        return "In_use"
     
     def queryVolumes(self, tenant_id, sort, limit, marker):
         print "queryVolumes WUJUN Begin ...... , tenant_id is ", tenant_id, "  sort is ", sort, "  limit is ", limit, "   marker is ", marker
@@ -436,7 +439,8 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
         ## response = self.clt.do_action(r)
         ## resp = json.loads(response)
         ## print "deleteVolume WUJUN response:", json.dumps(resp, indent=4) 
-        return True         
+        ## return True  
+        return False
         pass    
     
     
