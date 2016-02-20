@@ -54,7 +54,7 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
     
     def queryVolumes(self, tenant_id, sort, limit, marker):
         print "queryVolumes WUJUN Begin ...... , tenant_id is ", tenant_id, "  sort is ", sort, "  limit is ", limit, "   marker is ", marker
-        ### if TEST_FLAG:
+        ###if TEST_FLAG:
         if 1:
             resp = {
                 "volumes": [
@@ -188,7 +188,8 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
     
     def queryVolumesDetails(self, tenant_id, sort, limit, marker):
         print "queryVolumesDetails WUJUN Begin ...... , tenant_id is ", tenant_id, "  sort is ", sort, "  limit is ", limit, "   marker is ", marker
-        if TEST_FLAG:
+        ###if TEST_FLAG:
+        if 1:
             resp = {
                 "volumes": [
                     {
