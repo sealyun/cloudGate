@@ -765,3 +765,28 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
                 }
         return resp        
         pass
+    
+    
+    def queryBlockStorageLimits(tenant_id):
+        print "queryBlockStorageLimits WUJUN Do Nothing, tenant_id is ", tenant_id      
+        ## if TEST_FLAG:
+        if 1:
+            resp = {
+                "limits": {
+                    "rate": [],
+                    "absolute": {
+                        "totalSnapshotsUsed": 0,
+                        "maxTotalBackups": 10,
+                        "maxTotalVolumeGigabytes": 1000,
+                        "maxTotalSnapshots": 10,
+                        "maxTotalBackupGigabytes": 1000,
+                        "totalBackupGigabytesUsed": 0,
+                        "maxTotalVolumes": 10,
+                        "totalVolumesUsed": 0,
+                        "totalBackupsUsed": 0,
+                        "totalGigabytesUsed": 0
+                    }
+                }
+            }
+        return resp         
+        pass    
