@@ -188,6 +188,18 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
     def queryVolumesDetails(self, tenant_id, sort, limit, marker):
         print "queryVolumesDetails WUJUN Begin ...... , tenant_id is ", tenant_id, "  sort is ", sort, "  limit is ", limit, "   marker is ", marker
         ###if TEST_FLAG:
+        '''
+        "links": [
+            {
+                "href": "http://23.253.248.171:8776/v2/bab7d5c60cd041a0a36f7c4b6e1dd978/volumes/6edbc2f4-1507-44f8-ac0d-eed1d2608d38",
+                "rel": "self"
+            },
+            {
+                "href": "http://23.253.248.171:8776/bab7d5c60cd041a0a36f7c4b6e1dd978/volumes/6edbc2f4-1507-44f8-ac0d-eed1d2608d38",
+                "rel": "bookmark"
+            }
+        ],
+        '''        
         if 1:
             resp = {
                 "volumes": [
@@ -203,15 +215,15 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
                                 "id": "6edbc2f4-1507-44f8-ac0d-eed1d2608d38"
                             }
                         ],
-                        "links": [
+                        "links": [ 
                             {
-                                "href": "http://23.253.248.171:8776/v2/bab7d5c60cd041a0a36f7c4b6e1dd978/volumes/6edbc2f4-1507-44f8-ac0d-eed1d2608d38",
+                                "href": "http://",
                                 "rel": "self"
                             },
                             {
-                                "href": "http://23.253.248.171:8776/bab7d5c60cd041a0a36f7c4b6e1dd978/volumes/6edbc2f4-1507-44f8-ac0d-eed1d2608d38",
+                                "href": "http://",
                                 "rel": "bookmark"
-                            }
+                            },
                         ],
                         "availability_zone": "nova",
                         "os-vol-host-attr:host": "difleming@lvmdriver-1#lvmdriver-1",
