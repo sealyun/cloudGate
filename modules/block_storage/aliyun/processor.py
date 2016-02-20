@@ -52,6 +52,51 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
         
         self.clt = client.AcsClient(self.access_key, self.access_secrect, self.regin)
     
+    def _convertDiskStatus2VolumeStatus(self, disk_status):
+        ## Aliyun       In_use | Available | Attaching | Detaching | Creating | ReIniting | All
+        ## Openstack    creating | available | attaching | in-use | deleting | error | error_deleting
+        ##              backing-up | restoring-backup | error_restoring | error_extending
+        """
+        volume_status = "available"
+        if disk_status == "In_use":
+            volume_status = "in-use"
+        elif disk_status == "Available":
+            volume_status = "available"
+        elif disk_status == "Attaching":
+            volume_status = "attaching"
+        elif disk_status == "Detaching":
+            volume_status = "available"
+        elif disk_status == "Creating":
+            volume_status = "creating"
+        elif disk_status == "ReIniting":
+            volume_status = "available"
+        elif disk_status == "All":
+            volume_status = "available"
+        print "disk_status is ", disk_status, "   convert volume_status is  ", volume_status
+        return volume_status
+        """
+        ### for test
+        return "available"
+    
+    def _convertVolumeStatus2DiskStatus(self, volume_status):
+        """
+        disk_status = "Available"
+        if volume_status == "available":
+            disk_status = "Available"
+        elif volume_status == "in-use":
+            disk_status = "In_use"
+        elif volume_status == "attaching":
+            disk_status = "attaching"
+        elif volume_status == "deleting":
+            disk_status = "Detaching"
+        elif volume_status == "creating":
+            disk_status = "Creating"
+        print "volume_status is ", volume_status, "   convert disk_status is  ", disk_status
+        return disk_status
+        """
+        ### for test
+        return "available"
+    
     def queryVolumes(self, tenant_id, sort, limit, marker):
         print "queryVolumes WUJUN Begin ...... , tenant_id is ", tenant_id, "  sort is ", sort, "  limit is ", limit, "   marker is ", marker
         if TEST_FLAG:
@@ -255,79 +300,33 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
                                 "rel": "bookmark"
                             },
                         ],
-                        "availability_zone": "nova", ##v["ZoneId"],
+                        "availability_zone": v["ZoneId"],
                         "os-vol-host-attr:host": "difleming@lvmdriver-1#lvmdriver-1",
                         "encrypted": False,
                         "os-volume-replication:extended_status": None,
                         "replication_status": "disabled",
-                        "snapshot_id": None, ### v["SourceSnapshotId"],
-                        "id": v["DiskId"], ###?????
+                        "snapshot_id": v["SourceSnapshotId"],
+                        "id": v["DiskId"],
                         "size": v["Size"],
                         "user_id": "32779452fcd34ae1a53a797ac8a1e064",
                         "os-vol-tenant-attr:tenant_id":"bab7d5c60cd041a0a36f7c4b6e1dd978",
                         "os-vol-mig-status-attr:migstat": None,
                         "metadata": {},
-                        "status": "in-use",###v["Status"],
+                        "status": _convertDiskStatus2VolumeStatus(v["Status"]), ###"in-use", ###v["Status"],
                         "description": v["Description"],
-                        "multiattach": True, ###False,
+                        "multiattach": False,
                         "os-volume-replication:driver_data": None,
                         "source_volid": None,
                         "consistencygroup_id": None,
                         "os-vol-mig-status-attr:name_id": None,
                         "name": v["DiskName"],
-                        "bootable": "false",  ##true
-                        "created_at": "2015-11-29T03:01:44.000000", ## v["CreationTime"], 
+                        "bootable": "true",
+                        "created_at": v["CreationTime"], 
                         "volume_type": v["Type"]
                     }
                     for v in volumesdetail
                 ]
             }
-            """
-            
-            resp = {
-                "volumes": [
-                    {
-                        "migration_status": None,
-                        "attachments": [
-                        ],
-                        "links": [ 
-                            {
-                                "href": "http://",
-                                "rel": "self"
-                            },
-                            {
-                                "href": "http://",
-                                "rel": "bookmark"
-                            },
-                        ],
-                        "availability_zone": "nova",
-                        "os-vol-host-attr:host": None,##"difleming@lvmdriver-1#lvmdriver-1",
-                        "encrypted": False,
-                        "os-volume-replication:extended_status": None,
-                        "replication_status": "disabled",
-                        "snapshot_id": None,
-                        "id": "6edbc2f4-1507-44f8-ac0d-eed1d2608d38",
-                        "size": 2,
-                        "user_id": "32779452fcd34ae1a53a797ac8a1e064",
-                        "os-vol-tenant-attr:tenant_id": "bab7d5c60cd041a0a36f7c4b6e1dd978",
-                        "os-vol-mig-status-attr:migstat": None,
-                        "metadata": {
-                        },
-                        "status": "in-use",
-                        "description": None,
-                        "multiattach": True,
-                        "os-volume-replication:driver_data": None,
-                        "source_volid": None,
-                        "consistencygroup_id": None,
-                        "os-vol-mig-status-attr:name_id": None,
-                        "name": "test-volume-attachments",
-                        "bootable": "false",
-                        "created_at": "2015-11-29T03:01:44.000000",
-                        "volume_type": "system"##"lvmdriver-1"
-                    }
-                ]
-            }    
-            """
             pass
         return resp
     
@@ -380,7 +379,7 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
                 if v["DiskId"]==volume_id:
                     resp = {
                         "volume": {
-                            "status": v["Status"],
+                            "status": _convertDiskStatus2VolumeStatus(v["Status"]), ###v["Status"],
                             "attachments": [],
                             "links": [
                                 {
