@@ -250,7 +250,7 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
                         "name": "test-volume-attachments",
                         "bootable": "false",
                         "created_at": "2015-11-29T03:01:44.000000",
-                        "volume_type": "lvmdriver-1"
+                        "volume_type": "system"##"lvmdriver-1"
                     },
                     {
                         "migration_status": None,
@@ -299,7 +299,7 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
                         "name": "test-volume",
                         "bootable": "true",
                         "created_at": "2015-11-29T02:25:18.000000",
-                        "volume_type": "lvmdriver-1"
+                        "volume_type": "data" ##"lvmdriver-1"
                     }
                 ]
             }
