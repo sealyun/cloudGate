@@ -55,10 +55,16 @@ class VolumesHandler(BlockStorageBaseHandler):
                 volume["metadata"],
                 volume["source_replica"],
                 volume["consistencygroup_id"])
-        print "VolumesHandler createVolume GET Resp Json: ========"
-        ## print json.dumps(resp, indent=4)
-        print "==========================================" 
-        self.send_json(resp)
+        if resp is None:
+            print "===========  do create Volume Failed     =========="           
+            self.set_status(403)
+            return
+        else:
+            print "===========  do create Volume Successed  =========="
+            print "VolumesHandler createVolume GET Resp Json: ========"
+            ## print json.dumps(resp, indent=4)
+            print "==========================================" 
+            self.send_json(resp)
 
 class VolumesDetailHandler(BlockStorageBaseHandler):
     def get(self, tenant_id):

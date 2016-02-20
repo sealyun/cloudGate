@@ -76,6 +76,14 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
         print "disk_status is ", disk_status, "   convert volume_status is  ", volume_status
         return volume_status
         """
+        """
+        volume_status = None
+        if disk_status == "In_use":
+            volume_status = "in-use"
+        else:
+            volume_status = "available"
+        return volume_status
+        """
         ### for test
         return "available"
         ## if in-use status not allowed delete
@@ -95,6 +103,13 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
         elif volume_status == "creating":
             disk_status = "Creating"
         print "volume_status is ", volume_status, "   convert disk_status is  ", disk_status
+        return disk_status
+        """
+        """
+        if volume_status == "in-use":
+            disk_status = "In_use"
+        else:
+            disk_status = "Available"
         return disk_status
         """
         ### for test
@@ -179,7 +194,7 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
                 description, multiattach, snapshot_id, name, imageRef,
                 volume_type, metadata, source_replica, consistencygroup_id):
         print "createVolume WUJUN Begin ...... "
-        if 1:
+        if TEST_FLAG:
             resp = {
                 "volume": {
                     "status": "creating",
@@ -215,22 +230,90 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
                 }
             }
         else:
+            print "source_volid is ", source_volid, "  snapshot_id is ", snapshot_id
+            if source_volid:
+                print "Not Supported create disk used by source volid. Error!!! Error!!! Error!!!"
+                return None
+            disk_category = volume_type.split(" ")[1]
+            min_size = 0
+            max_size = 0
+            if disk_category == "cloud":
+                min_size = 5
+                max_size = 2000
+            elif disk_category == "cloud_efficiency":
+                min_size = 20
+                max_size = 2048
+            elif disk_category == "cloud_ssd":
+                min_size = 20
+                max_size = 1024
+            else:
+                print "Disk Category is Error Error Error !!!!!!!"
+                return None
+            
             r = CreateDiskRequest.CreateDiskRequest()
-            ## r.set_OwnerId(owner_id)
-            ## r.set_ResourceOwnerAccount(resource_owner_account)
-            ## r.set_ResourceOwnerId(resource_owner_id)
-            ##### r.set_ZoneId(self.regin)
-            ## r.set_SnapshotId(snapshot_id)
+            r.set_ZoneId("cn-hongkong-b")
             r.set_DiskName(name)
-            r.set_Size(size)
-            ## r.set_DiskCategory(disk_category)
+
+            if size < min_size:
+                size = min_size
+            if size > max_size:
+                size = max_size
+            r.set_Size(size)   
             r.set_Description(description)
-            ### r.set_ClientToken(self.token)
-            ### r.set_OwnerAccount("wj")  ## wj or admin       
+            if not(snapshot_id is None):
+                r.set_SnapshotId(snapshot_id)                                     
+            r.set_DiskCategory(disk_category)
+
+            ### r.set_ClientToken(self.token)      
             r.set_accept_format('json')
-            ### response = self.clt.do_action(r)
-            print "createVolume WUJUN response is ", response
-            return True
+            response = self.clt.do_action(r)
+            resp = json.loads(response)
+            print "createVolume WUJUN response is ", json.dumps(resp, indent=4)
+            disk_id = resp["DiskId"]
+            
+            r = DescribeDisksRequest.DescribeDisksRequest()
+            r.set_accept_format('json')
+            response = self.clt.do_action(r)
+            resp = json.loads(response)
+            print "when createVolume, queryVolume WUJUN response:", json.dumps(resp, indent=4)
+            volumesdetail = resp["Disks"]["Disk"]  
+            resp = { "volume": {} }
+            for v in volumesdetail:
+                if v["DiskId"]==disk_id:
+                    resp = {
+                        "volume": {
+                            "status": "creating",
+                            "migration_status": None,
+                            "user_id": "0eea4eabcf184061a3b6db1e0daaf010",
+                            "attachments": [],
+                            "links": [
+                                {
+                                    "href":"http://",
+                                    "rel": "self"
+                                },
+                                {
+                                    "href":"http://",
+                                    "rel": "bookmark"
+                                }
+                            ],
+                            "availability_zone": "nova",
+                            "bootable": "false",
+                            "encrypted": False,
+                            "created_at": v["CreationTime"],
+                            "description": v["Description"],
+                            "updated_at": None,
+                            "volume_type": "lvmdriver-1",
+                            "name": v["DiskName"],
+                            "replication_status": "disabled",
+                            "consistencygroup_id": None,
+                            "source_volid": None,
+                            "snapshot_id": v["SourceSnapshotId"],
+                            "multiattach": False,
+                            "metadata": {},
+                            "id": v["DiskId"],
+                            "size": v["Size"]
+                        }
+                    }            
         return resp
     
     
