@@ -9,6 +9,6 @@ IDENTITY={
         "access_key":"xvKzzHdiemKVZqtI",
         "access_secret":"2QNDzyOD9EXNPm2KIrk1foWZLCcIoj",
         "regin":"cn-hongkong",
-        "oss_endpoint":"fanux.oss-cn-hangzhou.aliyuncs.com"
+        "oss_endpoint":"oss-cn-hongkong.aliyuncs.com"
     },
 }
