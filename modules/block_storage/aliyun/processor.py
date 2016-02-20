@@ -238,22 +238,12 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
             resp = json.loads(response)
             print "queryVolumesDetails WUJUN Origin Data *********####### response:", json.dumps(resp, indent=4)
             volumesdetail = resp["Disks"]["Disk"]             
-            """
+            
             resp = {
                 "volumes":[
                     {
                         "migration_status": None,
-                        "attachments": [
-
-                            {
-                                "server_id": "f4fda93b-06e0-4743-8117-bc8bcecd651b",
-                                "attachment_id": "3b4db356-253d-4fab-bfa0-e3626c0b8405",
-                                "host_name": None,
-                                "volume_id": "6edbc2f4-1507-44f8-ac0d-eed1d2608d38",
-                                "device": "/dev/vdb",
-                                "id": "6edbc2f4-1507-44f8-ac0d-eed1d2608d38"
-                            }
-                        
+                        "attachments": [                        
                         ],
                         "links": [ 
                             {
@@ -270,23 +260,23 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
                         "encrypted": False,
                         "os-volume-replication:extended_status": None,
                         "replication_status": "disabled",
-                        "snapshot_id": v["SourceSnapshotId"],
-                        "id": v["DiskId"],
+                        "snapshot_id": None, ### v["SourceSnapshotId"],
+                        "id": v["DiskId"], ###?????
                         "size": v["Size"],
                         "user_id": "32779452fcd34ae1a53a797ac8a1e064",
                         "os-vol-tenant-attr:tenant_id":"bab7d5c60cd041a0a36f7c4b6e1dd978",
                         "os-vol-mig-status-attr:migstat": None,
                         "metadata": {},
-                        "status": v["Status"],
+                        "status": "in-use",###v["Status"],
                         "description": v["Description"],
-                        "multiattach": False,
+                        "multiattach": True, ###False,
                         "os-volume-replication:driver_data": None,
                         "source_volid": None,
                         "consistencygroup_id": None,
                         "os-vol-mig-status-attr:name_id": None,
                         "name": v["DiskName"],
-                        "bootable": "true",
-                        "created_at": v["CreationTime"],
+                        "bootable": "false",  ##true
+                        "created_at": "2015-11-29T03:01:44.000000", ## v["CreationTime"], 
                         "volume_type": v["Type"]
                     }
                     for v in volumesdetail
@@ -336,7 +326,8 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
                         "volume_type": "system"##"lvmdriver-1"
                     }
                 ]
-            }            
+            }    
+            """
             pass
         return resp
     
