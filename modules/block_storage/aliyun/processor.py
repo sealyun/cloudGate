@@ -313,7 +313,7 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
                                 "rel": "bookmark"
                             },
                         ],
-                        "availability_zone": v["ZoneId"],
+                        "availability_zone": "nova"##v["ZoneId"],
                         "os-vol-host-attr:host": "difleming@lvmdriver-1#lvmdriver-1",
                         "encrypted": False,
                         "os-volume-replication:extended_status": None,
@@ -404,9 +404,9 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
                                     "rel": "bookmark"
                                 }
                             ],
-                            "availability_zone": v["ZoneId"],
+                            "availability_zone": "nova", ##v["ZoneId"],
                             "bootable": "true",
-                            "os-vol-host-attr:host": None, ##"ip-10-168-107-25",
+                            "os-vol-host-attr:host": "ip-10-168-107-25", ##None,
                             "source_volid": None,
                             "snapshot_id": v["SourceSnapshotId"],
                             "id":  v["DiskId"],
