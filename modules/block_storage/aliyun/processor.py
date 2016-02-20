@@ -313,7 +313,7 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
                                 "rel": "bookmark"
                             },
                         ],
-                        "availability_zone": "nova"##v["ZoneId"],
+                        "availability_zone": "nova", ##v["ZoneId"],
                         "os-vol-host-attr:host": "difleming@lvmdriver-1#lvmdriver-1",
                         "encrypted": False,
                         "os-volume-replication:extended_status": None,
