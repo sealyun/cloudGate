@@ -199,7 +199,13 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
                 "rel": "bookmark"
             }
         ],
-        '''        
+        '''       
+        '''
+                        "metadata": {
+                            "readonly": "false",
+                            "attached_mode": "rw"
+                        },        
+        '''
         if 1:
             resp = {
                 "volumes": [
@@ -237,8 +243,6 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
                         "os-vol-tenant-attr:tenant_id": "bab7d5c60cd041a0a36f7c4b6e1dd978",
                         "os-vol-mig-status-attr:migstat": None,
                         "metadata": {
-                            "readonly": "false",
-                            "attached_mode": "rw"
                         },
                         "status": "in-use",
                         "description": None,
