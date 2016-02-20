@@ -77,8 +77,9 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
         return volume_status
         """
         ### for test
-        ## return "available"
-        return "in-use"
+        return "available"
+        ## if in-use status not allowed delete
+        ## return "in-use"
     
     def _convertVolumeStatus2DiskStatus(self, volume_status):
         """
@@ -436,11 +437,10 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
         r = DeleteDiskRequest.DeleteDiskRequest()
         r.set_DiskId(volume_id)
         r.set_accept_format('json')
-        ## response = self.clt.do_action(r)
-        ## resp = json.loads(response)
-        ## print "deleteVolume WUJUN response:", json.dumps(resp, indent=4) 
-        ## return True  
-        return False
+        response = self.clt.do_action(r)
+        resp = json.loads(response)
+        print "deleteVolume WUJUN response:", json.dumps(resp, indent=4) 
+        return True  
         pass    
     
     
