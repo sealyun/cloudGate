@@ -72,5 +72,10 @@ class BlockStorageProcessorBase():
         pass
     
     
-    def queryTypes(self, tenant_id, sort_key, sort_dir, limit, marker):
+    def queryVolumeTypes(self, tenant_id, sort_key, sort_dir, limit, marker):
+        pass
+    
+    
+    def queryVolumeTypeDetail(tenant_id, volume_type_id):
+        
         pass

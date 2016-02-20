@@ -332,16 +332,26 @@ class QosSpecsHandler(BlockStorageBaseHandler):
         self.send_json(resp)        
         pass    
     
-class TypesHandler(BlockStorageBaseHandler):
+class VolumeTypesHandler(BlockStorageBaseHandler):
     def get(self, tenant_id):
         sort_key = self.get_argument("sort_key", None)
         sort_dir = self.get_argument("sort_dir", None)
         limit = self.get_argument("limit", None)
         marker = self.get_argument("marker", None)  
         
-        resp = self.p.queryTypes(tenant_id, sort_key, sort_dir, limit, marker)
+        resp = self.p.queryVolumeTypes(tenant_id, sort_key, sort_dir, limit, marker)
         print "TypesHandler queryTypes GET Resp Json: ========"
-        ## print json.dumps(resp, indent=4)
+        print json.dumps(resp, indent=4)
         print "=========================================="
         self.send_json(resp)        
-        pass  
+        pass
+    
+class VolumeTypeDetailHandler(BlockStorageBaseHandler):
+    def get(self, tenant_id, volume_type_id):
+        resp = self.p.queryVolumeTypeDetail(tenant_id, volume_type_id)
+        print "VolumeTypeDetailHandler queryVolumeTypeDetail GET Resp Json: ========"
+        print json.dumps(resp, indent=4)
+        print "=========================================="
+        self.send_json(resp)          
+        pass
+    

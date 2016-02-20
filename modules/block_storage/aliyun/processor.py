@@ -732,11 +732,11 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
         pass
     
     
-    def queryTypes(self, tenant_id, sort_key, sort_dir, limit, marker):
+    def queryVolumeTypes(self, tenant_id, sort_key, sort_dir, limit, marker):
         print "queryTypes WUJUN Do Nothing, tenant_id is ", tenant_id, "  sort_key is ", sort_key, "  sort_dir is ", sort_dir, "  limit is ", limit, "   marker is ", marker        
         ## if TEST_FLAG:
         if 1:
-            {
+            resp = {
                 "volume_types": [
                     {
                         "extra_specs": {
@@ -753,4 +753,36 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
                 ]
             }            
             pass
-        pass          
+        return resp
+        pass
+
+
+    def queryVolumeTypeDetail(self, tenant_id, volume_type_id):
+        print "queryVolumeTypeDetail WUJUN Do Nothing, tenant_id is ", tenant_id, "  volume_type_id is ", volume_type_id       
+        ## if TEST_FLAG:
+        if 1:
+            if volume_type_id == "6685584b-1eac-4da6-b5c3-555430cf68ff":
+                resp = {
+                    "volume_type": {
+                        "id": "6685584b-1eac-4da6-b5c3-555430cf68ff",
+                        "name": "vol-type-001",
+                        "description": "volume type 001",
+                        "is_public": "true",
+                        "extra_specs": {
+                            "capabilities": "gpu"
+                        }
+                    }
+                }
+            elif volume_type_id == "8eb69a46-df97-4e41-9586-9a40a7533803":
+                resp = {
+                    "volume_type": {
+                        "id": "8eb69a46-df97-4e41-9586-9a40a7533803",
+                        "name": "vol-type-002",
+                        "description": "volume type 002",
+                        "is_public": "true",
+                        "extra_specs": {}
+                    }
+                }                
+                pass
+        return resp        
+        pass
