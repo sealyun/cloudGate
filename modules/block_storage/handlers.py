@@ -42,7 +42,7 @@ class VolumesHandler(BlockStorageBaseHandler):
 
     def post(self, tenant_id):
         volume = json.loads(self.request.body)["volume"]
-        print "createVolume Input Params is ", json.dumps(volume, indent=4)
+        print "VolumesHandler createVolume Input Params is ", json.dumps(volume, indent=4)
         resp = self.p.createVolume(tenant_id, volume["size"],
                 volume["availability_zone"],
                 volume["source_volid"],
@@ -133,10 +133,13 @@ class VolumeHandler(BlockStorageBaseHandler):
         self.send_json(resp)
 
     def delete(self, tenant_id, volume_id):
+        print "===========  do deleteVolume ==========  volume_id is ", volume_id
         if self.p.deleteVolume(tenant_id, volume_id):
+            print "===========  do deleteVolume Success ==========" 
             self.set_status(202)
             pass
         else:
+            print "===========  do deleteVolume Failed  =========="
             self.set_status(403)
             pass        
 

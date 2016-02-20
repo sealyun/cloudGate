@@ -739,22 +739,13 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
             resp = {
                 "volume_types": [
                     {
-                        "extra_specs": {
-                            "capabilities": "gpu"
-                        },
+                        "extra_specs": { },
                         "id": "6685584b-1eac-4da6-b5c3-555430cf68ff",
-                        "name": "SSD"
-                    },
-                    {
-                        "extra_specs": {},
-                        "id": "8eb69a46-df97-4e41-9586-9a40a7533803",
-                        "name": "SATA"
+                        "name": "data cloud_efficiency"
                     }
                 ]
-            }            
-            pass
+            }
         return resp
-        pass
 
 
     def queryVolumeTypeDetail(self, tenant_id, volume_type_id):
@@ -769,20 +760,8 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
                         "description": "volume type 001",
                         "is_public": "true",
                         "extra_specs": {
-                            "capabilities": "gpu"
                         }
                     }
                 }
-            elif volume_type_id == "8eb69a46-df97-4e41-9586-9a40a7533803":
-                resp = {
-                    "volume_type": {
-                        "id": "8eb69a46-df97-4e41-9586-9a40a7533803",
-                        "name": "vol-type-002",
-                        "description": "volume type 002",
-                        "is_public": "true",
-                        "extra_specs": {}
-                    }
-                }                
-                pass
         return resp        
         pass
