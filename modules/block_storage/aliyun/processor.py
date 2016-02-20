@@ -767,7 +767,7 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
         pass
     
     
-    def queryBlockStorageLimits(tenant_id):
+    def queryBlockStorageLimits(self, tenant_id):
         print "queryBlockStorageLimits WUJUN Do Nothing, tenant_id is ", tenant_id      
         ## if TEST_FLAG:
         if 1:
