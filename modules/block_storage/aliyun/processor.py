@@ -269,7 +269,7 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
             response = self.clt.do_action(r)
             resp = json.loads(response)
             print "createVolume WUJUN response is ", json.dumps(resp, indent=4)
-            disk_id = resp["DiskId"]
+            disk_id = resp["RequestId"]
             
             r = DescribeDisksRequest.DescribeDisksRequest()
             r.set_accept_format('json')
