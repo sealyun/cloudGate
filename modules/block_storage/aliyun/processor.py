@@ -523,11 +523,14 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
     def deleteVolume(self, tenant_id, volume_id):
         print "deleteVolume WUJUN begin .... tenant_id is ", tenant_id, "  volume_id is ", volume_id     
         r = DeleteDiskRequest.DeleteDiskRequest()
-        ##r.set_DiskId(volume_id)
+        r.set_DiskId(volume_id)
         r.set_accept_format('json')
         response = self.clt.do_action(r)
         resp = json.loads(response)
         print "deleteVolume WUJUN response:", json.dumps(resp, indent=4) 
+        if resp.has_key("Code"):
+            print "Aliyun Delete Disk Operation Failed, Have Error"
+            return False
         return True  
         pass    
     
