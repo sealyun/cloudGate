@@ -62,7 +62,7 @@ class VolumesHandler(BlockStorageBaseHandler):
         else:
             print "===========  do create Volume Successed  =========="
             print "VolumesHandler createVolume GET Resp Json: ========"
-            ## print json.dumps(resp, indent=4)
+            print json.dumps(resp, indent=4)
             print "==========================================" 
             self.send_json(resp)
 
