@@ -763,6 +763,19 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
                         }
                     }
                 }
+            elif volume_type_id == "default":
+                print "enter default volume type"
+                resp = {
+                    "volume_type": {
+                        "id": "6685584b-1eac-4da6-b5c3-555430cf68ff",
+                        "name": "vol-type-001",
+                        "description": "volume type 001",
+                        "is_public": "true",
+                        "extra_specs": {
+                        }
+                    }
+                }                
+                pass
         return resp        
         pass
     
