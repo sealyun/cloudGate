@@ -187,26 +187,7 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
     
     def queryVolumesDetails(self, tenant_id, sort, limit, marker):
         print "queryVolumesDetails WUJUN Begin ...... , tenant_id is ", tenant_id, "  sort is ", sort, "  limit is ", limit, "   marker is ", marker
-        ###if TEST_FLAG:
-        '''
-        "links": [
-            {
-                "href": "http://23.253.248.171:8776/v2/bab7d5c60cd041a0a36f7c4b6e1dd978/volumes/6edbc2f4-1507-44f8-ac0d-eed1d2608d38",
-                "rel": "self"
-            },
-            {
-                "href": "http://23.253.248.171:8776/bab7d5c60cd041a0a36f7c4b6e1dd978/volumes/6edbc2f4-1507-44f8-ac0d-eed1d2608d38",
-                "rel": "bookmark"
-            }
-        ],
-        '''       
-        '''
-                        "metadata": {
-                            "readonly": "false",
-                            "attached_mode": "rw"
-                        },        
-        '''
-        if 1:
+        if TEST_FLAG:
             resp = {
                 "volumes": [
                     {
@@ -257,7 +238,7 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
             resp = json.loads(response)
             print "queryVolumesDetails WUJUN Origin Data *********####### response:", json.dumps(resp, indent=4)
             volumesdetail = resp["Disks"]["Disk"]             
-            
+            """
             resp = {
                 "volumes":[
                     {
@@ -311,6 +292,51 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
                     for v in volumesdetail
                 ]
             }
+            """
+            
+            resp = {
+                "volumes": [
+                    {
+                        "migration_status": None,
+                        "attachments": [
+                        ],
+                        "links": [ 
+                            {
+                                "href": "http://",
+                                "rel": "self"
+                            },
+                            {
+                                "href": "http://",
+                                "rel": "bookmark"
+                            },
+                        ],
+                        "availability_zone": "nova",
+                        "os-vol-host-attr:host": None,##"difleming@lvmdriver-1#lvmdriver-1",
+                        "encrypted": False,
+                        "os-volume-replication:extended_status": None,
+                        "replication_status": "disabled",
+                        "snapshot_id": None,
+                        "id": "6edbc2f4-1507-44f8-ac0d-eed1d2608d38",
+                        "size": 2,
+                        "user_id": "32779452fcd34ae1a53a797ac8a1e064",
+                        "os-vol-tenant-attr:tenant_id": "bab7d5c60cd041a0a36f7c4b6e1dd978",
+                        "os-vol-mig-status-attr:migstat": None,
+                        "metadata": {
+                        },
+                        "status": "in-use",
+                        "description": None,
+                        "multiattach": True,
+                        "os-volume-replication:driver_data": None,
+                        "source_volid": None,
+                        "consistencygroup_id": None,
+                        "os-vol-mig-status-attr:name_id": None,
+                        "name": "test-volume-attachments",
+                        "bootable": "false",
+                        "created_at": "2015-11-29T03:01:44.000000",
+                        "volume_type": "system"##"lvmdriver-1"
+                    }
+                ]
+            }            
             pass
         return resp
     
