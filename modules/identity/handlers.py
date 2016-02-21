@@ -416,21 +416,21 @@ class AuthTokensHandler(IdentityBaseHandler):
                         "endpoints": [
                             {
                                 "region_id": "RegionOne",
-                                "url": "",
+                                "url": "http://"+ HOST + ":" + PORT + OBJECT_STORAGE_BASE_URL + "/v1/tenant_id",
                                 "region": "RegionOne",
                                 "interface": "public",
                                 "id": "265ce88a0e1642fc90b2ec20ccb279ff"
                             },
                             {
                                 "region_id": "RegionOne",
-                                "url": "",
+                                "url":  "http://"+ HOST + ":" + PORT + OBJECT_STORAGE_BASE_URL + "/v1/tenant_id",
                                 "region": "RegionOne",
                                 "interface": "admin",
                                 "id": "500b7f066d39492faff8a3f710fb5a2f"
                             },
                             {
                                 "region_id": "RegionOne",
-                                "url": "",
+                                "url":  "http://"+ HOST + ":" + PORT + OBJECT_STORAGE_BASE_URL + "/v1/tenant_id",
                                 "region": "RegionOne",
                                 "interface": "internal",
                                 "id": "a33b0684f817405280df1f5600777a75"
