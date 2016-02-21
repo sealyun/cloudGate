@@ -25,7 +25,7 @@ class ObjectStorageTest(unittest.TestCase):
 
     def test_createContainer(self):
         container = "cloudgatetestcon"
-        response = session.put(URL + "/v1/tenant_id/" + self.container)
+        response = session.put(URL + "/v1/tenant_id/" + container)
         print response.text
 
     def test_listContainers(self):
