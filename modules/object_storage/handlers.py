@@ -64,11 +64,11 @@ class ContainerHandler(ObjectStorageBaseHandler):
 
         resp = [
             {
-                "hash":o.hash,
-                "last_modified":o.last_modified,
-                "bytes":o.bytes,
-                "name":o.name,
-                "content_type":o.content_type
+                "hash":o.key,
+                "last_modified":"",
+                "bytes":"",
+                "name":o.key,
+                "content_type":""
             }
             for o in objects
         ]
@@ -106,10 +106,13 @@ class ContainerHandler(ObjectStorageBaseHandler):
         x_container_meta_tempurl_key_2 = self.get_header("X-Container-Meta-Tempurl-Key-2")
         x_trans_id_extra = self.get_header("X-Trans-Id-Extra")
 
-        self.p.deleteContainer(account, container,
+        if self.p.deleteContainer(account, container,
                 x_container_meta_tempurl_key,
                 x_container_meta_tempurl_key_2,
-                x_trans_id_extra)
+                x_trans_id_extra):
+            self.set_status(200)
+        else:
+            self.set_status(400)
 
 class ObjectHandler(ObjectStorageBaseHandler):
     def prepare(self, account, container, object_):

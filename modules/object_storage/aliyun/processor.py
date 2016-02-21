@@ -43,3 +43,24 @@ class AliyunObjectStorageProcessor(ObjectStorageBaseProcessor):
         bucket = oss2.Bucket(self.auth, self.end_point, container)
         bucket.create_bucket()
 
+    def deleteContainer(self, account, container,
+                x_container_meta_tempurl_key,
+                x_container_meta_tempurl_key_2,
+                x_trans_id_extra):
+
+        bucket = oss2.Bucket(self.auth, self.end_point, container)
+
+        try:
+            bucket.delete_bucket()
+            return True
+        except:
+            return False
+
+    def queryObjects(self, account, container, limit,
+            marker, end_marker, prefix, format_, delimiter, path):
+
+        bucket = oss2.Bucket(self.auth, self.end_point, container)
+
+        objs = oss2.ObjectIterator(bucket)
+
+        return objs

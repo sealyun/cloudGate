@@ -143,8 +143,8 @@ class AliyunNetworkingProcessor(NetworkingProcessorBase):
         outNetwork["subnets"].append(resp["RouteTableId"])
         outNetwork["name"] = name
         outNetwork["admin_state_up"] = adminStateUp
-        outNetwork["tenant_id"] = "ACTIVE"
-        outNetwork["router:external"] = tenantID
+        outNetwork["tenant_id"] = tenantID
+        outNetwork["router:external"] = False
         outNetwork["mtu"] = 0
         outNetwork["shared"] = shared
         outNetwork["id"] = resp["VpcId"]
