@@ -1,4 +1,5 @@
 from cloudGate.config import *
+from cloudGate.modules.object_storage.process_base import *
 import oss2
 
 class AliyunObjectStorageProcessor(ObjectStorageBaseProcessor):
