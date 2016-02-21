@@ -115,9 +115,11 @@ class ContainerHandler(ObjectStorageBaseHandler):
             self.set_status(400)
 
 class ObjectHandler(ObjectStorageBaseHandler):
-    def prepare(self, account, container, object_):
+    """
+    def prepare(self):
         #if http method is COPY, call self.copy()
         pass
+    """
 
     def put(self, account, container, object_):
         multipart_manifest = self.get_argument("multipart-manifest", None)
