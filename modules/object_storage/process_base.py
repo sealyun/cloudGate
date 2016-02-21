@@ -3,4 +3,7 @@ class ObjectStorageBaseProcessor():
             marker, end_marker, prefix, format, delimiter, path):
         pass
 
+    def queryContainers(self):
+        pass
+
 

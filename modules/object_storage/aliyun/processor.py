@@ -1,4 +1,5 @@
 from cloudGate.config import *
+from cloudGate.modules.object_storage.process_base import *
 import oss2
 
 class AliyunObjectStorageProcessor(ObjectStorageBaseProcessor):
@@ -16,8 +17,13 @@ class AliyunObjectStorageProcessor(ObjectStorageBaseProcessor):
     def queryObjects(self, account, container, limit,
             marker, end_marker, prefix, format, delimiter, path):
 
-        buckets = oss2.BucketIterator(service)
+        buckets = oss2.BucketIterator(self.service)
 
         print buckets
 
         return buckets
+
+    def queryContainers(self):
+        buckets = oss2.BucketIterator(self.service)
+
+        return [b.name for b in buckets]

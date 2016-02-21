@@ -4,6 +4,7 @@ from api_factory import *
 
 class ObjectStorageBaseHandler(HttpBaseHandler):   
     #add init a processor
+    """
     def get_processor(self):
         token = self.request.headers["X-Auth-Token"]
         print ("-----get token:", token)
@@ -14,6 +15,34 @@ class ObjectStorageBaseHandler(HttpBaseHandler):
 
     def get(self):
         pass
+    """
+    def __init__(self, application, request, **kwargs):
+        super(ObjectStorageBaseHandler, self).__init__(application, request, **kwargs)
+        token = ""
+        try:
+            token = self.request.headers["X-Auth-Token"]
+            print ("-----get token:", token)
+        except:
+            pass
+        i = ObjectStorageProcessorFac()
+        self.p = i.create_processor(None, token)
+
+    def get(self, tenant_id):
+        containers = self.p.queryContainers()
+
+        resp = []
+        i = 0
+        container = {}
+
+        for c in containers:
+            container["count"] = i
+            container["bytes"] = 0
+            container["name"] = c
+            i = i + 1
+            resp.append(container)
+
+        self.send_json(resp)
+
 
 class ContainerHandler(ObjectStorageBaseHandler):
     def get(self, account, container):
@@ -24,8 +53,6 @@ class ContainerHandler(ObjectStorageBaseHandler):
         format = self.get_argument("format", None)
         delimiter = self.get_argument("delimiter", None)
         path = self.get_argument("path", None)
-
-        self.get_processor()
 
         objects = self.p.queryObjects(account, container, limit,
                 marker, end_marker, prefix, format, delimiter, path)
