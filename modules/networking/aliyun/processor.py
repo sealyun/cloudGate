@@ -138,8 +138,8 @@ class AliyunNetworkingProcessor(NetworkingProcessorBase):
 
         outNetwork = {}
         outNetwork["status"] = "ACTIVE"
-        routerID = self.getRouterIDByNetworkID(resp["VpcId"])
-        outNetwork["subnets"] = self.getSubsetIDList(routerID)
+        #outNetwork["subnets"] = self.getSubsetIDList(resp["VpcId"])
+        outNetwork["subnets"] = []
         outNetwork["subnets"].append(resp["RouteTableId"])
         outNetwork["name"] = name
         outNetwork["admin_state_up"] = adminStateUp
