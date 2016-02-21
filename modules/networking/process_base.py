@@ -64,3 +64,21 @@ class NetworkingProcessorBase():
 
     def deletePort(self, portID):
         pass
+
+    def getLoadBalancers(self):
+        pass
+
+    def createLoadBalancer(self, inLoadBalancer):
+        pass
+
+    def getLoadBalancer(self, lbID):
+        pass
+
+    def updateLoadBalancer(self, lbID, inLoadBalancer):
+        pass
+
+    def deleteLoadBalancer(self, lbID):
+        pass
+
+    def getLoadBalancerStatuses(self, lbID):
+        pass
