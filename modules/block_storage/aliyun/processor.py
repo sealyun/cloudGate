@@ -34,6 +34,7 @@ from aliyunsdkecs.request.v20140526 import DeleteSnapshotRequest
 from aliyunsdkecs.request.v20140526 import DescribeSnapshotsRequest
 from aliyunsdkecs.request.v20140526 import ModifyAutoSnapshotPolicyRequest
 from aliyunsdkecs.request.v20140526 import DescribeAutoSnapshotPolicyRequest
+from aliyunsdkecs.request.v20140526 import ModifySnapshotAttributeRequest
 
 
 ##NOTEST    no test 
@@ -387,7 +388,7 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
             r.set_accept_format('json')
             response = self.clt.do_action(r)
             resp = json.loads(response)
-            print "queryVolumesDetails WUJUN Origin Data *********####### response:", json.dumps(resp, indent=4)
+            ## print "queryVolumesDetails WUJUN Origin Data *********####### response:", json.dumps(resp, indent=4)
             volumesdetail = resp["Disks"]["Disk"]             
             
             resp = {
