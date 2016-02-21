@@ -471,7 +471,8 @@ class AliyunComputeProcessor(ComputeProcessorBase):
         r = AttachDiskRequest.AttachDiskRequest()
         r.set_InstanceId(instance_id)
         r.set_DiskId(volume_id)
-        r.set_Device(device)
+        if device:
+            r.set_Device(device)
         ## r.set_DeleteWithInstance(True)  ## or False
         response = self.clt.do_action(r)
         resp = json.loads(response) 

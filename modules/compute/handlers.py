@@ -122,7 +122,10 @@ class ServerVolumeHandler(ComputeBaseHandler):
         self.get_processor()
         volumeAttachment = json.loads(self.request.body)["volumeAttachment"]
         print "ServerVolumeHandler Volume attach to server Input Params is ", json.dumps(volumeAttachment, indent=4)
-        headers, body = self.p.serverAttachVolume(tenant_id, server_id, volumeAttachment["volumeId"], volumeAttachment["device"])
+        device = None
+        if volumeAttachment.has_key("device"):
+            device = volumeAttachment["device"]
+        headers, body = self.p.serverAttachVolume(tenant_id, server_id, volumeAttachment["volumeId"], device)
         if body is None:
             self.set_status(403)
             return
