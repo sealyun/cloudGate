@@ -56,4 +56,15 @@ class AliyunObjectStorageProcessor(ObjectStorageBaseProcessor):
         except:
             return False
 
+    def queryObjects(self, account, container, limit,
+            marker, end_marker, prefix, format_, delimiter, path):
 
+        bucket = oss2.Bucket(self.auth, self.end_point, container)
+
+        objs = oss2.ObjectIterator(bucket)
+
+        print "++++"
+        print objs[0].__dict__
+        print "++++"
+
+        return objs

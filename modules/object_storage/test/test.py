@@ -8,6 +8,7 @@ URL = "http://121.199.9.187:8081/object_storage"
 session = requests.session()
 
 container = "cloudgatetestcon"
+test_ob_container = "cloudgatetest"
 
 class ObjectStorageTest(unittest.TestCase):
     def printJson(self, s):
@@ -35,7 +36,8 @@ class ObjectStorageTest(unittest.TestCase):
         response = session.delete(URL + "/v1/tenant_id/" + container)
 
     def test_listObjects(self):
-        pass
+        response = session.get(URL + "/v1/tenant_id/" + test_ob_container)
+        self.printJson(response)
 
     def test_createObject(self):
         pass

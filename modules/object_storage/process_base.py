@@ -25,4 +25,8 @@ class ObjectStorageBaseProcessor():
                 x_trans_id_extra):
         pass
 
+    def queryObjects(self, account, container, limit,
+            marker, end_marker, prefix, format_, delimiter, path):
+        pass
+
 

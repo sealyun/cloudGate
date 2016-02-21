@@ -64,11 +64,11 @@ class ContainerHandler(ObjectStorageBaseHandler):
 
         resp = [
             {
-                "hash":o.hash,
-                "last_modified":o.last_modified,
-                "bytes":o.bytes,
-                "name":o.name,
-                "content_type":o.content_type
+                "hash":o.key,
+                "last_modified":"",
+                "bytes":"",
+                "name":o.key,
+                "content_type":""
             }
             for o in objects
         ]
