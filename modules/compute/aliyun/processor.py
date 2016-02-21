@@ -12,6 +12,10 @@ from aliyunsdkecs.request.v20140526 import JoinSecurityGroupRequest
 from aliyunsdkecs.request.v20140526 import LeaveSecurityGroupRequest
 from aliyunsdkecs.request.v20140526 import DescribeInstanceTypesRequest
 
+
+from aliyunsdkecs.request.v20140526 import AttachDiskRequest
+from aliyunsdkecs.request.v20140526 import DetachDiskRequest
+
 from cloudGate.config import *
 from cloudGate.modules.compute.process_base import ComputeProcessorBase
 
@@ -461,9 +465,28 @@ class AliyunComputeProcessor(ComputeProcessorBase):
             request.set_InstanceId(server_id)
             self.clt.do_action(request)
     
-    def serverAttachVolume(tenant_id, server_id, volumeAttachment, volumeId, device):
+    def serverAttachVolume(tenant_id, instance_id, volume_id, device):
         headers = {}
         body = {}
+        r = AttachDiskRequest.AttachDiskRequest()
+        r.set_InstanceId(instance_id)
+        r.set_DiskId(volume_id)
+        r.set_Device(device)
+        ## r.set_DeleteWithInstance(True)  ## or False
+        response = self.clt.do_action(r)
+        resp = json.loads(response) 
+        print "serverAttachVolume WUJUN response:", json.dumps(resp, indent=4)
+        if resp.has_key("Code"):
+            print "volumeAction os-attach Failed!!! Have Error!!!"
+            return headers, None
+        body = {
+            "volumeAttachment": {
+                "device": device,
+                "id": "a26887c6-c47b-4654-abb5-dfadf7d3f803",
+                "serverId": instance_id,
+                "volumeId": volume_id
+            }
+        }        
         return headers, body
 
     def serverListVolumes(tenant_id, server_id):
@@ -476,9 +499,10 @@ class AliyunComputeProcessor(ComputeProcessorBase):
         body = {}
         return headers, body
     
-    def volumeAttachmentDetach(tenant_id, server_id):
+    def volumeAttachmentDetach(tenant_id, server_id, attachment_id):
         headers = {}
         body = {}
+        
         return headers, body
 
 

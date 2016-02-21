@@ -117,9 +117,15 @@ class ServerActionHandler(ComputeBaseHandler):
 
 
 class ServerVolumeHandler(ComputeBaseHandler):
-    def post(self, tenant_id, server_id, volumeAttachment, volumeId, device):
+    def post(self, tenant_id, server_id):
         self.get_processor()
-        headers, body = self.p.serverAttachVolume(tenant_id, server_id, volumeAttachment, volumeId, device)
+        volumeAttachment = json.loads(self.request.body)["volumeAttachment"]
+        print "ServerVolumeHandler Volume attach to server Input Params is ", json.dumps(volumeAttachment, indent=4)
+        headers, body = self.p.serverAttachVolume(tenant_id, server_id, volumeAttachment["volumeId"], volumeAttachment["device"])
+        if body is None:
+            self.set_status(403)
+            return
+        self.set_status(202)
         self.send_json(body)
 
     def get(self, tenant_id, server_id):
@@ -128,14 +134,15 @@ class ServerVolumeHandler(ComputeBaseHandler):
         self.send_json(body)
 
 class VolumeAttachmentHandler(ComputeBaseHandler):
-    def get(self, tenant_id, server_id, volumeAttachment, volumeId, device):
-        self.get_processor()
+    def get(self, tenant_id, server_id, attachment_id):
+        self.get_processor()       
         headers, body = self.p.volumeAttachmentDetail(tenant_id, server_id, attachment_id)
         self.send_json(body)
 
-    def delete(self, tenant_id, server_id):
+    def delete(self, tenant_id, server_id, attachment_id):
         self.get_processor()
-        self.p.volumeAttachmentDetach(tenant_id, server_id)
+        print "VolumeAttachmentHandler delete attachment begin" 
+        self.p.volumeAttachmentDetach(tenant_id, server_id, attachment_id)
 
 
 class FlavorsHandler(ComputeBaseHandler):

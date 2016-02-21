@@ -26,7 +26,7 @@ class ComputeProcessorBase():
     def deleteServer(self, tenant_id, server_id):
         pass
 
-    def serverAttachVolume(tenant_id, server_id, volumeAttachment, volumeId, device):
+    def serverAttachVolume(tenant_id, server_id, volumeId, device):
         pass
 
     def serverListVolumes(tenant_id, server_id):
@@ -35,7 +35,7 @@ class ComputeProcessorBase():
     def volumeAttachmentDetail(tenant_id, server_id, attachment_id):
         pass
 
-    def volumeAttachmentDetach(tenant_id, server_id):
+    def volumeAttachmentDetach(tenant_id, server_id, attachment_id):
         pass
 
     def queryFlavors(self, tenant_id):
