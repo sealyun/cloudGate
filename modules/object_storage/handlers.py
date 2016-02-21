@@ -23,8 +23,6 @@ class ObjectStorageBaseHandler(HttpBaseHandler):
         i = ObjectStorageProcessorFac()
         self.p = i.create_processor(None, token)
 
-        return self.p
-
     def get(self, tenant_id):
         containers = self.p.queryContainers()
 
