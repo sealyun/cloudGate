@@ -7,6 +7,8 @@ import json
 URL = "http://121.199.9.187:8081/object_storage"
 session = requests.session()
 
+container = ""
+
 class ObjectStorageTest(unittest.TestCase):
     def printJson(self, s):
         b = json.loads(s)
@@ -22,7 +24,7 @@ class ObjectStorageTest(unittest.TestCase):
         pass
 
     def test_createContainer(self):
-        self.container = "cloudgatetestcon"
+        container = "cloudgatetestcon"
         response = session.put(URL + "/v1/tenant_id/" + self.container)
         print response.text
 
@@ -31,7 +33,7 @@ class ObjectStorageTest(unittest.TestCase):
         self.printJson(response.text)
 
     def test_deleteContainer(self):
-        response = session.delete(URL + "/v1/tenant_id/" + self.container)
+        response = session.delete(URL + "/v1/tenant_id/" + container)
 
     def test_listObjects(self):
         pass
