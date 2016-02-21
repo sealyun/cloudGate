@@ -7,7 +7,7 @@ import json
 URL = "http://121.199.9.187:8081/object_storage"
 session = requests.session()
 
-container = ""
+container = "cloudgatetestcon"
 
 class ObjectStorageTest(unittest.TestCase):
     def printJson(self, s):
@@ -24,7 +24,6 @@ class ObjectStorageTest(unittest.TestCase):
         pass
 
     def test_createContainer(self):
-        container = "cloudgatetestcon"
         response = session.put(URL + "/v1/tenant_id/" + container)
         print response.text
 
