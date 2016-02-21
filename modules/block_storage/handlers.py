@@ -187,28 +187,18 @@ class VolumeActionHandler(BlockStorageBaseHandler):
 
 class SnapshotsHandler(BlockStorageBaseHandler):
     def get(self, tenant_id):
+        ##NOURLCALL
         sort_key = self.get_argument("sort_key", None)
         sort_dir = self.get_argument("sort_dir", None)
         limit = self.get_argument("limit", None)
         marker = self.get_argument("marker", None)
 
-        snapshots = self.p.querySnapshots(tenant_id, sort_key, sort_dir, limit, marker)
-
-        resp = {
-            "snapshots":[
-                {
-                    "status":s.status,
-                    "metadata":s.metadata,
-                    "name":s.name,
-                    "volume_id":s.volume_id,
-                    "create_at":s.create_at,
-                    "size":s.size,
-                    "id":s.id,
-                    "description":s.description,
-                }
-                for s in snapshots
-            ]
-        }
+        resp = self.p.querySnapshots(tenant_id, sort_key, sort_dir, limit, marker)
+        
+        print "SnapshotsHandler querySnapshots GET Resp Json: ========"
+        ## print json.dumps(resp, indent=4)
+        print "=========================================="
+        self.send_json(resp)
 
     def post(self, tenant_id):
         snapshot = json.loads(self.request.body)["snapshot"]
@@ -229,8 +219,6 @@ class SnapshotsHandler(BlockStorageBaseHandler):
             print "==========================================" 
             self.send_json(resp)
 
-## "os-extended-snapshot-attributes:project_id" ???
-## "metadata"
 class SnapshotsDetailHandler(BlockStorageBaseHandler):
     def get(self, tenant_id):
         resp = self.p.querySnapshotsDetails(tenant_id)
@@ -257,24 +245,21 @@ class SnapshotHandler(BlockStorageBaseHandler):
 
     def put(self, tenant_id, snapshot_id):
         snapshot = json.loads(self.request.body)["snapshot"]
-
-        s = self.p.updateSnapshot(tenant_id, snapshot_id,
+        print "SnapshotHandler update Snapshot Input Params is ", json.dumps(snapshot, indent=4)
+        resp = self.p.updateSnapshot(tenant_id, snapshot_id,
                 snapshot["name"],
                 snapshot["description"])
 
-        resp = {
-            "snapshot":{
-                "create_at":s.create_at,
-                "description":s.description,
-                "name":s.name,
-                "id":s.id,
-                "size":s.size,
-                "status":s.status,
-                "volume_id":s.volume_id
-            }
-        }
-
-        self.send_json(resp)
+        if resp is None:
+            print "===========  do update snapshot Failed     =========="           
+            self.set_status(403)
+            return
+        else:
+            print "===========  do update snapshot Successed  =========="
+            print "SnapshotsHandler update snapshot GET Resp Json: ========"
+            print json.dumps(resp, indent=4)
+            print "==========================================" 
+            self.send_json(resp)
 
 class SnapshotMetadataHandler(BlockStorageBaseHandler):
     def get(self, tenant_id, snapshot_id):

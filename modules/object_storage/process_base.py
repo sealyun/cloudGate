@@ -19,4 +19,10 @@ class ObjectStorageBaseProcessor():
                 x_trans_id_extra):
         pass
 
+    def deleteContainer(self, account, container,
+                x_container_meta_tempurl_key,
+                x_container_meta_tempurl_key_2,
+                x_trans_id_extra):
+        pass
+
 

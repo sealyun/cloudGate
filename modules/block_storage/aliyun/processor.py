@@ -35,6 +35,10 @@ from aliyunsdkecs.request.v20140526 import DescribeSnapshotsRequest
 from aliyunsdkecs.request.v20140526 import ModifyAutoSnapshotPolicyRequest
 from aliyunsdkecs.request.v20140526 import DescribeAutoSnapshotPolicyRequest
 
+
+##NOTEST    no test 
+##NOURLCALL no http url call this function
+##NOMATCH:  aliyun openstack params not matched
 TEST_FLAG = 0
 
 import json
@@ -115,6 +119,16 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
         ### for test
         ## return "Available"
         return "In_use"
+        
+    def _convertSnapshotStatusAliyun2Openstack(self, aliyun_snapshot_status):
+        ## aliyun: progressing | accomplished | failed | all
+        ## openstack: creating | available | deleting | error | error_deleting
+        return "available"
+    
+    def _convertSnapshotStatusOpenstack2Aliyun(self, openstack_snapshot_status):
+        ## aliyun: progressing | accomplished | failed | all
+        ## openstack: creating | available | deleting | error | error_deleting        
+        return "accomplished"
     
     def queryVolumes(self, tenant_id, sort, limit, marker):
         print "queryVolumes WUJUN Begin ...... , tenant_id is ", tenant_id, "  sort is ", sort, "  limit is ", limit, "   marker is ", marker
@@ -545,6 +559,9 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
     def volumeAction(self, tenant_id, volume_id, action):
         print "$$$$$$$$$$$  Volume Action is ", json.dumps(action, indent=4)
         if action.has_key("os-reset_status"):
+            ##aliyun NOSUPPORT
+            print "aliyun not support os-reset_status volume status. Warn!!! Warn!!!"
+            return False
             """
             {
                 "os-reset_status": {
@@ -569,7 +586,7 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
                 pass
             pass
         elif action.has_key("os-attach"):
-            ### NOTEST
+            ### NOTEST  NOURLCALL
             """
             {
                 "os-attach": {
@@ -590,7 +607,7 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
                 print "volumeAction os-attach Failed!!! Have Error!!!"
                 return False
         elif action.has_key("os-force_detach"):
-            ### NOTEST    NOMATCH
+            ### NOTEST NOURLCALL
             ### aliyun need instanceID and diskID but opengstack is attachment_id
             ### solve the way attachment_id real value is instanceID
             """
@@ -626,14 +643,79 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
             if resp.has_key("Code"):
                 print "volumeAction os-force_detach Failed!!! Have Error!!!"
                 return False
+        elif action.has_key("os-extend"):
+            ##aliyun NOSUPPORT
+            print "aliyun not support os-extend dynamic change volume size. Warn!!! Warn!!!"
+            return False
+        elif action.has_key("os-set_image_metadata"):
+            ##aliyun NOSUPPORT
+            print "aliyun not support os-set_image_metadata"
+            return False
+        elif action.has_key("os-unmanage"):
+            ##aliyun NOSUPPORT
+            print "aliyun not support os-unmanage"
+            return False
+        elif action.has_key("os-promote-replica"):
+            print "aliyun not support os-promote-replica"
+            ##aliyun NOSUPPORT
+            return False
+        elif action.has_key("volume-replica-reenable"):
+            ##aliyun NOSUPPORT
+            print "aliyun not support volume-replica-reenable"
+            return False
+            pass        
         else:
+            print "Unknown Error!!! Unknown Error!!! Unknown Error!!!"
             return False
         return True
-        pass
 
     
     def querySnapshots(self, tenant_id, sort_key, sort_dir, limit, marker):
-        pass 
+        ##TODO NOURLCALL
+        print "querySnapshots WUJUN Begin ...... "
+        if TEST_FLAG:
+            resp = {
+                "snapshots": [
+                    {
+                        "status": "available",
+                        "metadata": {
+                            "name": "test"
+                        },
+                        "name": "test-volume-snapshot",
+                        "volume_id": "173f7b48-c4c1-4e70-9acc-086b39073506",
+                        "created_at": "2015-11-29T02:25:51.000000",
+                        "size": 1,
+                        "id": "b1323cda-8e4b-41c1-afc5-2fc791809c8c",
+                        "description": "volume snapshot"
+                    }
+                ]
+            }
+        else:
+            print "querySnapshots WUJUN begin ...."        
+            r = DescribeSnapshotsRequest.DescribeSnapshotsRequest()
+            
+            r.set_accept_format('json')
+            response = self.clt.do_action(r)
+            resp = json.loads(response)
+            ##print "querySnapshots WUJUN response:", json.dumps(resp, indent=4)
+            snapshots = resp["Snapshots"]["Snapshot"] 
+            
+            resp = {
+                "snapshots":[
+                    {
+                        "status":self._convertSnapshotStatusAliyun2Openstack(s["Status"]), ##s["Status"],
+                        "metadata":{},
+                        "name": s["SnapshotName"],
+                        "volume_id": s["SourceDiskId"],
+                        "created_at": s["CreationTime"],    
+                        "size":s["SourceDiskSize"],
+                        "id":s["SnapshotId"],
+                        "description":s["Description"]
+                    }
+                    for s in snapshots
+                ]
+            }
+        return resp 
     
     def createSnapshot(self, tenant_id, name, description, volume_id, force):
         print "createSnapshot WUJUN Begin ...... "
@@ -670,7 +752,7 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
             r.set_accept_format('json')
             response = self.clt.do_action(r)
             resp = json.loads(response)
-            print "when createVolume, queryVolume WUJUN response:", json.dumps(resp, indent=4)
+            print "when create Snapshot, query snapshots list WUJUN response:", json.dumps(resp, indent=4)
             snapshots = resp["Snapshots"]["Snapshot"]
             resp = { "snapshot": {} }
             for s in snapshots:
@@ -724,7 +806,7 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
             resp = {
                 "snapshots":[
                     {
-                        "status":s["Status"],
+                        "status":self._convertSnapshotStatusAliyun2Openstack(s["Status"]), ##s["Status"],
                         "metadata":{},
                         "os-extended-snapshot-attributes:progress": s["Progress"],
                         "name": s["SnapshotName"],
@@ -746,7 +828,7 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
             ## faked data for test
             resp = {
                 "snapshot": {
-                    "status": s["Status"],
+                    "status": "available",
                     "os-extended-snapshot-attributes:progress": "100%",
                     "description": "Daily backup",
                     "created_at": "2013-02-25T04:13:17.000000",
@@ -774,7 +856,7 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
                 if s["SnapshotId"]==snapshot_id:                        
                     resp = {
                         "snapshot": {
-                            "status": "available",
+                            "status": self._convertSnapshotStatusAliyun2Openstack(s["Status"]), ## s["Status"],
                             "os-extended-snapshot-attributes:progress": s["Progress"],
                             "description": s["Description"],
                             "created_at": s["CreationTime"],
@@ -804,7 +886,53 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
         pass 
     
     def updateSnapshot(self, tenant_id, snapshot_id, name, description):
-        pass
+        print "updateSnapshot WUJUN Begin ...... "
+        if TEST_FLAG:
+            resp = {
+                "snapshot": {
+                    "created_at": "2013-02-20T08:11:34.000000",
+                    "description": "This is yet, another snapshot",
+                    "name": "snap-002",
+                    "id": "4b502fcb-1f26-45f8-9fe5-3b9a0a52eaf2",
+                    "size": 1,
+                    "status": "available",
+                    "volume_id": "2402b902-0b7a-458c-9c07-7435a826f794"
+                }
+            }
+        else:
+            r = ModifySnapshotAttributeRequest.ModifySnapshotAttributeRequest()
+            r.set_SnapshotId(snapshot_id)
+            r.set_SnapshotName(name)
+            r.set_Description(description)     
+            r.set_accept_format('json')
+            response = self.clt.do_action(r)
+            resp = json.loads(response)
+            print "updateSnapshot WUJUN response is ", json.dumps(resp, indent=4)
+            ### if not resp.has_key("SnapshotId"):
+            if resp.has_key("Code"):
+                print "Aliyun Update Snapshot Operation have Error!!!!!!"
+                return None            
+            r = DescribeSnapshotsRequest.DescribeSnapshotsRequest()
+            r.set_accept_format('json')
+            response = self.clt.do_action(r)
+            resp = json.loads(response)
+            print "when updateSnapshot, query snapshot list WUJUN response:", json.dumps(resp, indent=4)
+            snapshots = resp["Snapshots"]["Snapshot"]
+            resp = { "snapshot": {} }
+            for s in snapshots:
+                if s["SnapshotId"]==snapshot_id:
+                    resp = {
+                        "snapshot": {
+                            "created_at": s["CreationTime"],
+                            "description": s["Description"],
+                            "name": s["SnapshotName"],
+                            "id": s["SnapshotId"],
+                            "size": s["SourceDiskSize"],
+                            "status": self._convertSnapshotStatusAliyun2Openstack(s["Status"]), ### s["Status"],
+                            "volume_id": s["SourceDiskId"]
+                        }
+                    }
+        return resp
     
     
     def querySnapshotMetadata(self, tenant_id, snapshot_id):
