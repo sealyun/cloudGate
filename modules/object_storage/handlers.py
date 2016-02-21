@@ -26,8 +26,20 @@ class ObjectStorageBaseHandler(HttpBaseHandler):
         return self.p
 
     def get(self, tenant_id):
-        print "get all buckets"
-        pass
+        containers = self.p.queryContainers()
+
+        resp = []
+        i = 0
+        container = {}
+
+        for c in containers:
+            container["count"] = i
+            container["bytes"] = c[""]
+            container["name"] = c[""]
+            i++
+            resp.append(container)
+
+        self.send_json(resp)
 
 
 class ContainerHandler(ObjectStorageBaseHandler):
