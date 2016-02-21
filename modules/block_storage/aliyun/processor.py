@@ -295,7 +295,7 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
             r.set_accept_format('json')
             response = self.clt.do_action(r)
             resp = json.loads(response)
-            print "when createVolume, queryVolume WUJUN response:", json.dumps(resp, indent=4)
+            ### print "when createVolume, queryVolume WUJUN response:", json.dumps(resp, indent=4)
             volumesdetail = resp["Disks"]["Disk"]  
             resp = { "volume": {} }
             for v in volumesdetail:

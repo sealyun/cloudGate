@@ -42,7 +42,7 @@ class VolumesHandler(BlockStorageBaseHandler):
 
     def post(self, tenant_id):
         volume = json.loads(self.request.body)["volume"]
-        print "VolumesHandler createVolume Input Params is ", json.dumps(volume, indent=4)
+        ## print "VolumesHandler createVolume Input Params is ", json.dumps(volume, indent=4)
         resp = self.p.createVolume(tenant_id, volume["size"],
                 volume["availability_zone"],
                 volume["source_volid"],
@@ -62,7 +62,7 @@ class VolumesHandler(BlockStorageBaseHandler):
         else:
             print "===========  do create Volume Successed  =========="
             print "VolumesHandler createVolume GET Resp Json: ========"
-            print json.dumps(resp, indent=4)
+            ## print json.dumps(resp, indent=4)
             print "==========================================" 
             self.send_json(resp)
 
