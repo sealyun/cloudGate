@@ -4,10 +4,7 @@ import unittest
 import requests
 import json
 
-from cloudGate.common.define import *
-from cloudGate.config import *
-
-URL = "http://" + HOST + ":" + PORT + OBJECT_STORAGE_BASE_URL 
+URL = "http://121.199.9.187:8081/object_storage"
 session = requests.session()
 
 class ObjectStorageTest(unittest.TestCase):
@@ -22,13 +19,10 @@ class ObjectStorageTest(unittest.TestCase):
         session.close()
 
     def test_example(self):
-        data = {}
-        response = session.post(URL + "", data = json.dumps(data))
-
-        self.printJson(response.text)
+        pass
 
     def test_createContainer(self):
-        response = session.post(URL + "/v1/tenant_id/cloudgatetestcon")
+        response = session.put(URL + "/v1/tenant_id/cloudgatetestcon")
         print response.text
 
     def test_listContainers(self):
