@@ -37,7 +37,7 @@ class ObjectStorageTest(unittest.TestCase):
 
     def test_listObjects(self):
         response = session.get(URL + "/v1/tenant_id/" + test_ob_container)
-        self.printJson(response)
+        self.printJson(response.text)
 
     def test_createObject(self):
         pass
