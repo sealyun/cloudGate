@@ -518,9 +518,7 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
         return resp
         pass
     
-    def updateVolume(self, tenant_id, volume_id, name, description):
-        ### NOCALL
-        print "there is no called"    
+    def updateVolume(self, tenant_id, volume_id, name, description): 
         print "updateVolume WUJUN Begin ...... "
         if TEST_FLAG:
             resp = {
@@ -559,8 +557,7 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
                     "size": 1
                 }
             }            
-        else:
-            print "updateVolume WUJUN begin ...."        
+        else:       
             r = ModifyDiskAttributeRequest.ModifyDiskAttributeRequest()
             r.set_accept_format('json')
             r.set_DiskId(volume_id);

@@ -109,7 +109,7 @@ class VolumeHandler(BlockStorageBaseHandler):
         else:
             print "===========  do update volume Successed  =========="
             print "VolumeHandler update volume GET Resp Json: ========"
-            print json.dumps(resp, indent=4)
+            ## print json.dumps(resp, indent=4)
             print "==========================================" 
             self.send_json(resp)
 
