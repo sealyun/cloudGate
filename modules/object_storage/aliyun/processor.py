@@ -25,6 +25,5 @@ class AliyunObjectStorageProcessor(ObjectStorageBaseProcessor):
 
     def queryContainers(self):
         buckets = oss2.BucketIterator(self.service)
-        print ([b.name for b in buckets])
 
         return buckets

@@ -32,8 +32,8 @@ class ObjectStorageBaseHandler(HttpBaseHandler):
 
         for c in containers:
             container["count"] = i
-            container["bytes"] = c[""]
-            container["name"] = c[""]
+            container["bytes"] = 0
+            container["name"] = c.name
             i = i + 1
             resp.append(container)
 
