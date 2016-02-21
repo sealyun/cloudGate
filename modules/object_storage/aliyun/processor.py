@@ -63,8 +63,4 @@ class AliyunObjectStorageProcessor(ObjectStorageBaseProcessor):
 
         objs = oss2.ObjectIterator(bucket)
 
-        print "++++"
-        print objs[0].__dict__
-        print "++++"
-
         return objs
