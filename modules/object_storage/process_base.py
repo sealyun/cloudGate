@@ -29,4 +29,5 @@ class ObjectStorageBaseProcessor():
             marker, end_marker, prefix, format_, delimiter, path):
         pass
 
-
+    def deleteObject(self, account, container, object_, multipart_manifest, x_trans_id_extra):
+        pass

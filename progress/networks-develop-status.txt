@@ -1,0 +1,168 @@
+完成
+流程通，字段不全
+流程不通，API对不上
+阿里缺失API
+努力开发中
+其他问题
+
+networkS
+1)/v2.0/networks
+GET
+	完成情况：流程通，字段不全
+	备注：阿里缺字段subnets（阿里云接口中路由表ID列表？），provider:physical_network，admin_state_up，
+		provider:network_type，router:external，mtu，shared，provider:segmentation_id
+POST
+	完成情况：流程通，字段不全
+	备注：阿里缺字段subnets，admin_state_up，router:external，mtu，shared
+POST
+	完成情况：流程通，字段不全
+	备注：阿里缺字段subnets，admin_state_up，router:external，mtu，shared
+2)/v2.0/networks/{network_id}
+GET
+	完成情况：流程通，字段不全
+	备注：阿里缺字段subnets，router:external，admin_state_up，mtu，shared，port_security_enabled
+PUT
+	完成情况：完成
+	备注：无
+DELETE
+	完成情况：完成
+	备注：无
+	
+subnets
+1)/v2.0/subnets
+GET
+	完成情况：阿里缺失API
+	备注：无
+POST
+	完成情况：阿里缺失API
+	备注：无
+POST
+	完成情况：阿里缺失API
+	备注：无
+2)/v2.0/subnets/{subnet_id}
+GET
+	完成情况：阿里缺失API
+	备注：无
+PUT
+	完成情况：阿里缺失API
+	备注：无
+DELETE
+	完成情况：阿里缺失API
+	备注：无
+
+ports
+1)/v2.0/ports
+GET
+	完成情况：阿里缺失API
+	备注：无
+POST
+	完成情况：阿里缺失API
+	备注：无
+POST
+	完成情况：阿里缺失API
+	备注：无
+2)/v2.0/ports/{port_id}
+GET
+	完成情况：阿里缺失API
+	备注：无
+PUT
+	完成情况：阿里缺失API
+	备注：无
+DELETE
+	完成情况：阿里缺失API
+	备注：无
+	
+lbaas
+1)/v2.0/lbaas/loadbalancers
+GET
+	完成情况：流程通，字段不全
+	备注：阿里缺字段description，admin_state_up，listeners，vip_address，
+		vip_subnet_id，operating_status
+POST
+	完成情况：流程通，字段不全
+	备注：阿里缺字段description，admin_state_up，provisioning_status，listeners，vip_address，
+		vip_subnet_id，operating_status，provider
+2)/v2.0/lbaas/loadbalancers/{loadbalancer_id}
+GET
+	完成情况：流程通，字段不全
+	备注：阿里缺字段description，admin_state_up，listeners，vip_address，
+		vip_subnet_id，operating_status，provider
+PUT
+	完成情况：流程通，字段不全
+	备注：阿里缺字段description，admin_state_up，listeners，vip_address，
+		vip_subnet_id，operating_status，provider
+DELETE
+	完成情况：完成 
+	备注：无
+3)/v2.0/lbaas/loadbalancers/{loadbalancer_id}/statuses
+GET
+	完成情况：流程通，字段不全
+	备注：阿里缺字段operating_status, TODO
+4)/v2.0/lbaas/listeners
+GET
+	完成情况：完成 TODO
+	备注：无
+POST
+	完成情况：完成 TODO
+	备注：无
+5)/v2.0/lbaas/listeners/{listener_id}
+GET
+	完成情况：完成 TODO
+	备注：无
+PUT
+	完成情况：完成 TODO
+	备注：无
+DELETE
+	完成情况：完成 TODO
+	备注：无
+6)/v2.0/lbass/pools 
+GET
+	完成情况：完成 TODO
+	备注：无
+POST
+	完成情况：完成 TODO
+	备注：无
+7)/v2.0/lbass/pools/{pool_id}
+GET
+	完成情况：完成 TODO
+	备注：无
+PUT
+	完成情况：完成 TODO
+	备注：无
+DELETE
+	完成情况：完成 TODO
+	备注：无
+8)/v2.0/lbass/pools/{pool_id}/members
+GET
+	完成情况：完成 TODO
+	备注：无
+POST
+	完成情况：完成 TODO
+	备注：无
+9)/v2.0/lbass/pools/{pool_id}/members/{member_id}
+GET
+	完成情况：完成 TODO
+	备注：无
+PUT
+	完成情况：完成 TODO
+	备注：无
+DELETE
+	完成情况：完成 TODO
+	备注：无
+10)/v2.0/lbaas/health_monitors
+GET
+	完成情况：阿里缺失API
+	备注：无
+POST
+	完成情况：阿里缺失API
+	备注：无
+11)/v2.0/lbaas/health_monitors/{health_monitors_id}
+GET
+	完成情况：阿里缺失API
+	备注：无
+PUT
+	完成情况：阿里缺失API
+	备注：无
+DELETE
+	完成情况：阿里缺失API
+	备注：无
