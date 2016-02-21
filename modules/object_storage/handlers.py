@@ -18,8 +18,10 @@ class ObjectStorageBaseHandler(HttpBaseHandler):
     """
     def __init__(self, application, request, **kwargs):
         super(ObjectStorageBaseHandler, self).__init__(application, request, **kwargs)
-        token = self.request.headers["X-Auth-Token"]
-        print ("-----get token:", token)
+        token = ""
+        try:
+            token = self.request.headers["X-Auth-Token"]
+            print ("-----get token:", token)
         i = ObjectStorageProcessorFac()
         self.p = i.create_processor(None, token)
 
