@@ -563,6 +563,10 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
             response = self.clt.do_action(r)
             resp = json.loads(response) 
             print "volumeAction os-reset_status WUJUN response:", json.dumps(resp, indent=4)
+            if resp.has_key("Code"):
+                print "volumeAction os-reset_status Failed!!! Have Error!!!"
+                return False
+                pass
             pass
         elif action.has_key("os-attach"):
             ### NOTEST
@@ -578,11 +582,13 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
             r.set_InstanceId(action["os-attach"]["instance_uuid"])
             r.set_DiskId(volume_id)
             r.set_Device(action["os-attach"]["mountpoint"])
-            ## r.set_DeleteWithInstance(True)  ## or False
+            r.set_DeleteWithInstance(True)  ## or False
             response = self.clt.do_action(r)
             resp = json.loads(response) 
             print "volumeAction os-attach WUJUN response:", json.dumps(resp, indent=4)
-            pass
+            if resp.has_key("Code"):
+                print "volumeAction os-attach Failed!!! Have Error!!!"
+                return False
         elif action.has_key("os-force_detach"):
             ### NOTEST    NOMATCH
             ### aliyun need instanceID and diskID but opengstack is attachment_id
@@ -597,14 +603,29 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
                 }
             }            
             """
+            
+            r = DescribeDisksRequest.DescribeDisksRequest()
+            r.set_accept_format('json')
+            response = self.clt.do_action(r)
+            resp = json.loads(response)
+            ## print "when os-force_detach, queryVolumesList WUJUN response:", json.dumps(resp, indent=4)
+            volumesdetail = resp["Disks"]["Disk"]  
+            instance_id = None
+            for v in volumesdetail:            
+                if v["DiskId"]==volume_id:
+                    instance_id = v["InstanceId"]
+            if not instance_id:
+                print "Disk ID is ", volume_id, " not attached, so no find related instance_id ", instance_id 
+                return False
             r = DetachDiskRequest.DetachDiskRequest()
-            r.set_InstanceId(action["os-force_detach"]["attachment_id"])
+            r.set_InstanceId(instance_id)
             r.set_DiskId(volume_id)
-            ## r.set_DeleteWithInstance(True)  ## or False
             response = self.clt.do_action(r)
             resp = json.loads(response) 
-            print "volumeAction os-force_detach WUJUN response:", json.dumps(resp, indent=4)            
-            pass
+            print "volumeAction os-force_detach WUJUN response:", json.dumps(resp, indent=4)
+            if resp.has_key("Code"):
+                print "volumeAction os-force_detach Failed!!! Have Error!!!"
+                return False
         else:
             return False
         return True

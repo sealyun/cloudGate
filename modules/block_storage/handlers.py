@@ -179,11 +179,11 @@ class VolumeActionHandler(BlockStorageBaseHandler):
         ## print "BBBBBBBBBBBBBBBBB  VolumeActionHandler"
 
         if self.p.volumeAction(tenant_id, volume_id, action):
+            print "Volume Action: Successed"
             self.set_status(202)
-            pass
         else:
+            print "Volume Action: Failed"
             self.set_status(403)
-            pass
 
 class SnapshotsHandler(BlockStorageBaseHandler):
     def get(self, tenant_id):
