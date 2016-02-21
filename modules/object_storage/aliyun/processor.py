@@ -17,13 +17,14 @@ class AliyunObjectStorageProcessor(ObjectStorageBaseProcessor):
     def queryObjects(self, account, container, limit,
             marker, end_marker, prefix, format, delimiter, path):
 
-        buckets = oss2.BucketIterator(service)
+        buckets = oss2.BucketIterator(self.service)
 
         print buckets
 
         return buckets
 
     def queryContainers(self):
-        print ([b for b in oss2.BucketIterator(service)])
+        buckets = oss2.BucketIterator(self.service)
+        print ([b for b in buckets])
 
         return None
