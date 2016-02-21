@@ -465,7 +465,7 @@ class AliyunComputeProcessor(ComputeProcessorBase):
             request.set_InstanceId(server_id)
             self.clt.do_action(request)
     
-    def serverAttachVolume(tenant_id, instance_id, volume_id, device):
+    def serverAttachVolume(self, tenant_id, instance_id, volume_id, device):
         headers = {}
         body = {}
         r = AttachDiskRequest.AttachDiskRequest()
@@ -490,17 +490,17 @@ class AliyunComputeProcessor(ComputeProcessorBase):
         }        
         return headers, body
 
-    def serverListVolumes(tenant_id, server_id):
+    def serverListVolumes(self, tenant_id, server_id):
         headers = {}
         body = {}
         return headers, body
 
-    def volumeAttachmentDetail(tenant_id, server_id, attachment_id):
+    def volumeAttachmentDetail(self, tenant_id, server_id, attachment_id):
         headers = {}
         body = {}
         return headers, body
     
-    def volumeAttachmentDetach(tenant_id, server_id, attachment_id):
+    def volumeAttachmentDetach(self, tenant_id, server_id, attachment_id):
         headers = {}
         body = {}
         

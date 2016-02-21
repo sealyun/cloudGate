@@ -26,16 +26,16 @@ class ComputeProcessorBase():
     def deleteServer(self, tenant_id, server_id):
         pass
 
-    def serverAttachVolume(tenant_id, server_id, volumeId, device):
+    def serverAttachVolume(self, tenant_id, server_id, volumeId, device):
         pass
 
-    def serverListVolumes(tenant_id, server_id):
+    def serverListVolumes(self, tenant_id, server_id):
         pass
 
-    def volumeAttachmentDetail(tenant_id, server_id, attachment_id):
+    def volumeAttachmentDetail(self, tenant_id, server_id, attachment_id):
         pass
 
-    def volumeAttachmentDetach(tenant_id, server_id, attachment_id):
+    def volumeAttachmentDetach(self, tenant_id, server_id, attachment_id):
         pass
 
     def queryFlavors(self, tenant_id):
