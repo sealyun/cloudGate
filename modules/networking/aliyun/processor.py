@@ -798,10 +798,13 @@ class AliyunNetworkingProcessor(NetworkingProcessorBase):
         loadBanlanceStatus["listeners"] = []
         for lsn in lb["ListenerPorts"]["ListenerPorts"]:
             listener = {}
+            #TODO
+            #query listener by DescribeLoadBalancerHTTPListenerAttribute
+            #use loadbalance id and listener port
             listener["name"] = ""
-            listener["id"] = str(lsn)
+            listener["id"] = ""
             listener["operating_status"] = "ONLINE"
-            listener["provisioning_status"] = lb["LoadBalancerStatus"]
+            listener["provisioning_status"] = ""
 
             listener["pools"] = []
             pool = {}
@@ -812,6 +815,9 @@ class AliyunNetworkingProcessor(NetworkingProcessorBase):
             pool["operating_status"] = "ONLINE"
             pool["members"] = []
             for server in lb["BackendServers"]["BackendServer"]:
+                #TODO
+                #query server status by aliyun api DescribeHealthStatus
+                #use loadbalance id and port id and compare server id
                 member = {}
                 member["address"] = ""
                 member["protocol_port"] = ""
@@ -826,3 +832,4 @@ class AliyunNetworkingProcessor(NetworkingProcessorBase):
             loadBanlanceStatus["listeners"].append(listener)
 
         return loadBanlanceStatus
+
