@@ -222,7 +222,7 @@ class SnapshotHandler(BlockStorageBaseHandler):
         else:
             print "===========  do update snapshot Successed  =========="
             print "SnapshotsHandler update snapshot GET Resp Json: ========"
-            print json.dumps(resp, indent=4)
+            ## print json.dumps(resp, indent=4)
             print "==========================================" 
             self.send_json(resp)
 
@@ -289,7 +289,7 @@ class VolumeTypesHandler(BlockStorageBaseHandler):
         
         resp = self.p.queryVolumeTypes(tenant_id, sort_key, sort_dir, limit, marker)
         print "TypesHandler queryTypes GET Resp Json: ========"
-        print json.dumps(resp, indent=4)
+        ## print json.dumps(resp, indent=4)
         print "=========================================="
         self.send_json(resp)        
         pass
@@ -298,7 +298,7 @@ class VolumeTypeDetailHandler(BlockStorageBaseHandler):
     def get(self, tenant_id, volume_type_id):
         resp = self.p.queryVolumeTypeDetail(tenant_id, volume_type_id)
         print "VolumeTypeDetailHandler queryVolumeTypeDetail GET Resp Json: ========"
-        print json.dumps(resp, indent=4)
+        ## print json.dumps(resp, indent=4)
         print "=========================================="
         self.send_json(resp)          
         pass
@@ -318,7 +318,7 @@ class BlockStorageExtensionsHandler(BlockStorageBaseHandler):
     def get(self, tenant_id):
         resp = self.p.queryBlockStorageExtensions(tenant_id)
         print "BlockStorageExtensionsHandler queryBlockStorageExtensions GET Resp Json: ========"
-        print json.dumps(resp, indent=4)
+        ## print json.dumps(resp, indent=4)
         print "=========================================="
         self.send_json(resp)           
         pass

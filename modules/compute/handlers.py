@@ -2,6 +2,7 @@ from tornado.gen import coroutine
 from cloudGate.httpbase import HttpBaseHandler
 from api_factory import ComputeProcessorFac
 
+import json
 
 class ComputeBaseHandler(HttpBaseHandler):
     def get_processor(self):

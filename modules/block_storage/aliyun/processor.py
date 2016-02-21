@@ -999,7 +999,7 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
             r.set_accept_format('json')
             response = self.clt.do_action(r)
             resp = json.loads(response)
-            print "when updateSnapshot, query snapshot list WUJUN response:", json.dumps(resp, indent=4)
+            ### print "when updateSnapshot, query snapshot list WUJUN response:", json.dumps(resp, indent=4)
             snapshots = resp["Snapshots"]["Snapshot"]
             resp = { "snapshot": {} }
             for s in snapshots:
