@@ -36,7 +36,7 @@ class ObjectStorageBaseHandler(HttpBaseHandler):
             container["count"] = i
             container["bytes"] = c[""]
             container["name"] = c[""]
-            i++
+            i = i + 1
             resp.append(container)
 
         self.send_json(resp)
