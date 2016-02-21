@@ -679,7 +679,8 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
             r.set_accept_format('json')
             r.set_InstanceId(action["os-attach"]["instance_uuid"])
             r.set_DiskId(volume_id)
-            r.set_Device(action["os-attach"]["mountpoint"])
+            if action["os-attach"].has_key("mountpoint"):
+                r.set_Device(action["os-attach"]["mountpoint"])
             r.set_DeleteWithInstance(True)  ## or False
             response = self.clt.do_action(r)
             resp = json.loads(response) 
