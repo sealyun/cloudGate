@@ -301,7 +301,7 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
                 if v["DiskId"]==disk_id:
                     resp = {
                         "volume": {
-                            "status": "creating",
+                            "status": self._convertDiskStatus2VolumeStatus(v["Status"]),##"creating",
                             "migration_status": None,
                             "user_id": "0eea4eabcf184061a3b6db1e0daaf010",
                             "attachments": [],
@@ -315,13 +315,13 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
                                     "rel": "bookmark"
                                 }
                             ],
-                            "availability_zone": "nova",
+                            "availability_zone": v["ZoneId"], ##"nova",
                             "bootable": "false",
                             "encrypted": False,
                             "created_at": v["CreationTime"],
                             "description": v["Description"],
                             "updated_at": None,
-                            "volume_type": "lvmdriver-1",
+                            "volume_type": v["Type"],##"lvmdriver-1",
                             "name": v["DiskName"],
                             "replication_status": "disabled",
                             "consistencygroup_id": None,
@@ -356,7 +356,7 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
                             },
                         ],
                         "availability_zone": "nova",
-                        "os-vol-host-attr:host": None,##"difleming@lvmdriver-1#lvmdriver-1",
+                        "os-vol-host-attr:host": "difleming@lvmdriver-1#lvmdriver-1", ##None,
                         "encrypted": False,
                         "os-volume-replication:extended_status": None,
                         "replication_status": "disabled",
@@ -406,16 +406,16 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
                                 "rel": "bookmark"
                             },
                         ],
-                        "availability_zone": v["ZoneId"],
-                        "os-vol-host-attr:host": "difleming@lvmdriver-1#lvmdriver-1",
+                        "availability_zone": v["ZoneId"], ##"nova"
+                        "os-vol-host-attr:host": None, ##"difleming@lvmdriver-1#lvmdriver-1",
                         "encrypted": False,
                         "os-volume-replication:extended_status": None,
                         "replication_status": "disabled",
                         "snapshot_id": v["SourceSnapshotId"],
                         "id": v["DiskId"],
                         "size": v["Size"],
-                        "user_id": "32779452fcd34ae1a53a797ac8a1e064",
-                        "os-vol-tenant-attr:tenant_id":"bab7d5c60cd041a0a36f7c4b6e1dd978",
+                        "user_id": None, ##"32779452fcd34ae1a53a797ac8a1e064",
+                        "os-vol-tenant-attr:tenant_id": None, ##"bab7d5c60cd041a0a36f7c4b6e1dd978",
                         "os-vol-mig-status-attr:migstat": None,
                         "metadata": {},
                         "status": self._convertDiskStatus2VolumeStatus(v["Status"]), ###"in-use", ###v["Status"],
@@ -497,9 +497,9 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
                                     "rel": "bookmark"
                                 }
                             ],
-                            "availability_zone": "nova", ##v["ZoneId"],
+                            "availability_zone": v["ZoneId"], ##"nova", 
                             "bootable": "true",
-                            "os-vol-host-attr:host": "ip-10-168-107-25", ##None,
+                            "os-vol-host-attr:host": None, ##"ip-10-168-107-25", 
                             "source_volid": None,
                             "snapshot_id": v["SourceSnapshotId"],
                             "id":  v["DiskId"],
@@ -507,13 +507,11 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
                             "name": v["DiskName"],
                             "created_at": v["CreationTime"],
                             "volume_type": v["Type"],
-                            "os-vol-tenant-attr:tenant_id": "0c2eba2c5af04d3f9e9d0d410b371fde", #None
+                            "os-vol-tenant-attr:tenant_id": None, ##"0c2eba2c5af04d3f9e9d0d410b371fde", #None
                             "size": v["Size"],
                             "os-volume-replication:driver_data": None,
                             "os-volume-replication:extended_status": None,
-                            "metadata": {
-                                "contents": "not junk"
-                            }
+                            "metadata": {}
                         }  
                     }
         return resp
@@ -521,18 +519,103 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
     
     def updateVolume(self, tenant_id, volume_id, name, description):
         ### NOCALL
-        print "there is no called"
-        print "updateVolume WUJUN begin ...."        
-        r = ModifyDiskAttributeRequest.ModifyDiskAttributeRequest()
-        r.set_accept_format('json')
-        r.set_DiskId(volume_id);
-        r.set_DiskName(name);
-        r.set_Description(description);
-        response = self.clt.do_action(r)
-        resp = json.loads(response) 
-        print "updateVolume WUJUN response:", json.dumps(resp, indent=4)
-        ######TODO......       
-        pass
+        print "there is no called"    
+        print "updateVolume WUJUN Begin ...... "
+        if TEST_FLAG:
+            resp = {
+                "volume": {
+                    "status": "available",
+                    "migration_status": None,
+                    "user_id": "0eea4eabcf184061a3b6db1e0daaf010",
+                    "attachments": [],
+                    "links": [
+                        {
+                            "href": "http://localhost:8776/v2/0c2eba2c5af04d3f9e9d0d410b371fde/volumes/5aa119a8-d25b-45a7-8d1b-88e127885635",
+                            "rel": "self"
+                        },
+                        {
+                            "href": "http://localhost:8776/0c2eba2c5af04d3f9e9d0d410b371fde/volumes/5aa119a8-d25b-45a7-8d1b-88e127885635",
+                            "rel": "bookmark"
+                        }
+                    ],
+                    "availability_zone": "nova",
+                    "bootable": "false",
+                    "encrypted": False,
+                    "created_at": "2015-11-29T03:01:44.000000",
+                    "description": "This is yet, another volume.",
+                    "updated_at": None,
+                    "volume_type": "lvmdriver-1",
+                    "name": "vol-003",
+                    "replication_status": "disabled",
+                    "consistencygroup_id": None,
+                    "source_volid": None,
+                    "snapshot_id": None,
+                    "multiattach": None,
+                    "metadata": {
+                        "contents": "not junk"
+                    },
+                    "id": "5aa119a8-d25b-45a7-8d1b-88e127885635",
+                    "size": 1
+                }
+            }            
+        else:
+            print "updateVolume WUJUN begin ...."        
+            r = ModifyDiskAttributeRequest.ModifyDiskAttributeRequest()
+            r.set_accept_format('json')
+            r.set_DiskId(volume_id);
+            r.set_DiskName(name);
+            r.set_Description(description);
+            response = self.clt.do_action(r)
+            resp = json.loads(response) 
+            print "updateVolume WUJUN response:", json.dumps(resp, indent=4)    
+            if resp.has_key("Code"):
+                print "Aliyun Modify Disk Attribute Operation Failed, Have Error"
+                return False
+
+            r = DescribeDisksRequest.DescribeDisksRequest()
+            r.set_accept_format('json')
+            response = self.clt.do_action(r)
+            resp = json.loads(response)
+            ## print "when update volume, queryVolume WUJUN response:", json.dumps(resp, indent=4)
+            volumesdetail = resp["Disks"]["Disk"]  
+            resp = { "volume": {} }
+            for v in volumesdetail:
+                if v["DiskId"]==volume_id:
+                    resp = {
+                        "volume": {
+                            "status": self._convertDiskStatus2VolumeStatus(v["Status"]), ###v["Status"],
+                            "migration_status": None,
+                            "user_id": "0eea4eabcf184061a3b6db1e0daaf010",
+                            "attachments": [],
+                            "links": [
+                                {
+                                    "href":"http://",
+                                    "rel": "self"
+                                },
+                                {
+                                    "href":"http://",
+                                    "rel": "bookmark"
+                                }
+                            ],
+                            "availability_zone": v["ZoneId"],##"nova",
+                            "bootable": "false",
+                            "encrypted": False,
+                            "created_at": v["CreationTime"],
+                            "description": v["Description"],
+                            "updated_at": None,
+                            "volume_type": v["Type"], ##"lvmdriver-1",
+                            "name": v["DiskName"],
+                            "replication_status": "disabled",
+                            "consistencygroup_id": None,
+                            "source_volid": None,
+                            "snapshot_id": v["SourceSnapshotId"],
+                            "multiattach": False,
+                            "metadata": {},
+                            "id": v["DiskId"],
+                            "size": v["Size"]
+                        }
+                    }                
+        return resp
     
     def deleteVolume(self, tenant_id, volume_id):
         print "deleteVolume WUJUN begin .... tenant_id is ", tenant_id, "  volume_id is ", volume_id     
@@ -545,8 +628,7 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
         if resp.has_key("Code"):
             print "Aliyun Delete Disk Operation Failed, Have Error"
             return False
-        return True  
-        pass    
+        return True   
     
     
     def queryVolumeMetadata(self, tenant_id, volume_id):
@@ -759,7 +841,7 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
                 if s["SnapshotId"]==snapshot_id:
                     resp = {
                         "snapshot": {
-                            "status": s["Status"],
+                            "status": self._convertSnapshotStatusAliyun2Openstack(s["Status"]),##s["Status"],
                             "description": s["Description"],
                             "created_at": s["CreationTime"],
                             "metadata": {},
@@ -1019,6 +1101,8 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
     
     def queryVolumeTypes(self, tenant_id, sort_key, sort_dir, limit, marker):
         print "queryTypes WUJUN Do Nothing, tenant_id is ", tenant_id, "  sort_key is ", sort_key, "  sort_dir is ", sort_dir, "  limit is ", limit, "   marker is ", marker        
+        ## aliyun disk_type        all | system | data
+        ## aliyun disk_category    all | cloud | cloud_efficiency | cloud_ssd | ephemeral | ephemeral_ssd
         ## if TEST_FLAG:
         if 1:
             resp = {
@@ -1027,7 +1111,27 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
                         "extra_specs": { },
                         "id": "6685584b-1eac-4da6-b5c3-555430cf68ff",
                         "name": "data cloud_efficiency"
-                    }
+                    },
+                    {
+                        "extra_specs": { },
+                        "id": "1185584b-1eac-4da6-b5c3-555430cf68ff",
+                        "name": "data cloud_ssd"
+                    },
+                    {
+                        "extra_specs": { },
+                        "id": "2285584b-1eac-4da6-b5c3-555430cf68ff",
+                        "name": "data cloud"
+                    },
+                    {
+                        "extra_specs": { },
+                        "id": "3385584b-1eac-4da6-b5c3-555430cf68ff",
+                        "name": "data ephemeral"
+                    },
+                    {
+                        "extra_specs": { },
+                        "id": "4485584b-1eac-4da6-b5c3-555430cf68ff",
+                        "name": "data ephemeral_ssd"
+                    }                    
                 ]
             }
         return resp

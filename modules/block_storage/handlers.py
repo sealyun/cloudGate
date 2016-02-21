@@ -95,88 +95,55 @@ class VolumeHandler(BlockStorageBaseHandler):
         self.send_json(resp)
 
     def put(self, tenant_id, volume_id):
+        ##NOURLCALL NOTEST
         volume = json.loads(self.request.body)["volume"]
-
-        volume = self.p.updateVolume(tenant_id, volume_id, 
+        print "VolumeHandler update Volume Input Params is ", json.dumps(volume, indent=4)
+        resp = self.p.updateVolume(tenant_id, volume_id, 
                 volume["name"],
                 volume["description"])
-
-        resp = {
-            "volume":{
-                "status":volume.status,
-                "migration_status": volume.migration_status,
-                "user_id": volume.user_id,
-                "attachments": volume.attachments,
-                "links": [
-                        {
-                            "href": "http://",
-                            "rel": "self"
-                        },
-                        {
-                            "href": "http://",
-                            "rel": "bookmark"
-                        }
-                ],
-                "availability_zone": volume.availability_zone,
-                "bootable": volume.bootable,
-                "encrypted": volume.encrypted,
-                "created_at": volume.create_at,
-                "description": volume.description,
-                "updated_at": volume.updated_at,
-                "volume_type": volume.volume_type,
-                "name": volume.name,
-                "replication_status": volume.replication_status,
-                "consistencygroup_id": volume.consistencygroup_id,
-                "source_volid": volume.source_volid,
-                "snapshot_id": volume.snapshot_id,
-                "multiattach": volume.multiattach,
-                "metadata": volume.metadata,
-                "id": volume.id,
-                "size": volume.size
-            }
-        }
-
-        self.send_json(resp)
+                
+        if resp is None:
+            print "===========  do update volume Failed     =========="           
+            self.set_status(403)
+            return
+        else:
+            print "===========  do update volume Successed  =========="
+            print "VolumeHandler update volume GET Resp Json: ========"
+            print json.dumps(resp, indent=4)
+            print "==========================================" 
+            self.send_json(resp)
 
     def delete(self, tenant_id, volume_id):
         print "===========  do deleteVolume ==========  volume_id is ", volume_id
         if self.p.deleteVolume(tenant_id, volume_id):
             print "===========  do deleteVolume Success ==========" 
             self.set_status(202)
-            pass
         else:
             print "===========  do deleteVolume Failed  =========="
-            self.set_status(403)
-            pass        
+            self.set_status(403)      
 
 class VolumeMetadataHandler(BlockStorageBaseHandler):
     def get(self, tenant_id, volume_id):
-        metadata = self.p.queryVolumeMetadata(tenant_id, volume_id)
-
-        resp = {
-            "metadata":metadata
-        }
-
+        ##NOTEST NOIMPLEMENT
+        resp = self.p.queryVolumeMetadata(tenant_id, volume_id)
+        self.set_status(403)
+        return
         self.send_json(resp)
 
     def put(self, tenant_id, volume_id):
+        ##NOTEST NOIMPLEMENT
         metadata = json.loads(self.request.body)["metadata"]
-
-        metadata = self.p.updataVolumeMetadata(metadata["name"])
-
-        resp = {
-            "metadata":{
-                "name":metadata.name
-            }
-        }
-
+        resp = self.p.updataVolumeMetadata(metadata["name"])
+        self.set_status(403)
+        return
         self.send_json(resp)
+
 
 class VolumeActionHandler(BlockStorageBaseHandler):
     def post(self, tenant_id, volume_id):
-        ## print "AAAAAAAAAAAAAAAAA  VolumeActionHandler"
+        
         action = json.loads(self.request.body)
-        ## print "BBBBBBBBBBBBBBBBB  VolumeActionHandler"
+        print "VolumeActionHandler volume action Input Params is ", json.dumps(action, indent=4)
 
         if self.p.volumeAction(tenant_id, volume_id, action):
             print "Volume Action: Successed"
@@ -238,10 +205,8 @@ class SnapshotHandler(BlockStorageBaseHandler):
     def delete(self, tenant_id, snapshot_id):
         if self.p.deleteSnapshot(tenant_id, snapshot_id):
             self.set_status(202)
-            pass
         else:
             self.set_status(403)
-            pass
 
     def put(self, tenant_id, snapshot_id):
         snapshot = json.loads(self.request.body)["snapshot"]
@@ -263,25 +228,18 @@ class SnapshotHandler(BlockStorageBaseHandler):
 
 class SnapshotMetadataHandler(BlockStorageBaseHandler):
     def get(self, tenant_id, snapshot_id):
-        metadata = self.p.querySnapshotMetadata(tenant_id, snapshot_id)
-
-        resp = {
-            "metadata":{
-                "name":metadata.name
-            }
-        }
-
+        ##NOTEST NOIMPLEMENT
+        resp = self.p.querySnapshotMetadata(tenant_id, snapshot_id)
+        self.set_status(403)
+        return
         self.send_json(resp)
 
     def put(self, tenant_id, snapshot_id):
+        ##NOTEST NOIMPLEMENT
         metadata = json.loads(self.request.body)["metadata"]
-
-        metadata = self.p.updataSnapshotMetadata(tenant_id, snapshot_id, metadata)
-
-        resp = {
-            "metadata":metadata
-        }
-
+        resp = self.p.updataSnapshotMetadata(tenant_id, snapshot_id, metadata)
+        self.set_status(403)
+        return
         self.send_json(resp)
 
 

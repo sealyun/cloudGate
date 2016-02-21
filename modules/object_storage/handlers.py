@@ -64,11 +64,11 @@ class ContainerHandler(ObjectStorageBaseHandler):
 
         resp = [
             {
-                "hash":o.hash,
-                "last_modified":o.last_modified,
-                "bytes":o.bytes,
-                "name":o.name,
-                "content_type":o.content_type
+                "hash":o.key,
+                "last_modified":"",
+                "bytes":"",
+                "name":o.key,
+                "content_type":""
             }
             for o in objects
         ]
@@ -115,9 +115,11 @@ class ContainerHandler(ObjectStorageBaseHandler):
             self.set_status(400)
 
 class ObjectHandler(ObjectStorageBaseHandler):
-    def prepare(self, account, container, object_):
+    """
+    def prepare(self):
         #if http method is COPY, call self.copy()
         pass
+    """
 
     def put(self, account, container, object_):
         multipart_manifest = self.get_argument("multipart-manifest", None)

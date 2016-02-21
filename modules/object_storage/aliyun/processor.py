@@ -56,4 +56,16 @@ class AliyunObjectStorageProcessor(ObjectStorageBaseProcessor):
         except:
             return False
 
+    def queryObjects(self, account, container, limit,
+            marker, end_marker, prefix, format_, delimiter, path):
 
+        bucket = oss2.Bucket(self.auth, self.end_point, container)
+
+        objs = oss2.ObjectIterator(bucket)
+
+        return objs
+
+    def deleteObject(self, account, container, object_, multipart_manifest, x_trans_id_extra):
+        bucket = oss2.Bucket(self.auth, self.end_point, container)
+
+        bucket.delete_object(object_)
