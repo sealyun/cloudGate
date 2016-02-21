@@ -8,6 +8,14 @@ from aliyunsdkecs.request.v20140526 import DescribeVpcsRequest
 from aliyunsdkecs.request.v20140526 import CreateVpcRequest
 from aliyunsdkecs.request.v20140526 import DeleteVpcRequest
 from aliyunsdkecs.request.v20140526 import ModifyVpcAttributeRequest
+from aliyunsdkecs.request.v20140526 import DescribeRouteTablesRequest
+from aliyunsdkecs.request.v20140526 import CreateRouteEntryRequest
+from aliyunsdkecs.request.v20140526 import DeleteRouteEntryRequest
+from aliyunsdkslb.request.v20140515 import DescribeLoadBalancersRequest
+from aliyunsdkslb.request.v20140515 import DescribeLoadBalancerAttributeRequest
+from aliyunsdkslb.request.v20140515 import CreateLoadBalancerRequest
+from aliyunsdkslb.request.v20140515 import SetLoadBalancerNameRequest
+from aliyunsdkslb.request.v20140515 import DeleteLoadBalancerRequest
 
 import json
 
@@ -79,8 +87,7 @@ class AliyunNetworkingProcessor(NetworkingProcessorBase):
                     network["status"] = "ACTIVE"
                 else:
                     network["status"] = vpc["Status"]
-                network["subnets"] = []
-                #network["subnets"].append(vpc["CidrBlock"])
+                network["subnets"] = self.getSubsetIDList(vpc["VRouterId"])
                 network["name"] = vpc["VpcName"]
                 network["provider:physical_network"] = None
                 network["admin_state_up"] = True
@@ -131,11 +138,13 @@ class AliyunNetworkingProcessor(NetworkingProcessorBase):
 
         outNetwork = {}
         outNetwork["status"] = "ACTIVE"
+        #outNetwork["subnets"] = self.getSubsetIDList(resp["VpcId"])
         outNetwork["subnets"] = []
+        outNetwork["subnets"].append(resp["RouteTableId"])
         outNetwork["name"] = name
         outNetwork["admin_state_up"] = adminStateUp
-        outNetwork["tenant_id"] = "ACTIVE"
-        outNetwork["router:external"] = tenantID
+        outNetwork["tenant_id"] = tenantID
+        outNetwork["router:external"] = False
         outNetwork["mtu"] = 0
         outNetwork["shared"] = shared
         outNetwork["id"] = resp["VpcId"]
@@ -177,7 +186,7 @@ class AliyunNetworkingProcessor(NetworkingProcessorBase):
                 network["status"] = "ACTIVE"
             else:
                 network["status"] = vpc["Status"]
-            network["subnets"] = []
+            network["subnets"] = self.getSubsetIDList(vpc["VRouterId"])
             network["name"] = vpc["VpcName"]
             network["router:external"] = False
             network["admin_state_up"] = True
@@ -231,26 +240,108 @@ class AliyunNetworkingProcessor(NetworkingProcessorBase):
         #Aliyun does not support
         return []
 
-    def getSubsets(self, displayName, networkID, gatewayIP, ipVersion, cidr, id, enableDHCP, ipv6RaMode, ipv6AddressMode):
-        #TODO
-        #Aliyun does not support
+    def getSubsetIDList(self, routerID):
+        #Subnet id is router table id
+        routeTableIDList = []
+        routeTableList = self.getRouteTableList(routerID)
 
+        print "---router id: ", routerID
+        print "---route table list: "
+        print routeTableList
+
+        for routeTable in routeTableList:
+            routeTableID = routeTable["RouteTableId"]
+            routeTableIDList.append(routeTableID)
+
+        return routeTableIDList
+
+    def getRouteTableList(self, routerID):
+        routeTableList = []
+
+        pagePos = 1
+        pageSize = 50
+
+        while True:
+            request = DescribeRouteTablesRequest.DescribeRouteTablesRequest()
+            request.set_PageNumber(pagePos)
+            request.set_PageSize(pageSize)
+            request.set_VRouterId(routerID)
+            request.set_accept_format('json')
+            response = self.clt.do_action(request)
+            resp = json.loads(response)
+            pagePos = pagePos + 1
+
+            print "response: ", resp
+
+            if "Code" in resp.keys() and "Message" in resp.keys():
+                break
+
+            if "RouteTables" not in resp.keys():
+                break
+
+            if len(resp["RouteTables"]["RouteTable"]) <= 0:
+                break
+
+            for routeTable in resp["RouteTables"]["RouteTable"]:
+                for routerEntry in routeTable["RouteEntrys"]["RouteEntry"]:
+                    routeTableList.append(routerEntry)
+                    ''' response data
+                        routerEntry: {
+                          "DestinationCidrBlock": "192.168.10.1/32",
+                          "InstanceId": "i-25skktcp4",
+                          "RouteTableId": "vtb-25vtxl5ct",
+                          "Status": "Available",
+                          "Type": "Custom"
+                        }
+                    '''
+
+        return routeTableList
+
+    def getRouterIDByNetworkID(self, networkID):
+        request = DescribeVpcsRequest.DescribeVpcsRequest()
+        request.set_PageNumber(1)
+        request.set_PageSize(50)
+        request.set_VpcId(networkID)
+        request.set_accept_format('json')
+        response = self.clt.do_action(request)
+        resp = json.loads(response)
+
+        print "response: ", resp
+
+        if "Vpcs" not in resp.keys():
+            return None
+
+        if len(resp["Vpcs"]["Vpc"]) <= 0:
+            return None
+
+        for vpc in resp["Vpcs"]["Vpc"]:
+            if len(vpc["VRouterId"]) > 0:
+                return vpc["VRouterId"]
+
+        return None
+
+    def getSubsets(self, displayName, networkID, gatewayIP, ipVersion, cidr, id, enableDHCP, ipv6RaMode, ipv6AddressMode):
         subnets = []
 
-        subnet = {}
-        subnet["name"] = ""
-        subnet["enable_dhcp"] = ""
-        subnet["network_id"] = ""
-        subnet["tenant_id"] = ""
-        subnet["dns_nameservers"] = ""
-        subnet["allocation_pools"] = ""
-        subnet["host_routes"] = ""
-        subnet["ip_version"] = ""
-        subnet["gateway_ip"] = ""
-        subnet["cidr"] = ""
-        subnet["id"] = ""
+        routerID = self.getRouterIDByNetworkID(networkID)
+        routeTableList = self.getRouteTableList(routerID)
+        for routeTable in routeTableList:
+            subnet = {}
+            subnet["name"] = ""
+            subnet["enable_dhcp"] = True
+            subnet["network_id"] = networkID
+            subnet["tenant_id"] = ""
+            subnet["dns_nameservers"] = []
+            subnet["allocation_pools"] = []
+            subnet["host_routes"] = []
+            subnet["ip_version"] = 4
+            cidr = routeTable["DestinationCidrBlock"]
+            subnet["cidr"] = cidr
+            subnet["gateway_ip"] = cidr[0:cidr.index('/')]
+            subnet["id"] = routeTable["RouteTableId"]
 
-        subnets.append(subnet)
+            subnets.append(subnet)
+
         return subnets
 
     def createSubnet(self, inSubnet):
@@ -459,3 +550,279 @@ class AliyunNetworkingProcessor(NetworkingProcessorBase):
         #Aliyun does not support
 
         return True
+
+    def getLoadBalancers(self):
+        loadbalancers = []
+
+        request = DescribeLoadBalancersRequest.DescribeLoadBalancersRequest()
+        request.set_accept_format('json')
+        response = self.clt.do_action(request)
+        resp = json.loads(response)
+
+        print "response: ", resp
+
+        if "Code" in resp.keys() and "Message" in resp.keys():
+            return loadbalancers
+
+        ''' response data
+        {
+            "RequestId": "365F4154-92F6-4AE4-92F8-7FF34B540710",
+            "LoadBalancers": {
+                "LoadBalancer": [
+                    {
+                        "LoadBalancerId": "139a00604ad-cn-east-hangzhou-01",
+                        "LoadBalancerName": "abc",
+                        "Address": "100.98.28.56",
+                        "AddressType": "intranet",
+                        "RegionId": "cn-east-hangzhou-01",
+                        "VSwitchId": "vsw-255ecrwq4",
+                        "VpcId": "vpc-25dvzy9f9",
+                        "NetworkType": "vpc",
+                        "LoadBalancerStatus ": "active",
+                        "MasterZoneId":"cn-hangzhou-b",
+                        "SlaveZoneId":"cn-hangzhou-d"
+                    }
+                ]
+            }
+        }
+        '''
+        for lb in resp["LoadBalancers"]["LoadBalancer"]:
+            loadbalancer = {}
+            loadbalancer["description"] = ""
+            loadbalancer["admin_state_up"] = True
+            loadbalancer["tenant_id"] = ""
+            loadbalancer["provisioning_status"] = lb["LoadBalancerStatus"]
+            loadbalancer["listeners"] = []
+            loadbalancer["vip_address"] = lb["Address"]
+            loadbalancer["vip_subnet_id"] = ""
+            loadbalancer["id"] = lb["LoadBalancerId"]
+            loadbalancer["operating_status"] = "ONLINE"
+            loadbalancer["name"] = lb["LoadBalancerName"]
+
+            loadbalancers.append(loadbalancer)
+
+        return loadbalancers
+
+    def createLoadBalancer(self, inLoadBalancer):
+        request = CreateLoadBalancerRequest.CreateLoadBalancerRequest()
+        request.set_LoadBalancerName(inLoadBalancer["name"])
+        request.set_accept_format('json')
+        response = self.clt.do_action(request)
+        resp = json.loads(response)
+
+        print "response: ", resp
+
+        if "Code" in resp.keys() and "Message" in resp.keys():
+            return None
+
+        ''' response data
+        {
+            "RequestId":"365F4154-92F6-4AE4-92F8-7FF34B540710",
+            "LoadBalancerId":"139a00604ad-cn-east-hangzhou-01",
+            "Address":"42.250.6.36",
+            "NetworkType":"classic"
+            "MasterZoneId":"cn-hangzhou-b",
+            "SlaveZoneId":"cn-hangzhou-d",
+            "LoadBalancerName":"abc"
+        }
+        '''
+
+        lb = resp
+
+        outLoadBalancer = {}
+        outLoadBalancer["description"] = ""
+        outLoadBalancer["admin_state_up"] = True
+        outLoadBalancer["tenant_id"] = ""
+        outLoadBalancer["provisioning_status"] = "active"
+        outLoadBalancer["listeners"] = []
+        outLoadBalancer["vip_address"] = lb["Address"]
+        outLoadBalancer["vip_subnet_id"] = ""
+        outLoadBalancer["id"] = lb["LoadBalancerId"]
+        outLoadBalancer["operating_status"] = "ONLINE"
+        outLoadBalancer["name"] = lb["LoadBalancerName"]
+        outLoadBalancer["provider"] = ""
+
+        return outLoadBalancer
+
+    def getLoadBalancer(self, lbID):
+        request = DescribeLoadBalancerAttributeRequest.DescribeLoadBalancerAttributeRequest()
+        request.set_LoadBalancerId(lbID)
+        request.set_accept_format('json')
+        response = self.clt.do_action(request)
+        resp = json.loads(response)
+
+        print "response: ", resp
+
+        if "Code" in resp.keys() and "Message" in resp.keys():
+            return None
+
+        ''' response data
+        {
+            "RequestId": "365F4154-92F6-4AE4-92F8-7FF34B540710",
+            "LoadBalancerId": "139a00604ad-cn-east-hangzhou-01",
+            "RegionId": "cn-east-hangzhou-01",
+            "LoadBalancerName": "abc",
+            "LoadBalancerStatus ": "active",
+            "Address": "42.250.6.36",
+            "AddressType": "internet",
+            "InternetChargeType": "paybybandwidth",
+            "Bandwidth": "5",
+            "CreateTime": "2014-01-01 00:00:00",
+            "ListenerPorts": {
+              "ListenerPort": [
+                  80,
+                  443
+              ]
+            },
+            "BackendServers": {
+              "BackendServer": [
+                  {
+                      "ServerId": "vm-233",
+                      "Weight": 100
+                  },
+                  {
+                      "ServerId": "vm-234",
+                      "Weight": 90
+                  }
+              ]
+            }
+            "MasterZoneId":"cn-hangzhou-b",
+            "SlaveZoneId":"cn-hangzhou-d"
+        }
+        '''
+
+        lb = resp
+
+        loadBalancer = {}
+        loadBalancer["description"] = ""
+        loadBalancer["admin_state_up"] = True
+        loadBalancer["tenant_id"] = ""
+        loadBalancer["provisioning_status"] = lb["LoadBalancerStatus"]
+        loadBalancer["listeners"] = lb["ListenerPorts"]["ListenerPort"]
+        loadBalancer["vip_address"] = lb["Address"]
+        loadBalancer["vip_subnet_id"] = ""
+        loadBalancer["id"] = lb["LoadBalancerId"]
+        loadBalancer["operating_status"] = "ONLINE"
+        loadBalancer["name"] = lb["LoadBalancerName"]
+
+        return loadBalancer
+
+    def updateLoadBalancer(self, lbID, inLoadBalancer):
+        adminStateUp = inLoadBalancer["admin_state_up"]
+        description = inLoadBalancer["description"]
+        name = inLoadBalancer["name"]
+
+        request = SetLoadBalancerNameRequest.SetLoadBalancerNameRequest()
+        request.set_LoadBalancerName(name)
+        request.set_accept_format('json')
+        response = self.clt.do_action(request)
+        resp = json.loads(response)
+
+        print "response: ", resp
+
+        if "Code" in resp.keys() and "Message" in resp.keys():
+            return None
+
+        return self.getLoadBalancer(lbID)
+
+    def deleteLoadBalancer(self, lbID):
+        request = DeleteLoadBalancerRequest.DeleteLoadBalancerRequest()
+        request.set_LoadBalancerId(lbID)
+        request.set_accept_format('json')
+        response = self.clt.do_action(request)
+        resp = json.loads(response)
+
+        print "response: ", resp
+
+        if "Code" in resp.keys() and "Message" in resp.keys():
+            return False
+
+        return True
+
+    def getLoadBalancerStatuses(self, lbID):
+        request = DescribeLoadBalancerAttributeRequest.DescribeLoadBalancerAttributeRequest()
+        request.set_LoadBalancerId(lbID)
+        request.set_accept_format('json')
+        response = self.clt.do_action(request)
+        resp = json.loads(response)
+
+        print "response: ", resp
+
+        if "Code" in resp.keys() and "Message" in resp.keys():
+            return None
+
+        ''' response data
+        {
+            "RequestId": "365F4154-92F6-4AE4-92F8-7FF34B540710",
+            "LoadBalancerId": "139a00604ad-cn-east-hangzhou-01",
+            "RegionId": "cn-east-hangzhou-01",
+            "LoadBalancerName": "abc",
+            "LoadBalancerStatus ": "active",
+            "Address": "42.250.6.36",
+            "AddressType": "internet",
+            "InternetChargeType": "paybybandwidth",
+            "Bandwidth": "5",
+            "CreateTime": "2014-01-01 00:00:00",
+            "ListenerPorts": {
+              "ListenerPort": [
+                  80,
+                  443
+              ]
+            },
+            "BackendServers": {
+              "BackendServer": [
+                  {
+                      "ServerId": "vm-233",
+                      "Weight": 100
+                  },
+                  {
+                      "ServerId": "vm-234",
+                      "Weight": 90
+                  }
+              ]
+            }
+            "MasterZoneId":"cn-hangzhou-b",
+            "SlaveZoneId":"cn-hangzhou-d"
+        }
+        '''
+
+        lb = resp
+
+        loadBanlanceStatus = {}
+
+        loadBanlanceStatus["name"] = lb["LoadBalancerName"]
+        loadBanlanceStatus["id"] = lb["LoadBalancerId"]
+        loadBanlanceStatus["operating_status"] = "INLINE"
+        loadBanlanceStatus["provisioning_status"] = lb["LoadBalancerStatus"]
+
+        loadBanlanceStatus["listeners"] = []
+        for lsn in lb["ListenerPorts"]["ListenerPorts"]:
+            listener = {}
+            listener["name"] = ""
+            listener["id"] = str(lsn)
+            listener["operating_status"] = "ONLINE"
+            listener["provisioning_status"] = lb["LoadBalancerStatus"]
+
+            listener["pools"] = []
+            pool = {}
+            pool["name"] = ""
+            pool["provisioning_status"] = ""
+            pool["health_monitor"] = ""
+            pool["id"] = ""
+            pool["operating_status"] = "ONLINE"
+            pool["members"] = []
+            for server in lb["BackendServers"]["BackendServer"]:
+                member = {}
+                member["address"] = ""
+                member["protocol_port"] = ""
+                member["id"] = server["ServerId"]
+                member["operating_status"] = "ONLINE"
+                member["provisioning_status"] = lb["LoadBalancerStatus"]
+
+                pool["members"].append(member)
+
+            listener["pools"].append(pool)
+
+            loadBanlanceStatus["listeners"].append(listener)
+
+        return loadBanlanceStatus

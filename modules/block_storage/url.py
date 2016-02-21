@@ -24,7 +24,13 @@ urls_v2 = [
 
     (BLOCK_STORAGE_BASE_URL + r"/v2/([^/]+)/qos-specs", QosSpecsHandler),
 
-    (BLOCK_STORAGE_BASE_URL + r"/v2/([^/]+)/types", TypesHandler),
+    (BLOCK_STORAGE_BASE_URL + r"/v2/([^/]+)/types", VolumeTypesHandler),
+
+    (BLOCK_STORAGE_BASE_URL + r"/v2/([^/]+)/types/([^/]+)", VolumeTypeDetailHandler),
+
+    (BLOCK_STORAGE_BASE_URL + r"/v2/([^/]+)/limits", BlockStorageLimitsHandler),
+
+    (BLOCK_STORAGE_BASE_URL + r"/v2/([^/]+)/extensions", BlockStorageExtensionsHandler),
 ]
 
 urls = urls_low_version + urls_v2

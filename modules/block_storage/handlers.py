@@ -42,7 +42,7 @@ class VolumesHandler(BlockStorageBaseHandler):
 
     def post(self, tenant_id):
         volume = json.loads(self.request.body)["volume"]
-        print "createVolume Input Params is ", json.dumps(volume, indent=4)
+        print "VolumesHandler createVolume Input Params is ", json.dumps(volume, indent=4)
         resp = self.p.createVolume(tenant_id, volume["size"],
                 volume["availability_zone"],
                 volume["source_volid"],
@@ -55,10 +55,16 @@ class VolumesHandler(BlockStorageBaseHandler):
                 volume["metadata"],
                 volume["source_replica"],
                 volume["consistencygroup_id"])
-        print "VolumesHandler createVolume GET Resp Json: ========"
-        ## print json.dumps(resp, indent=4)
-        print "==========================================" 
-        self.send_json(resp)
+        if resp is None:
+            print "===========  do create Volume Failed     =========="           
+            self.set_status(403)
+            return
+        else:
+            print "===========  do create Volume Successed  =========="
+            print "VolumesHandler createVolume GET Resp Json: ========"
+            print json.dumps(resp, indent=4)
+            print "==========================================" 
+            self.send_json(resp)
 
 class VolumesDetailHandler(BlockStorageBaseHandler):
     def get(self, tenant_id):
@@ -89,138 +95,97 @@ class VolumeHandler(BlockStorageBaseHandler):
         self.send_json(resp)
 
     def put(self, tenant_id, volume_id):
+        ##NOURLCALL NOTEST
         volume = json.loads(self.request.body)["volume"]
-
-        volume = self.p.updateVolume(tenant_id, volume_id, 
+        print "VolumeHandler update Volume Input Params is ", json.dumps(volume, indent=4)
+        resp = self.p.updateVolume(tenant_id, volume_id, 
                 volume["name"],
                 volume["description"])
-
-        resp = {
-            "volume":{
-                "status":volume.status,
-                "migration_status": volume.migration_status,
-                "user_id": volume.user_id,
-                "attachments": volume.attachments,
-                "links": [
-                        {
-                            "href": "http://",
-                            "rel": "self"
-                        },
-                        {
-                            "href": "http://",
-                            "rel": "bookmark"
-                        }
-                ],
-                "availability_zone": volume.availability_zone,
-                "bootable": volume.bootable,
-                "encrypted": volume.encrypted,
-                "created_at": volume.create_at,
-                "description": volume.description,
-                "updated_at": volume.updated_at,
-                "volume_type": volume.volume_type,
-                "name": volume.name,
-                "replication_status": volume.replication_status,
-                "consistencygroup_id": volume.consistencygroup_id,
-                "source_volid": volume.source_volid,
-                "snapshot_id": volume.snapshot_id,
-                "multiattach": volume.multiattach,
-                "metadata": volume.metadata,
-                "id": volume.id,
-                "size": volume.size
-            }
-        }
-
-        self.send_json(resp)
+                
+        if resp is None:
+            print "===========  do update volume Failed     =========="           
+            self.set_status(403)
+            return
+        else:
+            print "===========  do update volume Successed  =========="
+            print "VolumeHandler update volume GET Resp Json: ========"
+            print json.dumps(resp, indent=4)
+            print "==========================================" 
+            self.send_json(resp)
 
     def delete(self, tenant_id, volume_id):
-        self.p.deleteVolume(tenant_id, volume_id)
+        print "===========  do deleteVolume ==========  volume_id is ", volume_id
+        if self.p.deleteVolume(tenant_id, volume_id):
+            print "===========  do deleteVolume Success ==========" 
+            self.set_status(202)
+        else:
+            print "===========  do deleteVolume Failed  =========="
+            self.set_status(403)      
 
 class VolumeMetadataHandler(BlockStorageBaseHandler):
     def get(self, tenant_id, volume_id):
-        metadata = self.p.queryVolumeMetadata(tenant_id, volume_id)
-
-        resp = {
-            "metadata":metadata
-        }
-
+        ##NOTEST NOIMPLEMENT
+        resp = self.p.queryVolumeMetadata(tenant_id, volume_id)
+        self.set_status(403)
+        return
         self.send_json(resp)
 
     def put(self, tenant_id, volume_id):
+        ##NOTEST NOIMPLEMENT
         metadata = json.loads(self.request.body)["metadata"]
-
-        metadata = self.p.updataVolumeMetadata(metadata["name"])
-
-        resp = {
-            "metadata":{
-                "name":metadata.name
-            }
-        }
-
+        resp = self.p.updataVolumeMetadata(metadata["name"])
+        self.set_status(403)
+        return
         self.send_json(resp)
+
 
 class VolumeActionHandler(BlockStorageBaseHandler):
     def post(self, tenant_id, volume_id):
-        ## print "AAAAAAAAAAAAAAAAA  VolumeActionHandler"
+        
         action = json.loads(self.request.body)
-        ## print "BBBBBBBBBBBBBBBBB  VolumeActionHandler"
+        print "VolumeActionHandler volume action Input Params is ", json.dumps(action, indent=4)
 
         if self.p.volumeAction(tenant_id, volume_id, action):
+            print "Volume Action: Successed"
             self.set_status(202)
-            pass
         else:
+            print "Volume Action: Failed"
             self.set_status(403)
-            pass
 
 class SnapshotsHandler(BlockStorageBaseHandler):
     def get(self, tenant_id):
+        ##NOURLCALL
         sort_key = self.get_argument("sort_key", None)
         sort_dir = self.get_argument("sort_dir", None)
         limit = self.get_argument("limit", None)
         marker = self.get_argument("marker", None)
 
-        snapshots = self.p.querySnapshots(tenant_id, sort_key, sort_dir, limit, marker)
-
-        resp = {
-            "snapshots":[
-                {
-                    "status":s.status,
-                    "metadata":s.metadata,
-                    "name":s.name,
-                    "volume_id":s.volume_id,
-                    "create_at":s.create_at,
-                    "size":s.size,
-                    "id":s.id,
-                    "description":s.description,
-                }
-                for s in snapshots
-            ]
-        }
+        resp = self.p.querySnapshots(tenant_id, sort_key, sort_dir, limit, marker)
+        
+        print "SnapshotsHandler querySnapshots GET Resp Json: ========"
+        ## print json.dumps(resp, indent=4)
+        print "=========================================="
+        self.send_json(resp)
 
     def post(self, tenant_id):
         snapshot = json.loads(self.request.body)["snapshot"]
-
-        snapshot = self.p.createSnapshot(tenant_id, snapshot["name"],
+        print "SnapshotsHandler createSnapshot Input Params is ", json.dumps(snapshot, indent=4)
+        resp = self.p.createSnapshot(tenant_id, snapshot["name"],
                 snapshot["description"],
                 snapshot["volume_id"],
                 snapshot["force"])
 
-        resp = {
-            "snapshot": {
-                "status":snapshot.status,
-                "description":snapshot.description,
-                "create_at":snapshot.create_at,
-                "metadata":snapshot.metadata,
-                "volume_id":snapshot.volume_id,
-                "size":snapshot.size,
-                "id":snapshot.id,
-                "name":snapshot.name,
-            }
-        }
+        if resp is None:
+            print "===========  do create snapshot Failed     =========="           
+            self.set_status(403)
+            return
+        else:
+            print "===========  do create snapshot Successed  =========="
+            print "SnapshotsHandler createSnapshot GET Resp Json: ========"
+            print json.dumps(resp, indent=4)
+            print "==========================================" 
+            self.send_json(resp)
 
-        self.send_json(resp)
-
-## "os-extended-snapshot-attributes:project_id" ???
-## "metadata"
 class SnapshotsDetailHandler(BlockStorageBaseHandler):
     def get(self, tenant_id):
         resp = self.p.querySnapshotsDetails(tenant_id)
@@ -240,53 +205,41 @@ class SnapshotHandler(BlockStorageBaseHandler):
     def delete(self, tenant_id, snapshot_id):
         if self.p.deleteSnapshot(tenant_id, snapshot_id):
             self.set_status(202)
-            pass
         else:
             self.set_status(403)
-            pass
 
     def put(self, tenant_id, snapshot_id):
         snapshot = json.loads(self.request.body)["snapshot"]
-
-        s = self.p.updateSnapshot(tenant_id, snapshot_id,
+        print "SnapshotHandler update Snapshot Input Params is ", json.dumps(snapshot, indent=4)
+        resp = self.p.updateSnapshot(tenant_id, snapshot_id,
                 snapshot["name"],
                 snapshot["description"])
 
-        resp = {
-            "snapshot":{
-                "create_at":s.create_at,
-                "description":s.description,
-                "name":s.name,
-                "id":s.id,
-                "size":s.size,
-                "status":s.status,
-                "volume_id":s.volume_id
-            }
-        }
-
-        self.send_json(resp)
+        if resp is None:
+            print "===========  do update snapshot Failed     =========="           
+            self.set_status(403)
+            return
+        else:
+            print "===========  do update snapshot Successed  =========="
+            print "SnapshotsHandler update snapshot GET Resp Json: ========"
+            print json.dumps(resp, indent=4)
+            print "==========================================" 
+            self.send_json(resp)
 
 class SnapshotMetadataHandler(BlockStorageBaseHandler):
     def get(self, tenant_id, snapshot_id):
-        metadata = self.p.querySnapshotMetadata(tenant_id, snapshot_id)
-
-        resp = {
-            "metadata":{
-                "name":metadata.name
-            }
-        }
-
+        ##NOTEST NOIMPLEMENT
+        resp = self.p.querySnapshotMetadata(tenant_id, snapshot_id)
+        self.set_status(403)
+        return
         self.send_json(resp)
 
     def put(self, tenant_id, snapshot_id):
+        ##NOTEST NOIMPLEMENT
         metadata = json.loads(self.request.body)["metadata"]
-
-        metadata = self.p.updataSnapshotMetadata(tenant_id, snapshot_id, metadata)
-
-        resp = {
-            "metadata":metadata
-        }
-
+        resp = self.p.updataSnapshotMetadata(tenant_id, snapshot_id, metadata)
+        self.set_status(403)
+        return
         self.send_json(resp)
 
 
@@ -327,16 +280,46 @@ class QosSpecsHandler(BlockStorageBaseHandler):
         self.send_json(resp)        
         pass    
     
-class TypesHandler(BlockStorageBaseHandler):
+class VolumeTypesHandler(BlockStorageBaseHandler):
     def get(self, tenant_id):
         sort_key = self.get_argument("sort_key", None)
         sort_dir = self.get_argument("sort_dir", None)
         limit = self.get_argument("limit", None)
         marker = self.get_argument("marker", None)  
         
-        resp = self.p.queryTypes(tenant_id, sort_key, sort_dir, limit, marker)
+        resp = self.p.queryVolumeTypes(tenant_id, sort_key, sort_dir, limit, marker)
         print "TypesHandler queryTypes GET Resp Json: ========"
-        ## print json.dumps(resp, indent=4)
+        print json.dumps(resp, indent=4)
         print "=========================================="
         self.send_json(resp)        
-        pass  
+        pass
+    
+class VolumeTypeDetailHandler(BlockStorageBaseHandler):
+    def get(self, tenant_id, volume_type_id):
+        resp = self.p.queryVolumeTypeDetail(tenant_id, volume_type_id)
+        print "VolumeTypeDetailHandler queryVolumeTypeDetail GET Resp Json: ========"
+        print json.dumps(resp, indent=4)
+        print "=========================================="
+        self.send_json(resp)          
+        pass
+
+
+class BlockStorageLimitsHandler(BlockStorageBaseHandler):
+    def get(self, tenant_id):
+        resp = self.p.queryBlockStorageLimits(tenant_id)
+        print "BlockStorageLimitsHandler queryBlockStorageLimits GET Resp Json: ========"
+        print json.dumps(resp, indent=4)
+        print "=========================================="
+        self.send_json(resp)         
+        pass
+    
+
+class BlockStorageExtensionsHandler(BlockStorageBaseHandler):
+    def get(self, tenant_id):
+        resp = self.p.queryBlockStorageExtensions(tenant_id)
+        print "BlockStorageExtensionsHandler queryBlockStorageExtensions GET Resp Json: ========"
+        print json.dumps(resp, indent=4)
+        print "=========================================="
+        self.send_json(resp)           
+        pass
+    

@@ -14,13 +14,17 @@ if sys.getdefaultencoding() != default_encoding:
     sys.setdefaultencoding(default_encoding)
 
 class IdentityBaseHandler(HttpBaseHandler):
-    def get_processor(self):
-        token = self.request.headers["X-Auth-Token"]
+    def __init__(self, application, request, **kwargs):
+        super(IdentityBaseHandler, self).__init__(application, request, **kwargs)
+        token = ""
+        try:
+            token = self.request.headers["X-Auth-Token"]
+        except:
+            pass
         print ("-----get token:", token)
         i = IdentityProcessorFac()
         self.p = i.create_processor(None, token)
 
-        return self.p
 
     def get(self):
         resp = {
@@ -416,21 +420,21 @@ class AuthTokensHandler(IdentityBaseHandler):
                         "endpoints": [
                             {
                                 "region_id": "RegionOne",
-                                "url": "",
+                                "url": "http://"+ HOST + ":" + PORT + OBJECT_STORAGE_BASE_URL + "/v1/tenant_id",
                                 "region": "RegionOne",
                                 "interface": "public",
                                 "id": "265ce88a0e1642fc90b2ec20ccb279ff"
                             },
                             {
                                 "region_id": "RegionOne",
-                                "url": "",
+                                "url":  "http://"+ HOST + ":" + PORT + OBJECT_STORAGE_BASE_URL + "/v1/tenant_id",
                                 "region": "RegionOne",
                                 "interface": "admin",
                                 "id": "500b7f066d39492faff8a3f710fb5a2f"
                             },
                             {
                                 "region_id": "RegionOne",
-                                "url": "",
+                                "url":  "http://"+ HOST + ":" + PORT + OBJECT_STORAGE_BASE_URL + "/v1/tenant_id",
                                 "region": "RegionOne",
                                 "interface": "internal",
                                 "id": "a33b0684f817405280df1f5600777a75"
@@ -515,8 +519,6 @@ class UsersHandler(IdentityBaseHandler):
         name = self.get_argument("name", None)
         enabled = self.get_argument("enabled", None)
 
-        self.get_processor()
-
         users = self.p.queryUsers(domain_id, name, enabled)
 
         resp = {
@@ -545,8 +547,6 @@ class UsersHandler(IdentityBaseHandler):
 
     def post(self):
         user = json.loads(self.request.body)["user"]
-
-        self.get_processor()
 
         user = checkKey(user, "default_project_id", "description", "domain_id", "email",
                 "enabled", "name", "password")
@@ -595,8 +595,6 @@ class UsersHandler(IdentityBaseHandler):
 
 class UserHandler(IdentityBaseHandler):
     def get(self, user_name):
-        self.get_processor()
-
         user = self.p.queryUserById(user_name)
 
         resp = {
@@ -619,8 +617,6 @@ class UserHandler(IdentityBaseHandler):
 
     def patch(self, user_name):
         user = json.loads(self.request.body)["user"]
-
-        self.get_processor()
 
         user = checkKey(user, "default_project_id", "description", "email", "enabled")
 
@@ -648,7 +644,6 @@ class UserHandler(IdentityBaseHandler):
         self.send_json(resp)
 
     def delete(self, user_name):
-        self.get_processor()
         if self.p.deleteUserById(user_name):
             self.set_status(203)
         else:
@@ -662,8 +657,6 @@ class UserPasswordHandler(IdentityBaseHandler):
 
 class UserGroupsHandler(IdentityBaseHandler):
     def get(self, user_name):
-        self.get_processor()
-
         groups = self.p.queryUserGroups(user_name)
 
         resp = {
@@ -728,7 +721,6 @@ class RolesHandler(IdentityBaseHandler):
     def get(self):
         name = self.get_argument("name", None)
 
-        self.get_processor()
         roles = self.p.queryRolesByName(name)
 
         resp = {
@@ -754,8 +746,6 @@ class RolesHandler(IdentityBaseHandler):
     def post(self):
         role = json.loads(self.request.body)["role"]
 
-        self.get_processor()
-
         role = self.p.createRole(role["name"])
 
         resp = {
@@ -772,7 +762,6 @@ class RolesHandler(IdentityBaseHandler):
 
 class RoleHandler(IdentityBaseHandler):
     def get(self, role_id):
-        self.get_processor()
         role = self.p.queryRoleByid(role_id)
 
         resp = {
@@ -788,7 +777,6 @@ class RoleHandler(IdentityBaseHandler):
         self.send_json(resp)
 
     def patch(self, role_id):
-        self.get_processor()
         name = json.loads(self.request.body)["role"]["name"]
         role = self.p.updateRole(role_id, name)
 
@@ -805,15 +793,12 @@ class RoleHandler(IdentityBaseHandler):
         self.send_json(resp)
 
     def delete(self, role_id):
-        self.get_processor()
         self.p.deleteRoleById(role_id)
 
 class GroupsHandler(IdentityBaseHandler):
     def get(self):
         domain_id = self.get_argument("domain_id", None)
         name = self.get_argument("name", None)
-
-        self.get_processor()
 
         groups = self.p.queryGroups(domain_id, name)
 
@@ -840,7 +825,6 @@ class GroupsHandler(IdentityBaseHandler):
         self.send_json(resp)
 
     def post(self):
-        self.get_processor()
         group = json.loads(self.request.body)["group"]
 
         if "description" in group:
@@ -870,7 +854,6 @@ class GroupsHandler(IdentityBaseHandler):
 
 class GroupHandler(IdentityBaseHandler):
     def get(self, group_id):
-        self.get_processor()
         group = self.p.queryGroup(group_id)
 
         resp = {
@@ -888,7 +871,6 @@ class GroupHandler(IdentityBaseHandler):
         self.send_json(resp)
 
     def patch(self, group_id):
-        self.get_processor()
         group = json.loads(self.request.body)["group"]
 
         description = ""
@@ -915,12 +897,10 @@ class GroupHandler(IdentityBaseHandler):
         self.send_json(resp)
 
     def delete(self, group_id):
-        self.get_processor()
         self.p.deleteGroupById(group_id)
 
 class GroupUsersHandler(IdentityBaseHandler):
     def get(self, group_id):
-        self.get_processor()
         domain_id = ""
         description = ""
         name = ""
@@ -953,11 +933,9 @@ class GroupUsersHandler(IdentityBaseHandler):
 
 class GroupUserHandler(IdentityBaseHandler):
     def put(self, group_id, user_id):
-        self.get_processor()
         self.p.addUserInGroup(group_id, user_id)
 
     def head(self, group_id, user_id):
-        self.get_processor()
         res = self.p.checkUserBelongsToGroup(group_id, user_id)
         if res:
             self.set_status(204)
@@ -965,14 +943,13 @@ class GroupUserHandler(IdentityBaseHandler):
             self.set_status(400)
 
     def delete(self, group_id, user_id):
-        self.get_processor()
         self.p.deleteUserFromGroup(group_id, user_id)
 
 class PoliciesHandler(IdentityBaseHandler):
     def get(self):
-        type = self.get_argument("type", None)
+        type_ = self.get_argument("type", None)
 
-        policies = self.p.queryPolicies(type)
+        policies = self.p.queryPolicies(type_)
 
         resp = {
             "links": {
@@ -1018,7 +995,7 @@ class PoliciesHandler(IdentityBaseHandler):
 
 class PolicyHandler(IdentityBaseHandler):
     def get(self, policy_id):
-        policy = self.p.queryPolicie(policy_id)
+        policy = self.p.queryPolicy(policy_id)
 
         resp = {
             "policy":{

@@ -4,6 +4,7 @@ from api_factory import *
 
 class ObjectStorageBaseHandler(HttpBaseHandler):   
     #add init a processor
+    """
     def get_processor(self):
         token = self.request.headers["X-Auth-Token"]
         print ("-----get token:", token)
@@ -14,6 +15,39 @@ class ObjectStorageBaseHandler(HttpBaseHandler):
 
     def get(self):
         pass
+    """
+    def __init__(self, application, request, **kwargs):
+        super(ObjectStorageBaseHandler, self).__init__(application, request, **kwargs)
+        token = ""
+        try:
+            token = self.request.headers["X-Auth-Token"]
+            print ("-----get token:", token)
+        except:
+            pass
+        i = ObjectStorageProcessorFac()
+        self.p = i.create_processor(None, token)
+
+    def get(self, tenant_id):
+        containers = self.p.queryContainers()
+
+        resp = []
+        i = 0
+        container = {}
+
+        for c in containers:
+            container["count"] = i
+            container["bytes"] = 0
+            container["name"] = c
+            i = i + 1
+            resp.append(container)
+
+        self.send_json(resp)
+
+    def get_header(self, header):
+        if header in self.request.headers:
+            return self.request.headers[header]
+        else:
+            return None
 
 class ContainerHandler(ObjectStorageBaseHandler):
     def get(self, account, container):
@@ -25,18 +59,16 @@ class ContainerHandler(ObjectStorageBaseHandler):
         delimiter = self.get_argument("delimiter", None)
         path = self.get_argument("path", None)
 
-        self.get_processor()
-
         objects = self.p.queryObjects(account, container, limit,
                 marker, end_marker, prefix, format, delimiter, path)
 
         resp = [
             {
-                "hash":o.hash,
-                "last_modified":o.last_modified,
-                "bytes":o.bytes,
-                "name":o.name,
-                "content_type":o.content_type
+                "hash":o.key,
+                "last_modified":"",
+                "bytes":"",
+                "name":o.key,
+                "content_type":""
             }
             for o in objects
         ]
@@ -74,10 +106,13 @@ class ContainerHandler(ObjectStorageBaseHandler):
         x_container_meta_tempurl_key_2 = self.get_header("X-Container-Meta-Tempurl-Key-2")
         x_trans_id_extra = self.get_header("X-Trans-Id-Extra")
 
-        self.p.deleteContainer(account, container,
+        if self.p.deleteContainer(account, container,
                 x_container_meta_tempurl_key,
                 x_container_meta_tempurl_key_2,
-                x_trans_id_extra)
+                x_trans_id_extra):
+            self.set_status(200)
+        else:
+            self.set_status(400)
 
 class ObjectHandler(ObjectStorageBaseHandler):
     def prepare(self, account, container, object_):
