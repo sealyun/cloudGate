@@ -9,6 +9,7 @@ session = requests.session()
 
 container = "cloudgatetestcon"
 test_ob_container = "cloudgatetest"
+object_test = "config.py"
 
 class ObjectStorageTest(unittest.TestCase):
     def printJson(self, s):
@@ -39,13 +40,14 @@ class ObjectStorageTest(unittest.TestCase):
         response = session.get(URL + "/v1/tenant_id/" + test_ob_container)
         self.printJson(response.text)
 
-    def test_createObject(self):
-        pass
+    def test_deleteObject(self):
+        response = session.delete(URL + "/v1/tenant_id/" + test_ob_container + "/" + object_test)
+        print response
 
     def test_copyObject(self):
         pass
 
-    def test_deleteObject(self):
+    def test_createObject(self):
         pass
 
 if __name__ == '__main__':
