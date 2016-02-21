@@ -212,26 +212,22 @@ class SnapshotsHandler(BlockStorageBaseHandler):
 
     def post(self, tenant_id):
         snapshot = json.loads(self.request.body)["snapshot"]
-
-        snapshot = self.p.createSnapshot(tenant_id, snapshot["name"],
+        print "SnapshotsHandler createSnapshot Input Params is ", json.dumps(snapshot, indent=4)
+        resp = self.p.createSnapshot(tenant_id, snapshot["name"],
                 snapshot["description"],
                 snapshot["volume_id"],
                 snapshot["force"])
 
-        resp = {
-            "snapshot": {
-                "status":snapshot.status,
-                "description":snapshot.description,
-                "create_at":snapshot.create_at,
-                "metadata":snapshot.metadata,
-                "volume_id":snapshot.volume_id,
-                "size":snapshot.size,
-                "id":snapshot.id,
-                "name":snapshot.name,
-            }
-        }
-
-        self.send_json(resp)
+        if resp is None:
+            print "===========  do create snapshot Failed     =========="           
+            self.set_status(403)
+            return
+        else:
+            print "===========  do create snapshot Successed  =========="
+            print "SnapshotsHandler createSnapshot GET Resp Json: ========"
+            print json.dumps(resp, indent=4)
+            print "==========================================" 
+            self.send_json(resp)
 
 ## "os-extended-snapshot-attributes:project_id" ???
 ## "metadata"

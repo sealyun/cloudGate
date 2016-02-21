@@ -636,7 +636,58 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
         pass 
     
     def createSnapshot(self, tenant_id, name, description, volume_id, force):
-        pass
+        print "createSnapshot WUJUN Begin ...... "
+        if TEST_FLAG:
+            resp = {
+                "snapshot": {
+                    "status": "creating",
+                    "description": "Daily backup",
+                    "created_at": "2013-02-25T03:56:53.081642",
+                    "metadata": {},
+                    "volume_id": "5aa119a8-d25b-45a7-8d1b-88e127885635",
+                    "size": 1,
+                    "id": "ffa9bc5e-1172-4021-acaf-cdcd78a9584d",
+                    "name": "snap-001"
+                }
+            } 
+        else:
+            r = CreateSnapshotRequest.CreateSnapshotRequest()
+            r.set_DiskId(volume_id)
+            r.set_SnapshotName(name)
+            r.set_Description(description)     
+            r.set_accept_format('json')
+            response = self.clt.do_action(r)
+            resp = json.loads(response)
+            print "createSnapshot WUJUN response is ", json.dumps(resp, indent=4)
+            ### if not resp.has_key("SnapshotId"):
+            if resp.has_key("Code"):
+                print "Aliyun Create Snapshot Operation have Error!!!!!!"
+                return None
+
+            snapshot_id = resp["SnapshotId"]
+            
+            r = DescribeSnapshotsRequest.DescribeSnapshotsRequest()
+            r.set_accept_format('json')
+            response = self.clt.do_action(r)
+            resp = json.loads(response)
+            print "when createVolume, queryVolume WUJUN response:", json.dumps(resp, indent=4)
+            snapshots = resp["Snapshots"]["Snapshot"]
+            resp = { "snapshot": {} }
+            for s in snapshots:
+                if s["SnapshotId"]==snapshot_id:
+                    resp = {
+                        "snapshot": {
+                            "status": s["Status"],
+                            "description": s["Description"],
+                            "created_at": s["CreationTime"],
+                            "metadata": {},
+                            "volume_id": s["SourceDiskId"],
+                            "size": s["SourceDiskSize"],
+                            "id": s["SnapshotId"],
+                            "name": s["SnapshotName"]
+                        }
+                    }
+        return resp
     
     
     def querySnapshotsDetails(self, tenant_id):
@@ -745,7 +796,10 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
         r.set_accept_format('json')
         response = self.clt.do_action(r)
         resp = json.loads(response)
-        print "deleteSnapshot WUJUN response:", json.dumps(resp, indent=4)       
+        print "deleteSnapshot WUJUN response:", json.dumps(resp, indent=4)  
+        if resp.has_key("Code"):
+            print "Delete Snapshot Failed"
+            pass
         return True
         pass 
     
