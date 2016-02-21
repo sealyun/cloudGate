@@ -3,23 +3,27 @@ from cloudGate.modules.identity.process_base import *
 from cloudGate.config import *
 from aliyunsdkcore import client
 
-from aliyunsdkram.request.v20150501 import ListUsersRequest
-from aliyunsdkram.request.v20150501 import GetUserRequest
-from aliyunsdkram.request.v20150501 import ListRolesRequest
-from aliyunsdkram.request.v20150501 import CreateUserRequest 
-from aliyunsdkram.request.v20150501 import UpdateUserRequest
-from aliyunsdkram.request.v20150501 import DeleteUserRequest
-from aliyunsdkram.request.v20150501 import CreateRoleRequest 
-from aliyunsdkram.request.v20150501 import GetRoleRequest
-from aliyunsdkram.request.v20150501 import DeleteRoleRequest
-from aliyunsdkram.request.v20150501 import ListGroupsRequest
-from aliyunsdkram.request.v20150501 import CreateGroupRequest
-from aliyunsdkram.request.v20150501 import UpdateGroupRequest
-from aliyunsdkram.request.v20150501 import GetGroupRequest
-from aliyunsdkram.request.v20150501 import DeleteGroupRequest
-from aliyunsdkram.request.v20150501 import ListUsersForGroupRequest
-from aliyunsdkram.request.v20150501 import AddUserToGroupRequest
-from aliyunsdkram.request.v20150501 import RemoveUserFromGroupRequest
+from aliyunsdkram.request.v20150501 import (
+    ListUsersRequest,
+    GetUserRequest,
+    ListRolesRequest,
+    CreateUserRequest, 
+    UpdateUserRequest,
+    DeleteUserRequest,
+    CreateRoleRequest,
+    GetRoleRequest,
+    DeleteRoleRequest,
+    ListGroupsRequest,
+    CreateGroupRequest,
+    UpdateGroupRequest,
+    GetGroupRequest,
+    DeleteGroupRequest,
+    ListUsersForGroupRequest,
+    AddUserToGroupRequest,
+    RemoveUserFromGroupRequest,
+    ListPoliciesRequest,
+    CreatePolicyRequest
+)
 
 import json
 
@@ -282,3 +286,30 @@ class AliyunIdentityProcessor(IdentityProcessorBase):
         response = self.clt.do_action(r)
 
         return True
+
+    def queryPolicies(self, type_):
+        r = ListPoliciesRequest.ListPoliciesRequest()
+        r.set_accept_format('json')
+        #r.set_PolicyType(type_)
+
+        response = self.clt.do_action(r)
+
+        resp = json.loads(response)
+
+        return resp["Policies"]["Policy"]
+
+    def createPolicy(self, blob, project_id, type_, user_id):
+        r = CreatePolicyRequest.CreatePolicyRequest()
+        r.set_PolicyName("blob")
+        #no description
+        r.set_PolicyDocument(blob)
+
+    def queryPolicy(self, policy_id):
+        pass
+
+    def updatePolicy(self, policy_id, blob, project_id, type_, user_id):
+        pass
+
+    def deletePolicy(self, policy_id):
+        pass
+

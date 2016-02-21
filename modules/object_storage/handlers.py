@@ -43,6 +43,11 @@ class ObjectStorageBaseHandler(HttpBaseHandler):
 
         self.send_json(resp)
 
+    def get_header(self, header):
+        if header in self.request.headers:
+            return self.request.headers[header]
+        else:
+            return None
 
 class ContainerHandler(ObjectStorageBaseHandler):
     def get(self, account, container):
