@@ -469,11 +469,12 @@ class AliyunComputeProcessor(ComputeProcessorBase):
         headers = {}
         body = {}
         r = AttachDiskRequest.AttachDiskRequest()
+        r.set_accept_format('json')
         r.set_InstanceId(instance_id)
         r.set_DiskId(volume_id)
         if device:
             r.set_Device(device)
-        ## r.set_DeleteWithInstance(True)  ## or False
+        ## r.set_DeleteWithInstance(True)  ## or False        
         response = self.clt.do_action(r)
         resp = json.loads(response) 
         print "serverAttachVolume WUJUN response:", json.dumps(resp, indent=4)

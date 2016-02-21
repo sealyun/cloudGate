@@ -676,6 +676,7 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
             } 
             """
             r = AttachDiskRequest.AttachDiskRequest()
+            r.set_accept_format('json')
             r.set_InstanceId(action["os-attach"]["instance_uuid"])
             r.set_DiskId(volume_id)
             r.set_Device(action["os-attach"]["mountpoint"])
@@ -715,6 +716,7 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
                 print "Disk ID is ", volume_id, " not attached, so no find related instance_id ", instance_id 
                 return False
             r = DetachDiskRequest.DetachDiskRequest()
+            r.set_accept_format('json')
             r.set_InstanceId(instance_id)
             r.set_DiskId(volume_id)
             response = self.clt.do_action(r)
