@@ -57,3 +57,20 @@ class IdentityProcessorBase():
 
     def deleteUserFromGroup(self, group_id, user_id):
         pass
+
+    def queryPolicies(self, type_):
+        pass
+
+    def createPolicy(self, blob, project_id, type_, user_id):
+        pass
+
+    def queryPolicy(self, policy_id):
+        pass
+
+    def updatePolicy(self, policy_id, blob, project_id, type_, user_id):
+        pass
+
+    def deletePolicy(self, policy_id):
+        pass
+
+

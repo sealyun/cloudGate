@@ -52,6 +52,70 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
         
         self.clt = client.AcsClient(self.access_key, self.access_secrect, self.regin)
     
+    def _convertDiskStatus2VolumeStatus(self, disk_status):
+        ## Aliyun       In_use | Available | Attaching | Detaching | Creating | ReIniting | All
+        ## Openstack    creating | available | attaching | in-use | deleting | error | error_deleting
+        ##              backing-up | restoring-backup | error_restoring | error_extending
+        #### PARAM NOMATCH
+        """
+        volume_status = "available"
+        if disk_status == "In_use":
+            volume_status = "in-use"
+        elif disk_status == "Available":
+            volume_status = "available"
+        elif disk_status == "Attaching":
+            volume_status = "attaching"
+        elif disk_status == "Detaching":
+            volume_status = "available"
+        elif disk_status == "Creating":
+            volume_status = "creating"
+        elif disk_status == "ReIniting":
+            volume_status = "available"
+        elif disk_status == "All":
+            volume_status = "available"
+        print "disk_status is ", disk_status, "   convert volume_status is  ", volume_status
+        return volume_status
+        """
+        """
+        volume_status = None
+        if disk_status == "In_use":
+            volume_status = "in-use"
+        else:
+            volume_status = "available"
+        return volume_status
+        """
+        ### for test
+        return "available"
+        ## if in-use status not allowed delete
+        ## return "in-use"
+    
+    def _convertVolumeStatus2DiskStatus(self, volume_status):
+        """
+        disk_status = "Available"
+        if volume_status == "available":
+            disk_status = "Available"
+        elif volume_status == "in-use":
+            disk_status = "In_use"
+        elif volume_status == "attaching":
+            disk_status = "Attaching"
+        elif volume_status == "deleting":
+            disk_status = "Detaching"
+        elif volume_status == "creating":
+            disk_status = "Creating"
+        print "volume_status is ", volume_status, "   convert disk_status is  ", disk_status
+        return disk_status
+        """
+        """
+        if volume_status == "in-use":
+            disk_status = "In_use"
+        else:
+            disk_status = "Available"
+        return disk_status
+        """
+        ### for test
+        ## return "Available"
+        return "In_use"
+    
     def queryVolumes(self, tenant_id, sort, limit, marker):
         print "queryVolumes WUJUN Begin ...... , tenant_id is ", tenant_id, "  sort is ", sort, "  limit is ", limit, "   marker is ", marker
         if TEST_FLAG:
@@ -130,7 +194,7 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
                 description, multiattach, snapshot_id, name, imageRef,
                 volume_type, metadata, source_replica, consistencygroup_id):
         print "createVolume WUJUN Begin ...... "
-        if 1:
+        if TEST_FLAG:
             resp = {
                 "volume": {
                     "status": "creating",
@@ -166,47 +230,101 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
                 }
             }
         else:
+            print "source_volid is ", source_volid, "  snapshot_id is ", snapshot_id
+            if source_volid:
+                print "Not Supported create disk used by source volid. Error!!! Error!!! Error!!!"
+                return None
+            disk_category = volume_type.split(" ")[1]
+            min_size = 0
+            max_size = 0
+            if disk_category == "cloud":
+                min_size = 5
+                max_size = 2000
+            elif disk_category == "cloud_efficiency":
+                min_size = 20
+                max_size = 2048
+            elif disk_category == "cloud_ssd":
+                min_size = 20
+                max_size = 1024
+            else:
+                print "Disk Category is Error Error Error !!!!!!!"
+                return None
+            
             r = CreateDiskRequest.CreateDiskRequest()
-            ## r.set_OwnerId(owner_id)
-            ## r.set_ResourceOwnerAccount(resource_owner_account)
-            ## r.set_ResourceOwnerId(resource_owner_id)
-            ##### r.set_ZoneId(self.regin)
-            ## r.set_SnapshotId(snapshot_id)
+            r.set_ZoneId("cn-hongkong-b")
             r.set_DiskName(name)
-            r.set_Size(size)
-            ## r.set_DiskCategory(disk_category)
+
+            if size < min_size:
+                size = min_size
+            if size > max_size:
+                size = max_size
+            r.set_Size(size)   
             r.set_Description(description)
-            ### r.set_ClientToken(self.token)
-            ### r.set_OwnerAccount("wj")  ## wj or admin       
+            if not(snapshot_id is None):
+                r.set_SnapshotId(snapshot_id)                                     
+            r.set_DiskCategory(disk_category)
+
+            ### r.set_ClientToken(self.token)      
             r.set_accept_format('json')
-            ### response = self.clt.do_action(r)
-            print "createVolume WUJUN response is ", response
-            return True
+            response = self.clt.do_action(r)
+            resp = json.loads(response)
+            print "createVolume WUJUN response is ", json.dumps(resp, indent=4)
+            ### if not resp.has_key("DiskId"):
+            if resp.has_key("Code"):
+                print "Aliyun Create Disk Operation have Error!!!!!!"
+                return None
+            
+            disk_id = resp["DiskId"]
+            
+            r = DescribeDisksRequest.DescribeDisksRequest()
+            r.set_accept_format('json')
+            response = self.clt.do_action(r)
+            resp = json.loads(response)
+            print "when createVolume, queryVolume WUJUN response:", json.dumps(resp, indent=4)
+            volumesdetail = resp["Disks"]["Disk"]  
+            resp = { "volume": {} }
+            for v in volumesdetail:
+                if v["DiskId"]==disk_id:
+                    resp = {
+                        "volume": {
+                            "status": "creating",
+                            "migration_status": None,
+                            "user_id": "0eea4eabcf184061a3b6db1e0daaf010",
+                            "attachments": [],
+                            "links": [
+                                {
+                                    "href":"http://",
+                                    "rel": "self"
+                                },
+                                {
+                                    "href":"http://",
+                                    "rel": "bookmark"
+                                }
+                            ],
+                            "availability_zone": "nova",
+                            "bootable": "false",
+                            "encrypted": False,
+                            "created_at": v["CreationTime"],
+                            "description": v["Description"],
+                            "updated_at": None,
+                            "volume_type": "lvmdriver-1",
+                            "name": v["DiskName"],
+                            "replication_status": "disabled",
+                            "consistencygroup_id": None,
+                            "source_volid": None,
+                            "snapshot_id": v["SourceSnapshotId"],
+                            "multiattach": False,
+                            "metadata": {},
+                            "id": v["DiskId"],
+                            "size": v["Size"]
+                        }
+                    }            
         return resp
     
     
     def queryVolumesDetails(self, tenant_id, sort, limit, marker):
         print "queryVolumesDetails WUJUN Begin ...... , tenant_id is ", tenant_id, "  sort is ", sort, "  limit is ", limit, "   marker is ", marker
-        ###if TEST_FLAG:
-        '''
-        "links": [
-            {
-                "href": "http://23.253.248.171:8776/v2/bab7d5c60cd041a0a36f7c4b6e1dd978/volumes/6edbc2f4-1507-44f8-ac0d-eed1d2608d38",
-                "rel": "self"
-            },
-            {
-                "href": "http://23.253.248.171:8776/bab7d5c60cd041a0a36f7c4b6e1dd978/volumes/6edbc2f4-1507-44f8-ac0d-eed1d2608d38",
-                "rel": "bookmark"
-            }
-        ],
-        '''       
-        '''
-                        "metadata": {
-                            "readonly": "false",
-                            "attached_mode": "rw"
-                        },        
-        '''
-        if 1:
+        if TEST_FLAG:
             resp = {
                 "volumes": [
                     {
@@ -262,17 +380,7 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
                 "volumes":[
                     {
                         "migration_status": None,
-                        "attachments": [
-
-                            {
-                                "server_id": "f4fda93b-06e0-4743-8117-bc8bcecd651b",
-                                "attachment_id": "3b4db356-253d-4fab-bfa0-e3626c0b8405",
-                                "host_name": None,
-                                "volume_id": "6edbc2f4-1507-44f8-ac0d-eed1d2608d38",
-                                "device": "/dev/vdb",
-                                "id": "6edbc2f4-1507-44f8-ac0d-eed1d2608d38"
-                            }
-                        
+                        "attachments": [                        
                         ],
                         "links": [ 
                             {
@@ -284,7 +392,7 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
                                 "rel": "bookmark"
                             },
                         ],
-                        "availability_zone": "nova", ##v["ZoneId"],
+                        "availability_zone": v["ZoneId"],
                         "os-vol-host-attr:host": "difleming@lvmdriver-1#lvmdriver-1",
                         "encrypted": False,
                         "os-volume-replication:extended_status": None,
@@ -296,7 +404,7 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
                         "os-vol-tenant-attr:tenant_id":"bab7d5c60cd041a0a36f7c4b6e1dd978",
                         "os-vol-mig-status-attr:migstat": None,
                         "metadata": {},
-                        "status": v["Status"],
+                        "status": self._convertDiskStatus2VolumeStatus(v["Status"]), ###"in-use", ###v["Status"],
                         "description": v["Description"],
                         "multiattach": False,
                         "os-volume-replication:driver_data": None,
@@ -305,7 +413,7 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
                         "os-vol-mig-status-attr:name_id": None,
                         "name": v["DiskName"],
                         "bootable": "true",
-                        "created_at": v["CreationTime"],
+                        "created_at": v["CreationTime"], 
                         "volume_type": v["Type"]
                     }
                     for v in volumesdetail
@@ -363,7 +471,7 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
                 if v["DiskId"]==volume_id:
                     resp = {
                         "volume": {
-                            "status": v["Status"],
+                            "status": self._convertDiskStatus2VolumeStatus(v["Status"]), ###v["Status"],
                             "attachments": [],
                             "links": [
                                 {
@@ -420,7 +528,10 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
         response = self.clt.do_action(r)
         resp = json.loads(response)
         print "deleteVolume WUJUN response:", json.dumps(resp, indent=4) 
-        return True         
+        if resp.has_key("Code"):
+            print "Aliyun Delete Disk Operation Failed, Have Error"
+            return False
+        return True  
         pass    
     
     
@@ -452,6 +563,10 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
             response = self.clt.do_action(r)
             resp = json.loads(response) 
             print "volumeAction os-reset_status WUJUN response:", json.dumps(resp, indent=4)
+            if resp.has_key("Code"):
+                print "volumeAction os-reset_status Failed!!! Have Error!!!"
+                return False
+                pass
             pass
         elif action.has_key("os-attach"):
             ### NOTEST
@@ -467,11 +582,13 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
             r.set_InstanceId(action["os-attach"]["instance_uuid"])
             r.set_DiskId(volume_id)
             r.set_Device(action["os-attach"]["mountpoint"])
-            ## r.set_DeleteWithInstance(True)  ## or False
+            r.set_DeleteWithInstance(True)  ## or False
             response = self.clt.do_action(r)
             resp = json.loads(response) 
             print "volumeAction os-attach WUJUN response:", json.dumps(resp, indent=4)
-            pass
+            if resp.has_key("Code"):
+                print "volumeAction os-attach Failed!!! Have Error!!!"
+                return False
         elif action.has_key("os-force_detach"):
             ### NOTEST    NOMATCH
             ### aliyun need instanceID and diskID but opengstack is attachment_id
@@ -486,14 +603,29 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
                 }
             }            
             """
+            
+            r = DescribeDisksRequest.DescribeDisksRequest()
+            r.set_accept_format('json')
+            response = self.clt.do_action(r)
+            resp = json.loads(response)
+            ## print "when os-force_detach, queryVolumesList WUJUN response:", json.dumps(resp, indent=4)
+            volumesdetail = resp["Disks"]["Disk"]  
+            instance_id = None
+            for v in volumesdetail:            
+                if v["DiskId"]==volume_id:
+                    instance_id = v["InstanceId"]
+            if not instance_id:
+                print "Disk ID is ", volume_id, " not attached, so no find related instance_id ", instance_id 
+                return False
             r = DetachDiskRequest.DetachDiskRequest()
-            r.set_InstanceId(action["os-force_detach"]["attachment_id"])
+            r.set_InstanceId(instance_id)
             r.set_DiskId(volume_id)
-            ## r.set_DeleteWithInstance(True)  ## or False
             response = self.clt.do_action(r)
             resp = json.loads(response) 
-            print "volumeAction os-force_detach WUJUN response:", json.dumps(resp, indent=4)            
-            pass
+            print "volumeAction os-force_detach WUJUN response:", json.dumps(resp, indent=4)
+            if resp.has_key("Code"):
+                print "volumeAction os-force_detach Failed!!! Have Error!!!"
+                return False
         else:
             return False
         return True
@@ -504,7 +636,58 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
         pass 
     
     def createSnapshot(self, tenant_id, name, description, volume_id, force):
-        pass
+        print "createSnapshot WUJUN Begin ...... "
+        if TEST_FLAG:
+            resp = {
+                "snapshot": {
+                    "status": "creating",
+                    "description": "Daily backup",
+                    "created_at": "2013-02-25T03:56:53.081642",
+                    "metadata": {},
+                    "volume_id": "5aa119a8-d25b-45a7-8d1b-88e127885635",
+                    "size": 1,
+                    "id": "ffa9bc5e-1172-4021-acaf-cdcd78a9584d",
+                    "name": "snap-001"
+                }
+            } 
+        else:
+            r = CreateSnapshotRequest.CreateSnapshotRequest()
+            r.set_DiskId(volume_id)
+            r.set_SnapshotName(name)
+            r.set_Description(description)     
+            r.set_accept_format('json')
+            response = self.clt.do_action(r)
+            resp = json.loads(response)
+            print "createSnapshot WUJUN response is ", json.dumps(resp, indent=4)
+            ### if not resp.has_key("SnapshotId"):
+            if resp.has_key("Code"):
+                print "Aliyun Create Snapshot Operation have Error!!!!!!"
+                return None
+
+            snapshot_id = resp["SnapshotId"]
+            
+            r = DescribeSnapshotsRequest.DescribeSnapshotsRequest()
+            r.set_accept_format('json')
+            response = self.clt.do_action(r)
+            resp = json.loads(response)
+            print "when createVolume, queryVolume WUJUN response:", json.dumps(resp, indent=4)
+            snapshots = resp["Snapshots"]["Snapshot"]
+            resp = { "snapshot": {} }
+            for s in snapshots:
+                if s["SnapshotId"]==snapshot_id:
+                    resp = {
+                        "snapshot": {
+                            "status": s["Status"],
+                            "description": s["Description"],
+                            "created_at": s["CreationTime"],
+                            "metadata": {},
+                            "volume_id": s["SourceDiskId"],
+                            "size": s["SourceDiskSize"],
+                            "id": s["SnapshotId"],
+                            "name": s["SnapshotName"]
+                        }
+                    }
+        return resp
     
     
     def querySnapshotsDetails(self, tenant_id):
@@ -613,7 +796,10 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
         r.set_accept_format('json')
         response = self.clt.do_action(r)
         resp = json.loads(response)
-        print "deleteSnapshot WUJUN response:", json.dumps(resp, indent=4)       
+        print "deleteSnapshot WUJUN response:", json.dumps(resp, indent=4)  
+        if resp.has_key("Code"):
+            print "Delete Snapshot Failed"
+            pass
         return True
         pass 
     
