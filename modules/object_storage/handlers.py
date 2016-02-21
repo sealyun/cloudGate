@@ -22,6 +22,8 @@ class ObjectStorageBaseHandler(HttpBaseHandler):
         try:
             token = self.request.headers["X-Auth-Token"]
             print ("-----get token:", token)
+        except:
+            pass
         i = ObjectStorageProcessorFac()
         self.p = i.create_processor(None, token)
 
