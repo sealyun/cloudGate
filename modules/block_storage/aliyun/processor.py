@@ -666,7 +666,7 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
                 pass
             pass
         elif action.has_key("os-attach"):
-            ### NOTEST  NOURLCALL
+            ### SHELL TEST PASS  NOURLCALL
             print "NEED SHELL TEST os-attach"
             """
             {
@@ -690,6 +690,7 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
                 print "volumeAction os-attach Failed!!! Have Error!!!"
                 return False
         elif action.has_key("os-force_detach"):
+            ## SHELL TEST PASS
             print "NEED SHELL TEST os-force_detach"
             ### NOTEST NOURLCALL
             ### aliyun need instanceID and diskID but opengstack is attachment_id
@@ -709,14 +710,14 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
             r.set_accept_format('json')
             response = self.clt.do_action(r)
             resp = json.loads(response)
-            print "when os-force_detach, queryVolumesList WUJUN response:", json.dumps(resp, indent=4)
+            ## print "when os-force_detach, queryVolumesList WUJUN response:", json.dumps(resp, indent=4)
             volumesdetail = resp["Disks"]["Disk"]  
             instance_id = None
-            print "debug tenant_id is ", tenant_id, "    volume_id is  ", volume_id
+            ## print "debug tenant_id is ", tenant_id, "    volume_id is  ", volume_id
             for v in volumesdetail:  
-                print "debug disk_id is ", v["DiskId"]
+                ## print "debug disk_id is ", v["DiskId"]
                 if v["DiskId"]==volume_id:
-                    print "debug instance_id is ", v["InstanceId"]
+                    ## print "debug instance_id is ", v["InstanceId"]
                     instance_id = v["InstanceId"]
             if not instance_id:
                 print "Disk ID is ", volume_id, " not attached, so no find related instance_id ", instance_id 
@@ -732,9 +733,32 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
                 print "volumeAction os-force_detach Failed!!! Have Error!!!"
                 return False
         elif action.has_key("os-extend"):
-            ##aliyun NOSUPPORT
-            print "aliyun not support os-extend dynamic change volume size. Warn!!! Warn!!!"
-            return False
+            """
+            {
+                "os-extend": {
+                    "new_size": 3
+                }
+            }
+            """            
+            r = ResizeDiskRequest.ResizeDiskRequest()
+            r.set_accept_format('json')
+            r.set_DiskId(volume_id)
+            if action["os-extend"].has_key("new_size") and action["os-extend"]["new_size"]:
+                newSize = action["os-extend"]["new_size"]
+                if newSize < 5:
+                    newSize = 5
+                if newSize > 2000:
+                    newSize = 2000
+                r.set_NewSize(newSize)
+            else:
+                print "Not Get New Size Param, so Resize Disk Operation Failed"
+                return False
+            response = self.clt.do_action(r)
+            resp = json.loads(response) 
+            print "volumeAction os-extend WUJUN response:", json.dumps(resp, indent=4)
+            if resp.has_key("Code"):
+                print "volumeAction os-extend Failed!!! Have Error!!!"
+                return False            
         elif action.has_key("os-set_image_metadata"):
             ##aliyun NOSUPPORT
             print "aliyun not support os-set_image_metadata"
@@ -759,7 +783,7 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
 
     
     def querySnapshots(self, tenant_id, sort_key, sort_dir, limit, marker):
-        ##TODO NOTEST NOURLCALL
+        ##SHELL TEST PASS NOURLCALL
         print "querySnapshots NEED SHELL TEST WUJUN Begin ...... "
         if TEST_FLAG:
             resp = {
