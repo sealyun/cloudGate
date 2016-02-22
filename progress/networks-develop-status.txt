@@ -100,8 +100,8 @@ GET
 	备注：阿里缺字段
 4)/v2.0/lbaas/listeners
 GET
-	完成情况：其他问题
-	备注：因阿里云的listener没有唯一标识符如ID、名称等，故openstack的相应接口无法实现
+	完成情况：流程通，字段不全
+	备注：阿里缺字段,阿里云的listener没有唯一标识符如ID、名称等，使用loadbalancer_id和listener_port拼接为listener_id
 POST
 	完成情况：其他问题
 	备注：因阿里云的listener没有唯一标识符如ID、名称等，故openstack的相应接口无法实现

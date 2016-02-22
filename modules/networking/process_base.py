@@ -82,3 +82,6 @@ class NetworkingProcessorBase():
 
     def getLoadBalancerStatuses(self, lbID):
         pass
+
+    def getListeners(self):
+        pass

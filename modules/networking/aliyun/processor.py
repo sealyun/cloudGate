@@ -575,7 +575,7 @@ class AliyunNetworkingProcessor(NetworkingProcessorBase):
         print "response: ", resp
 
         if "Code" in resp.keys() and "Message" in resp.keys():
-            return loadbalancers
+            return None
 
         ''' response data
         {
@@ -615,6 +615,17 @@ class AliyunNetworkingProcessor(NetworkingProcessorBase):
             loadbalancers.append(loadbalancer)
 
         return loadbalancers
+
+    def getLoadBalancerIDList(self):
+        lbIDList = []
+        loadbalancers = self.getLoadBalancers()
+        if loadbalancers is None:
+            return None
+
+        for lb in loadbalancers:
+            lbIDList.append(lb["id"])
+
+        return lbIDList
 
     def createLoadBalancer(self, inLoadBalancer):
         request = CreateLoadBalancerRequest.CreateLoadBalancerRequest()
@@ -656,6 +667,24 @@ class AliyunNetworkingProcessor(NetworkingProcessorBase):
         outLoadBalancer["provider"] = ""
 
         return outLoadBalancer
+
+    def getListenerPortList(self, lbID):
+        request = DescribeLoadBalancerAttributeRequest.DescribeLoadBalancerAttributeRequest()
+        request.set_LoadBalancerId(lbID)
+        request.set_accept_format('json')
+        response = self.clt.do_action(request)
+        resp = json.loads(response)
+
+        print "response: ", resp
+
+        if "Code" in resp.keys() and "Message" in resp.keys():
+            return None
+
+        portList = []
+        for port in resp["ListenerPorts"]["ListenerPort"]:
+            portList.append(port)
+
+        return portList
 
     def getLoadBalancer(self, lbID):
         request = DescribeLoadBalancerAttributeRequest.DescribeLoadBalancerAttributeRequest()
@@ -845,6 +874,15 @@ class AliyunNetworkingProcessor(NetworkingProcessorBase):
         return loadBanlanceStatus
 
     def getListenerStatus(self, lbID, lnPort):
+        listener = self.getListener(lbID, lnPort)
+
+        status = listener["Status"]
+        if status == "running":
+            return "ACTIVE"
+        else:
+            return "INACTIVE"
+
+    def getListener(self, lbID, lnPort):
         #query listener by DescribeLoadBalancerHTTPListenerAttribute
         #use loadbalance id and listener port
 
@@ -872,11 +910,16 @@ class AliyunNetworkingProcessor(NetworkingProcessorBase):
         }
         '''
 
-        status = resp["Status"]
-        if status == "running":
-            return "ACTIVE"
-        else:
-            return "INACTIVE"
+        listener = {}
+        listener["ListenerID"] = lbID + '_' + str(lnPort)
+        listener["ListenerPort"] = resp["ListenerPort"]
+        listener["BackendServerPort"] = resp["BackendServerPort"]
+        listener["Bandwidth"] = resp["Bandwidth"]
+        listener["Status"] = resp["Status"]
+        listener["Schedule"] = resp["Schedule"]
+        listener["XForwardedFor"] = resp["XForwardedFor"]
+
+        return listener
 
     def getMemserStatus(self, lbID, lnPortID, svrID):
         #query server status by aliyun api DescribeHealthStatus
@@ -920,3 +963,38 @@ class AliyunNetworkingProcessor(NetworkingProcessorBase):
                     return "ACTIVE"
                 break
         return "INACTIVE"
+
+    def getListeners(self):
+        #query all loadbalancer id by DescribeLoadBalancersRequest
+        lbIDList = self.getLoadBalancerIDList()
+        if lbIDList is None:
+            return None
+
+        listeners = []
+
+        #query all listener port of loadbalancer by DescribeLoadBalancerAttributeRequest
+        for lbID in lbIDList:
+            lnPortList = self.getListenerPortList(lbID)
+            for lnPort in lnPortList:
+                #query listener information DescribeLoadBalancerHTTPListenerAttributeRequest
+                ln = self.getListener(lbID, lnPort)
+
+                #combine listener list
+                listener = {}
+                listener["admin_state_up"] = True
+                listener["connection_limit"] = 100
+                listener["default_pool_id"] = None
+                listener["description"] = ""
+                listener["id"] = ln["ListenerID"]
+                listener["loadbalancers"] = []
+                loadbalancer = {}
+                loadbalancer["id"] = lbID
+                listener["loadbalancers"].append(loadbalancer)
+                listener["name"] = ""
+                listener["protocol"] = "HTTP"
+                listener["protocol_port"] = ln["ListenerPort"]
+                listener["tenant_id"] = ""
+                listener["default_tls_container_ref"] = ""
+                listener["sni_container_refs"] = []
+
+        return listeners

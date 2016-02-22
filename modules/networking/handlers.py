@@ -774,28 +774,17 @@ class LoadbalancerStatusesHandler(NetworkingBaseHandler):
 class LbaasListenersHandler(NetworkingBaseHandler):
     def get(self):
         print "[----------LbaasListenersHandler GET----------]"
-        #TODO
 
-        listeners = self.p.queryListeners()
+        processor = self.get_processor()
+        listeners = processor.getListeners()
+        if listeners is None:
+            self.set_status(500)
+            return
+        else:
+            self.set_status(204)
 
         resp = {
-            "listeners":[
-                {
-                    "admin_state_up":l.admin_state_up,
-                    "connection_limit":l.connection_limit,
-                    "default_pool_id":l.default_pool_id,
-                    "description":l.description,
-                    "id":l.id,
-                    "loadbalancers":l.loadbalancers,
-                    "name":l.name,
-                    "protocol":l.protocol,
-                    "protocol_port":l.port,
-                    "tenant_id":l.tenant_id,
-                    "default_tls_container_ref":l.default_tls_container_ref,
-                    "sni_container_refs":l.sni_container_refs,
-                }
-                for l in listeners
-            ]
+            "listeners":listeners
         }
 
         self.send_json(resp)
