@@ -667,6 +667,7 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
             pass
         elif action.has_key("os-attach"):
             ### NOTEST  NOURLCALL
+            print "NEED SHELL TEST os-attach"
             """
             {
                 "os-attach": {
@@ -679,7 +680,7 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
             r.set_accept_format('json')
             r.set_InstanceId(action["os-attach"]["instance_uuid"])
             r.set_DiskId(volume_id)
-            if action["os-attach"].has_key("mountpoint"):
+            if action["os-attach"].has_key("mountpoint") and action["os-attach"]["mountpoint"]:
                 r.set_Device(action["os-attach"]["mountpoint"])
             r.set_DeleteWithInstance(True)  ## or False
             response = self.clt.do_action(r)
@@ -689,6 +690,7 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
                 print "volumeAction os-attach Failed!!! Have Error!!!"
                 return False
         elif action.has_key("os-force_detach"):
+            print "NEED SHELL TEST os-force_detach"
             ### NOTEST NOURLCALL
             ### aliyun need instanceID and diskID but opengstack is attachment_id
             ### solve the way attachment_id real value is instanceID
@@ -754,8 +756,8 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
 
     
     def querySnapshots(self, tenant_id, sort_key, sort_dir, limit, marker):
-        ##TODO NOURLCALL
-        print "querySnapshots WUJUN Begin ...... "
+        ##TODO NOTEST NOURLCALL
+        print "querySnapshots NEED SHELL TEST WUJUN Begin ...... "
         if TEST_FLAG:
             resp = {
                 "snapshots": [
