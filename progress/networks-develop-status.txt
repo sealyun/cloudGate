@@ -100,54 +100,54 @@ GET
 	备注：阿里缺字段
 4)/v2.0/lbaas/listeners
 GET
-	完成情况：完成 TODO
-	备注：无
+	完成情况：其他问题
+	备注：因阿里云的listener没有唯一标识符如ID、名称等，故openstack的相应接口无法实现
 POST
-	完成情况：完成 TODO
-	备注：无
+	完成情况：其他问题
+	备注：因阿里云的listener没有唯一标识符如ID、名称等，故openstack的相应接口无法实现
 5)/v2.0/lbaas/listeners/{listener_id}
 GET
-	完成情况：完成 TODO
-	备注：无
+	完成情况：其他问题
+	备注：因阿里云的listener没有唯一标识符如ID、名称等，故openstack的相应接口无法实现
 PUT
-	完成情况：完成 TODO
-	备注：无
+	完成情况：其他问题
+	备注：因阿里云的listener没有唯一标识符如ID、名称等，故openstack的相应接口无法实现
 DELETE
-	完成情况：完成 TODO
-	备注：无
+	完成情况：其他问题
+	备注：因阿里云的listener没有唯一标识符如ID、名称等，故openstack的相应接口无法实现
 6)/v2.0/lbass/pools 
 GET
-	完成情况：完成 TODO
+	完成情况：努力开发中
 	备注：无
 POST
-	完成情况：完成 TODO
+	完成情况：努力开发中
 	备注：无
 7)/v2.0/lbass/pools/{pool_id}
 GET
-	完成情况：完成 TODO
+	完成情况：努力开发中
 	备注：无
 PUT
-	完成情况：完成 TODO
+	完成情况：努力开发中
 	备注：无
 DELETE
-	完成情况：完成 TODO
+	完成情况：努力开发中
 	备注：无
 8)/v2.0/lbass/pools/{pool_id}/members
 GET
-	完成情况：完成 TODO
+	完成情况：努力开发中
 	备注：无
 POST
-	完成情况：完成 TODO
+	完成情况：努力开发中
 	备注：无
 9)/v2.0/lbass/pools/{pool_id}/members/{member_id}
 GET
-	完成情况：完成 TODO
+	完成情况：努力开发中
 	备注：无
 PUT
-	完成情况：完成 TODO
+	完成情况：努力开发中
 	备注：无
 DELETE
-	完成情况：完成 TODO
+	完成情况：努力开发中
 	备注：无
 10)/v2.0/lbaas/health_monitors
 GET
