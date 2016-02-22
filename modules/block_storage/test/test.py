@@ -47,7 +47,8 @@ class BlockStorageTest(unittest.TestCase):
             }
         } 
         volume_id = "d-62nqxxle1"
-        response = session.post(URL + "/v2/​tenant_id​/volumes/"+ volume_id + "​/action", data=json.dumps(data))
+        ## response = session.post(URL + "/v2/​tenant_id​/volumes/"+ volume_id + "​/action", data=json.dumps(data))
+        response = session.post(URL + "/v2/​tenant_id​/volumes/d-62nqxxle1​/action", data=json.dumps(data))
         self.printJson(response.text)
     
 
