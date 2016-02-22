@@ -1,5 +1,5 @@
 #!/bin/sh
 
 python httptest.py \
-NetworkTest.test_NetworksHandler_POST \
+NetworkTest.test_NetworkHandler_PUT \
 

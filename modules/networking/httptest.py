@@ -41,7 +41,11 @@ class NetworkTest(unittest.TestCase):
         print(response.text)
 
     def test_NetworkHandler_PUT(self):
-        pass
+        print "\n----------test_NetworkHandler_PUT----------"
+        data = '{"network":{"name": "vpc-1"}}'
+        response = requests.put(host + network_url_base + '/v2.0/networks/vpc-62x5warir.json', data=data, headers=headers)
+        print(response.status_code)
+        print(response.text)
 
     def test_NetworkHandler_DELETE(self):
         pass
