@@ -16,6 +16,8 @@ from aliyunsdkslb.request.v20140515 import DescribeLoadBalancerAttributeRequest
 from aliyunsdkslb.request.v20140515 import CreateLoadBalancerRequest
 from aliyunsdkslb.request.v20140515 import SetLoadBalancerNameRequest
 from aliyunsdkslb.request.v20140515 import DeleteLoadBalancerRequest
+from aliyunsdkslb.request.v20140515 import DescribeLoadBalancerHTTPListenerAttributeRequest
+from aliyunsdkslb.request.v20140515 import DescribeHealthStatusRequest
 
 import json
 
@@ -796,15 +798,14 @@ class AliyunNetworkingProcessor(NetworkingProcessorBase):
         loadBanlanceStatus["provisioning_status"] = lb["LoadBalancerStatus"]
 
         loadBanlanceStatus["listeners"] = []
-        for lsn in lb["ListenerPorts"]["ListenerPorts"]:
+        for listenerPort in lb["ListenerPorts"]["ListenerPorts"]:
             listener = {}
-            #TODO
             #query listener by DescribeLoadBalancerHTTPListenerAttribute
             #use loadbalance id and listener port
             listener["name"] = ""
             listener["id"] = ""
             listener["operating_status"] = "ONLINE"
-            listener["provisioning_status"] = ""
+            listener["provisioning_status"] = self.getListenerStatus(lb["LoadBalancerId"], listenerPort)
 
             listener["pools"] = []
             pool = {}
@@ -815,7 +816,6 @@ class AliyunNetworkingProcessor(NetworkingProcessorBase):
             pool["operating_status"] = "ONLINE"
             pool["members"] = []
             for server in lb["BackendServers"]["BackendServer"]:
-                #TODO
                 #query server status by aliyun api DescribeHealthStatus
                 #use loadbalance id and port id and compare server id
                 member = {}
@@ -823,7 +823,7 @@ class AliyunNetworkingProcessor(NetworkingProcessorBase):
                 member["protocol_port"] = ""
                 member["id"] = server["ServerId"]
                 member["operating_status"] = "ONLINE"
-                member["provisioning_status"] = lb["LoadBalancerStatus"]
+                member["provisioning_status"] = self.getMemserStatus(lb["LoadBalancerId"], listenerPort, server["ServerId"])
 
                 pool["members"].append(member)
 
@@ -833,3 +833,79 @@ class AliyunNetworkingProcessor(NetworkingProcessorBase):
 
         return loadBanlanceStatus
 
+    def getListenerStatus(self, lbID, lnPort):
+        #query listener by DescribeLoadBalancerHTTPListenerAttribute
+        #use loadbalance id and listener port
+
+        request = DescribeLoadBalancerHTTPListenerAttributeRequest.DescribeLoadBalancerHTTPListenerAttributeRequest()
+        request.set_LoadBalancerId(lbID)
+        request.set_ListenerPort(lnPort)
+        request.set_accept_format('json')
+        response = self.clt.do_action(request)
+        resp = json.loads(response)
+
+        print "response: ", resp
+
+        if "Code" in resp.keys() and "Message" in resp.keys():
+            return ""
+
+        ''' response data
+        {
+            "RequestId":"365F4154-92F6-4AE4-92F8-7FF34B540710",
+            "ListenerPort":80,
+            "BackendServerPort":80,
+            "Bandwidth":-1,
+            "Status":"stopped",
+            "Schedule":"wrr",
+            "XForwardedFor":"on"
+        }
+        '''
+
+        status = resp["Status"]
+        if status == "running":
+            return "ACTIVE"
+        else:
+            return "INACTIVE"
+
+    def getMemserStatus(self, lbID, lnPortID, svrID):
+        #query server status by aliyun api DescribeHealthStatus
+        #use loadbalance id and port id and compare server id
+
+        request = DescribeLoadBalancerHTTPListenerAttributeRequest.DescribeLoadBalancerHTTPListenerAttributeRequest()
+        request.set_LoadBalancerId(lbID)
+        request.set_ListenerPort(lnPortID)
+        request.set_accept_format('json')
+        response = self.clt.do_action(request)
+        resp = json.loads(response)
+
+        print "response: ", resp
+
+        if "Code" in resp.keys() and "Message" in resp.keys():
+            return ""
+
+        '''
+        {
+            "RequestId":"365F4154-92F6-4AE4-92F8-7FF34B540710",
+            "LoadBalancerId":"139a00604ad-cn-east-hangzhou-01",
+            "BackendServers":{
+                “BackendServer”: [
+                    {
+                        "ServerId": "vm-233",
+                        "ServerHealthStatus:"normal"
+                    },
+                    {
+                        “ServerId": "vm-234",
+                        "ServerHealthStatus:"abnormal"
+                    }
+                ]
+            }
+        }
+        '''
+
+        for svr in resp["BackendServers"]["BackendServer"]:
+            if svr["ServerId"] == svrID:
+                status = svr["ServerHealthStatus"]
+                if status == "normal":
+                    return "ACTIVE"
+                break
+        return "INACTIVE"
