@@ -89,7 +89,9 @@ class AliyunNetworkingProcessor(NetworkingProcessorBase):
                     network["status"] = "ACTIVE"
                 else:
                     network["status"] = vpc["Status"]
-                network["subnets"] = self.getSubsetIDList(vpc["VRouterId"])
+                #network["subnets"] = self.getSubsetIDList(vpc["VRouterId"])
+                network["subnets"] = []
+                network["subnets"].append(vpc["CidrBlock"])
                 network["name"] = vpc["VpcName"]
                 network["provider:physical_network"] = None
                 network["admin_state_up"] = True
@@ -138,6 +140,9 @@ class AliyunNetworkingProcessor(NetworkingProcessorBase):
         if "VpcId" not in resp.keys():
             return None
 
+        outNetwork = self.getNetwork(resp["VpcId"])
+
+        '''
         outNetwork = {}
         outNetwork["status"] = "ACTIVE"
         #outNetwork["subnets"] = self.getSubsetIDList(resp["VpcId"])
@@ -150,6 +155,7 @@ class AliyunNetworkingProcessor(NetworkingProcessorBase):
         outNetwork["mtu"] = 0
         outNetwork["shared"] = shared
         outNetwork["id"] = resp["VpcId"]
+        '''
 
         return outNetwork
 
@@ -188,7 +194,9 @@ class AliyunNetworkingProcessor(NetworkingProcessorBase):
                 network["status"] = "ACTIVE"
             else:
                 network["status"] = vpc["Status"]
-            network["subnets"] = self.getSubsetIDList(vpc["VRouterId"])
+            #network["subnets"] = self.getSubsetIDList(vpc["VRouterId"])
+            network["subnets"] = []
+            network["subnets"].append(vpc["CidrBlock"])
             network["name"] = vpc["VpcName"]
             network["router:external"] = False
             network["admin_state_up"] = True
