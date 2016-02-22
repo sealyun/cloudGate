@@ -68,10 +68,10 @@ class NetworksHandler(NetworkingBaseHandler):
             inNetwork = body["network"]
             outNetwork = processor.createNetwork(inNetwork)
             if outNetwork is None:
-                self.set_status(401)
+                self.set_status(400)
                 return
             else:
-                self.set_status(200)
+                self.set_status(201)
             resp = {
                 "network":{
                             "status": outNetwork["status"],
@@ -93,10 +93,10 @@ class NetworksHandler(NetworkingBaseHandler):
             inNetworks.append(body["networks"])
             outNetworks = processor.createNetworks(inNetworks)
             if outNetworks is None:
-                self.set_status(401)
+                self.set_status(400)
                 return
             else:
-                self.set_status(200)
+                self.set_status(201)
             resp = {
                 "networks":[
                     {
@@ -189,7 +189,7 @@ class NetworkHandler(NetworkingBaseHandler):
                 "shared": outNetwork["shared"],
                 "port_security_enabled":outNetwork["port_security_enabled"],
                 "id": outNetwork["id"],
-                "provider:segmentation_id": outNetwork["provider_segmentation_id"]
+                "provider:segmentation_id": outNetwork["provider:segmentation_id"]
             }
 
         }
