@@ -28,13 +28,14 @@ class BlockStorageTest(unittest.TestCase):
     def test_attachVolume(self):
         data = {
                 "os-attach": {
-                    "instance_uuid": "95D9EF50-507D-11E5-B970-0800200C9A66",
+                    "instance_uuid": "i-62wqo7iy2",
                     "mountpoint": None
                 }
             } 
-        ## volume_id = "d-62nqxxle1"
-        response = session.post(URL + "/v2/​tenant_id​/volumes/"+ volume_id + "​/action", data=json.dumps(data))
-        self.printJson(response.text)
+        volume_id = "d-62txfhooh"
+        response = session.post(URL + "/v2/tenant_id/volumes/" + volume_id + "/action", data=json.dumps(data))
+        ## self.printJson(response.text)
+	print "return status code is ", response.status_code
     
     """
     def test_detachVolume(self):
@@ -46,10 +47,11 @@ class BlockStorageTest(unittest.TestCase):
                 }
             }
         } 
-        volume_id = "d-62nqxxle1"
+        volume_id = "d-62txfhooh"
         response = session.post(URL + "/v2/tenant_id/volumes/"+ volume_id + "/action", data=json.dumps(data))
         ##response = session.post(URL + "/v2/tenant_id/volumes/d-62nqxxle1/action", data=json.dumps(data))
-        self.printJson(response.text)
+        ##self.printJson(response.text)
+	print "response code is ", response.status_code
     
 
     """
