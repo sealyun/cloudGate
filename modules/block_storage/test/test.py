@@ -53,12 +53,13 @@ class BlockStorageTest(unittest.TestCase):
         response = session.get(URL + "/v2/tenant_id/snapshots")
         self.printJson(response.text)
     
-    
+    """
     def test_example(self):
         data = {}
         response = session.post(URL + "", data = json.dumps(data))
 
         self.printJson(response.text)
+    """
 
 if __name__ == '__main__':
     unittest.main()
