@@ -205,6 +205,9 @@ class AliyunNetworkingProcessor(NetworkingProcessorBase):
             network["shared"] = False
             network["port_security_enabled"] = True
             network["id"] = vpc["VpcId"]
+            network["provider:physical_network"] = None
+            network["provider:network_type"] = "local"
+            network["provider:segmentation_id"] = None
 
             if network["id"] == networkID:
                 networks.append(network)
