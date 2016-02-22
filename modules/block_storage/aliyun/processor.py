@@ -712,6 +712,7 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
             print "when os-force_detach, queryVolumesList WUJUN response:", json.dumps(resp, indent=4)
             volumesdetail = resp["Disks"]["Disk"]  
             instance_id = None
+            print "debug tenant_id is ", tenant_id, "    volume_id is  ", volume_id
             for v in volumesdetail:  
                 print "debug disk_id is ", v["DiskId"]
                 if v["DiskId"]==volume_id:
