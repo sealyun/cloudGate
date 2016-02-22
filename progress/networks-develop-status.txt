@@ -97,7 +97,7 @@ DELETE
 3)/v2.0/lbaas/loadbalancers/{loadbalancer_id}/statuses
 GET
 	完成情况：流程通，字段不全
-	备注：阿里缺字段operating_status, TODO
+	备注：阿里缺字段
 4)/v2.0/lbaas/listeners
 GET
 	完成情况：完成 TODO
