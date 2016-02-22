@@ -189,7 +189,7 @@ class NetworkHandler(NetworkingBaseHandler):
                 "shared": outNetwork["shared"],
                 "port_security_enabled":outNetwork["port_security_enabled"],
                 "id": outNetwork["id"],
-                "provider:segmentation_id": outNetwork["provider_segmentation_id"]
+                "provider:segmentation_id": outNetwork["provider:segmentation_id"]
             }
 
         }
