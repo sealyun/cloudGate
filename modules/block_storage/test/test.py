@@ -4,10 +4,13 @@ import unittest
 import requests
 import json
 
+"""
 from cloudGate.common.define import *
 from cloudGate.config import *
 
 URL = "http://" + HOST + ":" + PORT + BLOCK_STORAGE_BASE_URL
+"""
+URL = "http://121.199.9.187:8084/block_storage"
 session = requests.session()
 
 class BlockStorageTest(unittest.TestCase):
