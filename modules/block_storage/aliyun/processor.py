@@ -81,7 +81,6 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
         print "disk_status is ", disk_status, "   convert volume_status is  ", volume_status
         return volume_status
         """
-        """
         volume_status = None
         if disk_status == "In_use":
             volume_status = "in-use"
@@ -91,6 +90,7 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
         """
         ### for test
         return "available"
+        """
         ## if in-use status not allowed delete
         ## return "in-use"
     
