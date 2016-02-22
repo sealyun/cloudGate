@@ -33,7 +33,7 @@ class BlockStorageTest(unittest.TestCase):
                 }
             } 
         ## volume_id = "d-62nqxxle1"
-        response = session.pos(URL + "/v2/​tenant_id​/volumes/"+ volume_id + "​/action", data=json.dumps(data))
+        response = session.post(URL + "/v2/​tenant_id​/volumes/"+ volume_id + "​/action", data=json.dumps(data))
         self.printJson(response.text)
     
     
@@ -47,7 +47,7 @@ class BlockStorageTest(unittest.TestCase):
             }
         } 
         volume_id = "d-62nqxxle1"
-        response = session.pos(URL + "/v2/​tenant_id​/volumes/"+ volume_id + "​/action", data=json.dumps(data))
+        response = session.post(URL + "/v2/​tenant_id​/volumes/"+ volume_id + "​/action", data=json.dumps(data))
         self.printJson(response.text)
     """
 
@@ -56,13 +56,6 @@ class BlockStorageTest(unittest.TestCase):
         response = session.get(URL + "/v2/tenant_id/snapshots")
         self.printJson(response.text)
     
-    """
-    def test_example(self):
-        data = {}
-        response = session.post(URL + "", data = json.dumps(data))
-
-        self.printJson(response.text)
-    """
 
 if __name__ == '__main__':
     unittest.main()
