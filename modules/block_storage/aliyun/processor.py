@@ -637,7 +637,7 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
     
     
     def volumeAction(self, tenant_id, volume_id, action):
-        print "$$$$$$$$$$$  Volume Action is ", json.dumps(action, indent=4)
+        print "Volume Action Begin is ...... ", json.dumps(action, indent=4)
         if action.has_key("os-reset_status"):
             ##aliyun NOSUPPORT
             print "aliyun not support os-reset_status volume status. Warn!!! Warn!!!"
@@ -993,7 +993,7 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
         print "deleteSnapshot WUJUN response:", json.dumps(resp, indent=4)  
         if resp.has_key("Code"):
             print "Delete Snapshot Failed"
-            pass
+            return False
         return True
         pass 
     

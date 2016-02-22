@@ -149,7 +149,7 @@ class VolumeActionHandler(BlockStorageBaseHandler):
     def post(self, tenant_id, volume_id):
         
         action = json.loads(self.request.body)
-        print "VolumeActionHandler volume action Input Params is ", json.dumps(action, indent=4)
+        print "VolumeActionHandler volume action begin ......"
 
         if self.p.volumeAction(tenant_id, volume_id, action):
             print "Volume Action: Successed"
