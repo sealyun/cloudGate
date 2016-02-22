@@ -9,7 +9,13 @@ class LowVersionBlockStorageBaseHandler(HttpBaseHandler):
 class BlockStorageBaseHandler(HttpBaseHandler):
     def __init__(self, *args, **kwargs):
         super(BlockStorageBaseHandler, self).__init__(args[0], args[1], **kwargs)
-        token = self.request.headers["X-Auth-Token"]
+        ## token = self.request.headers["X-Auth-Token"]
+        token = ""
+        try:
+            token = self.request.headers["X-Auth-Token"]
+            ## print ("-----get token:", token)
+        except:
+            pass        
         print ("--- WU JUN ---get token:", token)
         i = BlockStorageProcessorFac()
         self.p = i.create_processor(None, token)

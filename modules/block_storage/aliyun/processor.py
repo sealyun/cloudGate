@@ -709,11 +709,13 @@ class AliyunBlockStorageProcessor(BlockStorageProcessorBase):
             r.set_accept_format('json')
             response = self.clt.do_action(r)
             resp = json.loads(response)
-            ## print "when os-force_detach, queryVolumesList WUJUN response:", json.dumps(resp, indent=4)
+            print "when os-force_detach, queryVolumesList WUJUN response:", json.dumps(resp, indent=4)
             volumesdetail = resp["Disks"]["Disk"]  
             instance_id = None
-            for v in volumesdetail:            
+            for v in volumesdetail:  
+                print "debug disk_id is ", v["DiskId"]
                 if v["DiskId"]==volume_id:
+                    print "debug instance_id is ", v["InstanceId"]
                     instance_id = v["InstanceId"]
             if not instance_id:
                 print "Disk ID is ", volume_id, " not attached, so no find related instance_id ", instance_id 
