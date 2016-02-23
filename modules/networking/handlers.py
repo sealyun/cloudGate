@@ -748,7 +748,7 @@ class LoadbalancerStatusesHandler(NetworkingBaseHandler):
             self.set_status(500)
             return
         else:
-            self.set_status(204)
+            self.set_status(200)
 
         resp = {
             "statuses": {
