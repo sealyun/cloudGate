@@ -767,7 +767,6 @@ class LoadbalancerStatusesHandler(NetworkingBaseHandler):
             |       |______pool2
             |___listener2
         """
-        pass
 
 class LbaasListenersHandler(NetworkingBaseHandler):
     def get(self):
