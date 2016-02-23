@@ -18,6 +18,8 @@ from aliyunsdkslb.request.v20140515 import SetLoadBalancerNameRequest
 from aliyunsdkslb.request.v20140515 import DeleteLoadBalancerRequest
 from aliyunsdkslb.request.v20140515 import DescribeLoadBalancerHTTPListenerAttributeRequest
 from aliyunsdkslb.request.v20140515 import DescribeHealthStatusRequest
+from aliyunsdkslb.request.v20140515 import CreateLoadBalancerHTTPListenerRequest
+from aliyunsdkslb.request.v20140515 import DeleteLoadBalancerListenerRequest
 
 import json
 
@@ -874,7 +876,9 @@ class AliyunNetworkingProcessor(NetworkingProcessorBase):
         return loadBanlanceStatus
 
     def getListenerStatus(self, lbID, lnPort):
-        listener = self.getListener(lbID, lnPort)
+        listener = self.getListenerDetail(lbID, lnPort)
+        if listener is None:
+            return ""
 
         status = listener["Status"]
         if status == "running":
@@ -882,7 +886,7 @@ class AliyunNetworkingProcessor(NetworkingProcessorBase):
         else:
             return "INACTIVE"
 
-    def getListener(self, lbID, lnPort):
+    def getListenerDetail(self, lbID, lnPort):
         #query listener by DescribeLoadBalancerHTTPListenerAttribute
         #use loadbalance id and listener port
 
@@ -896,7 +900,7 @@ class AliyunNetworkingProcessor(NetworkingProcessorBase):
         print "response: ", resp
 
         if "Code" in resp.keys() and "Message" in resp.keys():
-            return ""
+            return None
 
         ''' response data
         {
@@ -977,7 +981,9 @@ class AliyunNetworkingProcessor(NetworkingProcessorBase):
             lnPortList = self.getListenerPortList(lbID)
             for lnPort in lnPortList:
                 #query listener information DescribeLoadBalancerHTTPListenerAttributeRequest
-                ln = self.getListener(lbID, lnPort)
+                ln = self.getListenerDetail(lbID, lnPort)
+                if ln is None:
+                    break
 
                 #combine listener list
                 listener = {}
@@ -998,3 +1004,108 @@ class AliyunNetworkingProcessor(NetworkingProcessorBase):
                 listener["sni_container_refs"] = []
 
         return listeners
+
+    def createListener(self, inListener):
+        request = CreateLoadBalancerHTTPListenerRequest.CreateLoadBalancerHTTPListenerRequest()
+        request.set_LoadBalancerId(inListener["loadbalancer_id"])
+        request.set_ListenerPort(inListener["protocol_port"])
+        request.set_BackendServerPort(inListener["protocol_port"])
+        request.set_Bandwidth(-1)
+        request.set_Scheduler("wrr")
+        request.set_StickySession("on")
+        request.set_HealthCheck("on")
+        request.set_accept_format('json')
+        response = self.clt.do_action(request)
+        resp = json.loads(response)
+
+        print "response: ", resp
+
+        if "Code" in resp.keys() and "Message" in resp.keys():
+            return None
+
+        outListener = {}
+        outListener["admin_state_up"] = inListener["admin_state_up"]
+        outListener["connection_limit"] = inListener["connection_limit"]
+        outListener["default_pool_id"] = None
+        outListener["description"] = inListener["description"]
+        outListener["id"] = inListener["loadbalancer_id"] + '_' + inListener["protocol_port"]
+        outListener["loadbalancers"] = []
+        outListener["loadbalancers"].append({"id":inListener["loadbalancer_id"]})
+        outListener["name"] = inListener["name"]
+        outListener["protocol"] = inListener["protocol"]
+        outListener["protocol_port"] = inListener["protocol_port"]
+        outListener["tenant_id"] = ""
+        outListener["default_tls_container_ref"] = inListener["default_tls_container_ref"]
+        outListener["sni_container_refs"] = inListener["sni_container_refs"]
+        return outListener
+
+    def getListener(self, listenerID):
+        list = listenerID.split("_")
+        if len(list) != 2:
+            return None
+        lbID = list[0]
+        lnPort = list[1]
+
+        listener = self.getListenerDetail(lbID, int(lnPort))
+        if listener is None:
+            return None
+
+        outListener = {}
+        outListener["admin_state_up"] = True
+        outListener["connection_limit"] = 100
+        outListener["default_pool_id"] = None
+        outListener["description"] = ""
+        outListener["id"] = listenerID
+        outListener["loadbalancers"] = []
+        outListener["loadbalancers"].append({"id":lbID})
+        outListener["name"] = ""
+        outListener["protocol"] = "HTTP"
+        outListener["protocol_port"] = lnPort
+        outListener["tenant_id"] = ""
+        outListener["default_tls_container_ref"] = ""
+        outListener["sni_container_refs"] = []
+        return outListener
+
+    def updateListener(self, listenerID, inListener):
+        list = listenerID.split("_")
+        if len(list) != 2:
+            return None
+        lbID = list[0]
+        lnPort = list[1]
+
+        outListener = {}
+        outListener["admin_state_up"] = inListener["admin_state_up"]
+        outListener["connection_limit"] = inListener["connection_limit"]
+        outListener["default_pool_id"] = None
+        outListener["description"] = inListener["description"]
+        outListener["id"] = listenerID
+        outListener["loadbalancers"] = []
+        outListener["loadbalancers"].append({"id":lbID})
+        outListener["name"] = inListener["name"]
+        outListener["protocol"] = "HTTP"
+        outListener["protocol_port"] = 80
+        outListener["tenant_id"] = ""
+        outListener["default_tls_container_ref"] = inListener["default_tls_container_ref"]
+        outListener["sni_container_refs"] = inListener["sni_container_refs"]
+        return outListener
+
+    def deleteListener(self, listenerID):
+        list = listenerID.split("_")
+        if len(list) != 2:
+            return None
+        lbID = list[0]
+        lnPort = list[1]
+
+        request = DeleteLoadBalancerListenerRequest.DeleteLoadBalancerListenerRequest()
+        request.set_LoadBalancerId(lbID)
+        request.set_ListenerPort(lnPort)
+        request.set_accept_format('json')
+        response = self.clt.do_action(request)
+        resp = json.loads(response)
+
+        print "response: ", resp
+
+        if "Code" in resp.keys() and "Message" in resp.keys():
+            return False
+
+        return True

@@ -729,7 +729,6 @@ class LoadbalancerHandler(NetworkingBaseHandler):
     def delete(self, lbID):
         print "[----------LoadbalancerHandler DELETE----------]"
 
-        inLoadBalancer = json.loads(self.request.body)["loadbalancer"]
         processor = self.get_processor()
 
         if processor.deleteLoadBalancer(lbID):
@@ -791,124 +790,71 @@ class LbaasListenersHandler(NetworkingBaseHandler):
 
     def post(self):
         print "[----------LbaasListenersHandler POST----------]"
-        #TODO
 
-        listener = json.loads(self.request.body)["listener"]
+        inListener = json.loads(self.request.body)["listener"]
 
-        listener = self.p.createListener(listener["admin_state_up"],
-                listener["connection_limit"],
-                listener["description"],
-                listener["loadbalancer_id"],
-                listener["name"],
-                listener["protocol"],
-                listener["protocol_port"],
-                listener["default_tls_container_ref"],
-                listener["sni_container_refs"])
-
-        if listener:
-            self.set_status(201)
-        else:
-            self.set_status(400)
+        processor = self.get_processor()
+        outListener = processor.createListener(inListener)
+        if outListener is None:
+            self.set_status(500)
             return
+        else:
+            self.set_status(201)
 
         resp = {
-            "listener":{
-                "admin_state_up":listener.admin_state_up,
-                "connection_limit":listener.connection_limit,
-                "default_pool_id":listener.default_pool_id,
-                "description":listener.description,
-                "id":listener.id,
-                "loadbalancers":listener.loadbalancers,
-                "name":listener.name,
-                "protocol":listener.protocol,
-                "protocol_port":listener.port,
-                "tenant_id":listener.tenant_id,
-                "default_tls_container_ref":listener.default_tls_container_ref,
-                "sni_container_refs":listener.sni_container_refs,
-            }
+            "listeners":outListener
         }
 
         self.send_json(resp)
 
 class LbaasListenerHandler(NetworkingBaseHandler):
-    def get(self, listener_id):
+    def get(self, listenerID):
         print "[----------LbaasListenerHandler GET----------]"
-        #TODO
 
-        listener = self.queryListener(listener_id)
-
-        if listener:
-            self.set_status(200)
-        else:
-            self.set_status(400)
+        processor = self.get_processor()
+        listener = processor.getListener(listenerID)
+        if listener is None:
+            self.set_status(500)
             return
+        else:
+            self.set_status(200)
 
         resp = {
-            "listener":{
-                "admin_state_up":listener.admin_state_up,
-                "connection_limit":listener.connection_limit,
-                "default_pool_id":listener.default_pool_id,
-                "description":listener.description,
-                "id":listener.id,
-                "loadbalancers":listener.loadbalancers,
-                "name":listener.name,
-                "protocol":listener.protocol,
-                "protocol_port":listener.port,
-                "tenant_id":listener.tenant_id,
-                "default_tls_container_ref":listener.default_tls_container_ref,
-                "sni_container_refs":listener.sni_container_refs,
-            }
+            "listeners":listener
         }
 
         self.send_json(resp)
 
-    def put(self, listener_id):
+    def put(self, listenerID):
         print "[----------LbaasListenerHandler PUT----------]"
-        #TODO
 
-        listener = json.loads(self.request.body)["listener"]
+        inListener = json.loads(self.request.body)["listener"]
 
-        listener = self.p.updateListener(listener_id,
-                listener["admin_state_up"],
-                listener["connection_limit"],
-                listener["description"],
-                listener["name"],
-                listener["default_tls_container_ref"],
-                listener["sni_container_refs"])
-
-        if listener:
-            self.set_status(200)
-        else:
-            self.set_status(400)
+        processor = self.get_processor()
+        outListener = processor.updateListener(listenerID)
+        if outListener is None:
+            self.set_status(500)
             return
+        else:
+            self.set_status(200)
 
         resp = {
-            "listener":{
-                "admin_state_up":listener.admin_state_up,
-                "connection_limit":listener.connection_limit,
-                "default_pool_id":listener.default_pool_id,
-                "description":listener.description,
-                "id":listener.id,
-                "loadbalancers":listener.loadbalancers,
-                "name":listener.name,
-                "protocol":listener.protocol,
-                "protocol_port":listener.port,
-                "tenant_id":listener.tenant_id,
-                "default_tls_container_ref":listener.default_tls_container_ref,
-                "sni_container_refs":listener.sni_container_refs,
-            }
+            "listeners":outListener
         }
 
         self.send_json(resp)
 
-    def delete(self, listener_id):
+    def delete(self, listenerID):
         print "[----------LbaasListenerHandler DELETE----------]"
-        #TODO
 
-        if self.p.deleteListener(listener_id):
+        processor = self.get_processor()
+
+        if processor.deleteListener(listenerID):
             self.set_status(204)
+            return
         else:
-            self.set_status(400)
+            self.set_status(500)
+            return
 
 class LbaasPoolsHandler(NetworkingBaseHandler):
     def get(self):

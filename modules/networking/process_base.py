@@ -85,3 +85,15 @@ class NetworkingProcessorBase():
 
     def getListeners(self):
         pass
+
+    def createListener(self, inListener):
+        pass
+
+    def getListener(self, listenerID):
+        pass
+
+    def updateListener(self, listenerID, inListener):
+        pass
+
+    def deleteListener(self, listenerID):
+        pass
