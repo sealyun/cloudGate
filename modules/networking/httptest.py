@@ -127,7 +127,12 @@ class LoadBalanceTest(unittest.TestCase):
         print response.text
 
     def test_LoadbalancerStatusesHandler_GET(self):
-        pass
+        print "\n----------test_LoadbalancerStatusesHandler_GET----------"
+        global loadbalancer_id
+        print "loadbalancer id: ", loadbalancer_id
+        response = requests.get(host + network_url_base + '/v2.0/lbaas/loadbalancers/' + loadbalancer_id + '/statuses', headers=headers)
+        print response.status_code
+        print response.text
 
     def test_LbaasListenersHandler_GET(self):
         pass

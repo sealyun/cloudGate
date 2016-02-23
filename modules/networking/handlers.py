@@ -742,7 +742,6 @@ class LoadbalancerStatusesHandler(NetworkingBaseHandler):
     def get(self, lbID):
         print "[----------LoadbalancerStatusesHandler GET----------]"
 
-        inLoadBalancer = json.loads(self.request.body)["loadbalancer"]
         processor = self.get_processor()
         loadBalancerStatuses = processor.getLoadBalancerStatuses(lbID)
         if loadBalancerStatuses is None:
