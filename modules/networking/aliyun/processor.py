@@ -843,7 +843,7 @@ class AliyunNetworkingProcessor(NetworkingProcessorBase):
             #query listener by DescribeLoadBalancerHTTPListenerAttribute
             #use loadbalance id and listener port
             listener["name"] = ""
-            listener["id"] = ""
+            listener["id"] = lb["LoadBalancerId"] + '_' + str(listenerPort)
             listener["operating_status"] = "ONLINE"
             listener["provisioning_status"] = self.getListenerStatus(lb["LoadBalancerId"], listenerPort)
 
