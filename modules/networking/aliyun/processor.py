@@ -1014,7 +1014,7 @@ class AliyunNetworkingProcessor(NetworkingProcessorBase):
         request.set_Bandwidth(-1)
         request.set_Scheduler("wrr")
         request.set_StickySession("on")
-        request.set_HealthCheck("on")
+        request.set_HealthCheck("off")
         request.set_accept_format('json')
         response = self.clt.do_action(request)
         resp = json.loads(response)
