@@ -656,17 +656,17 @@ class AliyunNetworkingProcessor(NetworkingProcessorBase):
         lb = resp
 
         outLoadBalancer = {}
-        outLoadBalancer["description"] = ""
-        outLoadBalancer["admin_state_up"] = True
-        outLoadBalancer["tenant_id"] = ""
-        outLoadBalancer["provisioning_status"] = "active"
+        outLoadBalancer["description"] = inLoadBalancer["description"]
+        outLoadBalancer["admin_state_up"] = inLoadBalancer["admin_state_up"]
+        outLoadBalancer["tenant_id"] = inLoadBalancer["tenant_id"]
+        outLoadBalancer["provisioning_status"] = "ACTIVE"
         outLoadBalancer["listeners"] = []
-        outLoadBalancer["vip_address"] = lb["Address"]
-        outLoadBalancer["vip_subnet_id"] = ""
+        outLoadBalancer["vip_address"] = inLoadBalancer["vip_address"]
+        outLoadBalancer["vip_subnet_id"] = inLoadBalancer["vip_subnet_id"]
         outLoadBalancer["id"] = lb["LoadBalancerId"]
         outLoadBalancer["operating_status"] = "ONLINE"
         outLoadBalancer["name"] = lb["LoadBalancerName"]
-        outLoadBalancer["provider"] = ""
+        outLoadBalancer["provider"] = inLoadBalancer["provider"]
 
         return outLoadBalancer
 

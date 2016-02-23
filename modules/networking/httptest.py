@@ -13,6 +13,7 @@ headers = {}
 headers["X-Auth-Token"] = "admintest:admintest"
 
 network_id = ""
+loadbalancer_id = ""
 
 class NetworkTest(unittest.TestCase):
 
@@ -67,6 +68,54 @@ class LoadBalanceTest(unittest.TestCase):
         pass
 
     def tearDown(self):
+        pass
+
+    def test_LoadbalancersHandler_GET(self):
+        print "\n----------test_LoadbalancersHandler_GET----------"
+        response = requests.get(host + network_url_base + '/v2.0/lbaas/loadbalancers', headers=headers)
+        print response.status_code
+        print response.text
+
+    def test_LoadbalancersHandler_POST(self):
+        print "\n----------test_LoadbalancersHandler_POST----------"
+        data = '{"loadbalancer": {"name": "loadbalancer1", \
+                "description": "simple lb", \
+                "tenant_id": "b7c1a69e88bf4b21a8148f787aef2081", \
+                "vip_subnet_id": "013d3059-87a4-45a5-91e9-d721068ae0b2", \
+                "vip_address": "10.0.0.4", \
+                "admin_state_up": true, \
+                "provider": "sample_provider"}}'
+        response = requests.post(host + network_url_base + '/v2.0/loadbalancers', data=data, headers=headers)
+        print response.status_code
+        print response.text
+        global loadbalancer_id
+        loadbalancer_id = json.loads(response.text)["loadbalancer"]["id"]
+
+    def test_LoadbalancerHandler_GET(self):
+        pass
+
+    def test_LoadbalancerHandler_PUT(self):
+        pass
+
+    def test_LoadbalancerHandler_DELETE(self):
+        pass
+
+    def test_LoadbalancerStatusesHandler_GET(self):
+        pass
+
+    def test_LbaasListenersHandler_GET(self):
+        pass
+
+    def test_LbaasListenersHandler_PUT(self):
+        pass
+
+    def test_LbaasListenerHandler_GET(self):
+        pass
+
+    def test_LbaasListenerHandler_PUT(self):
+        pass
+
+    def test_LbaasListenerHandler_DELETE(self):
         pass
 
 if __name__ == '__main__':
