@@ -841,7 +841,7 @@ class AliyunNetworkingProcessor(NetworkingProcessorBase):
         loadBanlanceStatus["provisioning_status"] = lb["LoadBalancerStatus"]
 
         loadBanlanceStatus["listeners"] = []
-        for listenerPort in lb["ListenerPorts"]["ListenerPorts"]:
+        for listenerPort in lb["ListenerPorts"]["ListenerPort"]:
             listener = {}
             #query listener by DescribeLoadBalancerHTTPListenerAttribute
             #use loadbalance id and listener port
