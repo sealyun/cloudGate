@@ -799,7 +799,7 @@ class LbaasListenersHandler(NetworkingBaseHandler):
             self.set_status(201)
 
         resp = {
-            "listeners":outListener
+            "listener":outListener
         }
 
         self.send_json(resp)

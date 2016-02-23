@@ -910,7 +910,7 @@ class AliyunNetworkingProcessor(NetworkingProcessorBase):
             "BackendServerPort":80,
             "Bandwidth":-1,
             "Status":"stopped",
-            "Schedule":"wrr",
+            "Scheduler":"wrr",
             "XForwardedFor":"on"
         }
         '''
@@ -921,7 +921,7 @@ class AliyunNetworkingProcessor(NetworkingProcessorBase):
         listener["BackendServerPort"] = resp["BackendServerPort"]
         listener["Bandwidth"] = resp["Bandwidth"]
         listener["Status"] = resp["Status"]
-        listener["Schedule"] = resp["Schedule"]
+        listener["Schedule"] = resp["Scheduler"]
         listener["XForwardedFor"] = resp["XForwardedFor"]
 
         return listener
