@@ -757,6 +757,7 @@ class AliyunNetworkingProcessor(NetworkingProcessorBase):
         name = inLoadBalancer["name"]
 
         request = SetLoadBalancerNameRequest.SetLoadBalancerNameRequest()
+        request.set_LoadBalancerId(lbID)
         request.set_LoadBalancerName(name)
         request.set_accept_format('json')
         response = self.clt.do_action(request)
