@@ -756,17 +756,17 @@ class LoadbalancerStatusesHandler(NetworkingBaseHandler):
             }
         }
 
-        self.send_json(resp)
-
         """
         loadbalancer
             |___listener1
-            |       |_____pool1                   
+            |       |_____pool1
             |       |       |_____member1
             |       |       |_____member2
             |       |______pool2
             |___listener2
         """
+
+        self.send_json(resp)
 
 class LbaasListenersHandler(NetworkingBaseHandler):
     def get(self):
