@@ -1013,7 +1013,7 @@ class AliyunNetworkingProcessor(NetworkingProcessorBase):
         request.set_BackendServerPort(inListener["protocol_port"])
         request.set_Bandwidth(-1)
         request.set_Scheduler("wrr")
-        request.set_StickySession("on")
+        request.set_StickySession("off")
         request.set_HealthCheck("off")
         request.set_accept_format('json')
         response = self.clt.do_action(request)
