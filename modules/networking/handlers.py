@@ -765,7 +765,7 @@ class LoadbalancerStatusesHandler(NetworkingBaseHandler):
             |       |______pool2
             |___listener2
         """
-
+        print "------------resp:", resp
         self.send_json(resp)
 
 class LbaasListenersHandler(NetworkingBaseHandler):
