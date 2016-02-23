@@ -846,7 +846,7 @@ class AliyunNetworkingProcessor(NetworkingProcessorBase):
             #query listener by DescribeLoadBalancerHTTPListenerAttribute
             #use loadbalance id and listener port
             listener["name"] = ""
-            listener["id"] = lb["LoadBalancerId"] + '_' + str(listenerPort)
+            listener["id"] = lb["LoadBalancerId"] + '-' + str(listenerPort)
             listener["operating_status"] = "ONLINE"
             listener["provisioning_status"] = self.getListenerStatus(lb["LoadBalancerId"], listenerPort)
 
@@ -916,7 +916,7 @@ class AliyunNetworkingProcessor(NetworkingProcessorBase):
         '''
 
         listener = {}
-        listener["ListenerID"] = lbID + '_' + str(lnPort)
+        listener["ListenerID"] = lbID + '-' + str(lnPort)
         listener["ListenerPort"] = resp["ListenerPort"]
         listener["BackendServerPort"] = resp["BackendServerPort"]
         listener["Bandwidth"] = resp["Bandwidth"]
@@ -1029,7 +1029,7 @@ class AliyunNetworkingProcessor(NetworkingProcessorBase):
         outListener["connection_limit"] = inListener["connection_limit"]
         outListener["default_pool_id"] = None
         outListener["description"] = inListener["description"]
-        outListener["id"] = inListener["loadbalancer_id"] + '_' + inListener["protocol_port"]
+        outListener["id"] = inListener["loadbalancer_id"] + '-' + inListener["protocol_port"]
         outListener["loadbalancers"] = []
         outListener["loadbalancers"].append({"id":inListener["loadbalancer_id"]})
         outListener["name"] = inListener["name"]
@@ -1041,11 +1041,9 @@ class AliyunNetworkingProcessor(NetworkingProcessorBase):
         return outListener
 
     def getListener(self, listenerID):
-        list = listenerID.split("_")
-        if len(list) != 2:
-            return None
-        lbID = list[0]
-        lnPort = list[1]
+        idx = listenerID.rindex('-')
+        lbID = listenerID[0:idx]
+        lnPort = listenerID[idx+1:]
 
         listener = self.getListenerDetail(lbID, int(lnPort))
         if listener is None:
@@ -1068,11 +1066,9 @@ class AliyunNetworkingProcessor(NetworkingProcessorBase):
         return outListener
 
     def updateListener(self, listenerID, inListener):
-        list = listenerID.split("_")
-        if len(list) != 2:
-            return None
-        lbID = list[0]
-        lnPort = list[1]
+        idx = listenerID.rindex('-')
+        lbID = listenerID[0:idx]
+        lnPort = listenerID[idx+1:]
 
         outListener = {}
         outListener["admin_state_up"] = inListener["admin_state_up"]
@@ -1091,11 +1087,9 @@ class AliyunNetworkingProcessor(NetworkingProcessorBase):
         return outListener
 
     def deleteListener(self, listenerID):
-        list = listenerID.split("_")
-        if len(list) != 2:
-            return None
-        lbID = list[0]
-        lnPort = list[1]
+        idx = listenerID.rindex('-')
+        lbID = listenerID[0:idx]
+        lnPort = listenerID[idx+1:]
 
         request = DeleteLoadBalancerListenerRequest.DeleteLoadBalancerListenerRequest()
         request.set_LoadBalancerId(lbID)

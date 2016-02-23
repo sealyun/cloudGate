@@ -14,6 +14,7 @@ headers["X-Auth-Token"] = "admintest:admintest"
 
 network_id = ""
 loadbalancer_id = ""
+listener_id = ""
 
 class NetworkTest(unittest.TestCase):
 
@@ -122,7 +123,6 @@ class LoadBalanceTest(unittest.TestCase):
         global loadbalancer_id
         print "loadbalancer id: ", loadbalancer_id
         response = requests.delete(host + network_url_base + '/v2.0/lbaas/loadbalancers/' + loadbalancer_id, headers=headers)
-        #response = requests.delete(host + network_url_base + '/v2.0/lbaas/loadbalancers/' + '1530d0d5cfe-cn-hongkong-am4-c04', headers=headers)
         print response.status_code
         print response.text
 
@@ -135,10 +135,37 @@ class LoadBalanceTest(unittest.TestCase):
         print response.text
 
     def test_LbaasListenersHandler_GET(self):
-        pass
+        print "\n----------test_LbaasListenersHandler_GET----------"
+        response = requests.get(host + network_url_base + '/v2.0/lbaas/listeners', headers=headers)
+        print response.status_code
+        print response.text
 
-    def test_LbaasListenersHandler_PUT(self):
-        pass
+    def test_LbaasListenersHandler_POST(self):
+        print "\n----------test_LbaasListenersHandler_POST----------"
+        global loadbalancer_id
+
+        jl = {}
+        jl["admin_state_up"] = True
+        jl["connection_limit"] = 100
+        jl["description"] = "listener one"
+        jl["loadbalancer_id"] = loadbalancer_id
+        jl["name"] = "listener1"
+        jl["protocol"] = "HTTP"
+        jl["protocol_port"] = "80"
+        jl["default_tls_container_ref"] = ""
+        jl["sni_container_refs"] = []
+        jd = {}
+        jd["listener"] = jl
+
+        data = json.dumps(jd)
+        print data
+        response = requests.post(host + network_url_base + '/v2.0/lbaas/listeners', data=data, headers=headers)
+        print response.status_code
+        print response.text
+        if response.status_code == 201:
+            global listener_id
+            listener_id = json.loads(response.text)["listener"]["id"]
+            print "create listener id: ", listener_id
 
     def test_LbaasListenerHandler_GET(self):
         pass
@@ -147,7 +174,14 @@ class LoadBalanceTest(unittest.TestCase):
         pass
 
     def test_LbaasListenerHandler_DELETE(self):
-        pass
+        print "\n----------test_LbaasListenerHandler_DELETE----------"
+        print "sleep 5 second, waiting for the listener status change to be active"
+        time.sleep(5)
+        global listener_id
+        print "listener id: ", listener_id
+        response = requests.delete(host + network_url_base + '/v2.0/lbaas/listeners/' + listener_id, headers=headers)
+        print response.status_code
+        print response.text
 
 if __name__ == '__main__':
     unittest.main()
