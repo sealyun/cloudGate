@@ -12,6 +12,8 @@
 
 python httptest.py \
 LoadBalanceTest.test_LoadbalancersHandler_GET \
+LoadBalanceTest.test_LoadbalancersHandler_POST \
+LoadBalanceTest.test_LoadbalancersHandler_GET \
 
 
 

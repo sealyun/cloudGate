@@ -85,11 +85,12 @@ class LoadBalanceTest(unittest.TestCase):
                 "vip_address": "10.0.0.4", \
                 "admin_state_up": true, \
                 "provider": "sample_provider"}}'
-        response = requests.post(host + network_url_base + '/v2.0/loadbalancers', data=data, headers=headers)
+        response = requests.post(host + network_url_base + '/v2.0/lbaas/loadbalancers', data=data, headers=headers)
         print response.status_code
         print response.text
-        global loadbalancer_id
-        loadbalancer_id = json.loads(response.text)["loadbalancer"]["id"]
+        if response.status_code == 201:
+            global loadbalancer_id
+            loadbalancer_id = json.loads(response.text)["loadbalancer"]["id"]
 
     def test_LoadbalancerHandler_GET(self):
         pass

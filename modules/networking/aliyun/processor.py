@@ -661,7 +661,7 @@ class AliyunNetworkingProcessor(NetworkingProcessorBase):
         outLoadBalancer["tenant_id"] = inLoadBalancer["tenant_id"]
         outLoadBalancer["provisioning_status"] = "ACTIVE"
         outLoadBalancer["listeners"] = []
-        outLoadBalancer["vip_address"] = inLoadBalancer["vip_address"]
+        outLoadBalancer["vip_address"] = lb["Address"]
         outLoadBalancer["vip_subnet_id"] = inLoadBalancer["vip_subnet_id"]
         outLoadBalancer["id"] = lb["LoadBalancerId"]
         outLoadBalancer["operating_status"] = "ONLINE"
