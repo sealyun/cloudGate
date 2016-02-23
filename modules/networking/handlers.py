@@ -138,7 +138,7 @@ class NetworkHandler(NetworkingBaseHandler):
         processor = self.get_processor()
         network = processor.getNetwork(networkID)
         if network is None:
-            self.set_status(401)
+            self.set_status(404)
             return
         else:
             self.set_status(200)
@@ -425,7 +425,7 @@ class PortsHandler(NetworkingBaseHandler):
         processor = self.get_processor()
         ports = processor.getPorts(status, displayName, adminState, networkID, tenantID, deviceOwner, macAddress, portID, securityGroups, deviceID)
         if ports is None:
-            self.set_status(401)
+            self.set_status(500)
             return
         else:
             self.set_status(200)
@@ -465,7 +465,7 @@ class PortsHandler(NetworkingBaseHandler):
             inPort = body["port"]
             outPort = processor.createPort(inPort)
             if outPort is None:
-                self.set_status(401)
+                self.set_status(500)
                 return
             else:
                 self.set_status(200)
@@ -529,7 +529,7 @@ class PortHandler(NetworkingBaseHandler):
         port = processor.getPort(portID)
 
         if port is None:
-            self.set_status(401)
+            self.set_status(404)
             return
         else:
             self.set_status(200)
@@ -563,7 +563,7 @@ class PortHandler(NetworkingBaseHandler):
         outPort = processor.updatePort(portID, inPort)
 
         if outPort is None:
-            self.set_status(401)
+            self.set_status(404)
             return
         else:
             self.set_status(200)
@@ -675,7 +675,7 @@ class LoadbalancerHandler(NetworkingBaseHandler):
         processor = self.get_processor()
         loadbalancer = processor.getLoadBalancer(lbID)
         if loadbalancer is None:
-            self.set_status(500)
+            self.set_status(404)
             return
         else:
             self.set_status(200)
@@ -704,7 +704,7 @@ class LoadbalancerHandler(NetworkingBaseHandler):
         processor = self.get_processor()
         outLoadBalancer = processor.updateLoadBalancer(lbID, inLoadBalancer)
         if outLoadBalancer is None:
-            self.set_status(500)
+            self.set_status(404)
             return
         else:
             self.set_status(200)

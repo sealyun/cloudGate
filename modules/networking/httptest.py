@@ -36,12 +36,15 @@ class NetworkTest(unittest.TestCase):
         response = requests.post(host + network_url_base + '/v2.0/networks.json', data=data, headers=headers)
         print response.status_code
         print response.text
-        global network_id
-        network_id = json.loads(response.text)["network"]["id"]
+        if response.status_code == 201:
+            global network_id
+            network_id = json.loads(response.text)["network"]["id"]
+            print "create network id: ", network_id
 
     def test_NetworkHandler_GET(self):
         print "\n----------test_NetworkHandler_GET----------"
         global network_id
+        print "network id: ", network_id
         response = requests.get(host + network_url_base + '/v2.0/networks/' + network_id + '.json', headers=headers)
         print response.status_code
         print response.text
@@ -49,6 +52,7 @@ class NetworkTest(unittest.TestCase):
     def test_NetworkHandler_PUT(self):
         print "\n----------test_NetworkHandler_PUT----------"
         global network_id
+        print "network id: ", network_id
         data = '{"network":{"name": "vpc-2"}}'
         response = requests.put(host + network_url_base + '/v2.0/networks/' + network_id + '.json', data=data, headers=headers)
         print response.status_code
@@ -59,6 +63,7 @@ class NetworkTest(unittest.TestCase):
         print "sleep 5 second, waiting for the network status change to be active"
         time.sleep(5)
         global network_id
+        print "network id: ", network_id
         response = requests.delete(host + network_url_base + '/v2.0/networks/' + network_id + '.json', headers=headers)
         print response.status_code
         print response.text
@@ -91,15 +96,35 @@ class LoadBalanceTest(unittest.TestCase):
         if response.status_code == 201:
             global loadbalancer_id
             loadbalancer_id = json.loads(response.text)["loadbalancer"]["id"]
+            print "create loadbalancer id: ", loadbalancer_id
 
     def test_LoadbalancerHandler_GET(self):
-        pass
+        print "\n----------test_LoadbalancerHandler_GET----------"
+        global loadbalancer_id
+        print "loadbalancer id: ", loadbalancer_id
+        response = requests.get(host + network_url_base + '/v2.0/lbaas/loadbalancers/' + loadbalancer_id, headers=headers)
+        print response.status_code
+        print response.text
 
     def test_LoadbalancerHandler_PUT(self):
-        pass
+        print "\n----------test_LoadbalancerHandler_PUT----------"
+        global loadbalancer_id
+        print "loadbalancer id: ", loadbalancer_id
+        data = '{"loadbalancer": {"admin_state_up": false,"description": "simple lb2","name": "loadbalancer2"}}'
+        response = requests.put(host + network_url_base + '/v2.0/lbaas/loadbalancers/' + loadbalancer_id, data=data, headers=headers)
+        print response.status_code
+        print response.text
 
     def test_LoadbalancerHandler_DELETE(self):
-        pass
+        print "\n----------test_LoadbalancerHandler_DELETE----------"
+        print "sleep 5 second, waiting for the loadbalancer status change to be active"
+        time.sleep(5)
+        global loadbalancer_id
+        print "loadbalancer id: ", loadbalancer_id
+        response = requests.delete(host + network_url_base + '/v2.0/lbaas/loadbalancers/' + loadbalancer_id, headers=headers)
+        #response = requests.delete(host + network_url_base + '/v2.0/lbaas/loadbalancers/' + '1530d0d5cfe-cn-hongkong-am4-c04', headers=headers)
+        print response.status_code
+        print response.text
 
     def test_LoadbalancerStatusesHandler_GET(self):
         pass
