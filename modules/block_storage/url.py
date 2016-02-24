@@ -1,6 +1,8 @@
 from handlers import * 
 from cloudGate.common.define import BLOCK_STORAGE_BASE_URL
 
+from cloudGate.common.define import COMPUTE_BASE_URL
+
 urls_low_version = [
     (BLOCK_STORAGE_BASE_URL, LowVersionBlockStorageBaseHandler),
 ]
@@ -31,6 +33,11 @@ urls_v2 = [
     (BLOCK_STORAGE_BASE_URL + r"/v2/([^/]+)/limits", BlockStorageLimitsHandler),
 
     (BLOCK_STORAGE_BASE_URL + r"/v2/([^/]+)/extensions", BlockStorageExtensionsHandler),
+
+    ###### cw compute module ##########
+    (COMPUTE_BASE_URL + r"/v2.1/([^/]+)/limits", ComputeLimitsHandler),
+    (COMPUTE_BASE_URL + r"/v2.1/([^/]+)/extensions", ComputeExtensionsHandler),    
+    
 ]
 
 urls = urls_low_version + urls_v2
