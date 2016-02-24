@@ -158,7 +158,6 @@ class LoadBalanceTest(unittest.TestCase):
         jd["listener"] = jl
 
         data = json.dumps(jd)
-        print data
         response = requests.post(host + network_url_base + '/v2.0/lbaas/listeners', data=data, headers=headers)
         print response.status_code
         print response.text
@@ -168,10 +167,26 @@ class LoadBalanceTest(unittest.TestCase):
             print "create listener id: ", listener_id
 
     def test_LbaasListenerHandler_GET(self):
-        pass
+        print "\n----------test_LbaasListenerHandler_GET----------"
+        global listener_id
+        print "listener id: ", listener_id
+        response = requests.get(host + network_url_base + '/v2.0/lbaas/listeners/' + listener_id, headers=headers)
+        print response.status_code
+        print response.text
 
     def test_LbaasListenerHandler_PUT(self):
-        pass
+        print "\n----------test_LbaasListenerHandler_PUT----------"
+        global listener_id
+        print "listener id: ", listener_id
+        data = '{"listener": {"admin_state_up": false, \
+                "connection_limit": 200, \
+                "description":"listener two", \
+                "name": "listener2", \
+                "default_tls_container_ref": "https://barbican.endpoint/containers/cc", \
+                "sni_container_refs":["https://barbican.endpoint/containers/dd"]}}'
+        response = requests.put(host + network_url_base + '/v2.0/lbaas/listeners/' + listener_id, data=data, headers=headers)
+        print response.status_code
+        print response.text
 
     def test_LbaasListenerHandler_DELETE(self):
         print "\n----------test_LbaasListenerHandler_DELETE----------"

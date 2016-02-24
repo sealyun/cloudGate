@@ -1080,7 +1080,7 @@ class AliyunNetworkingProcessor(NetworkingProcessorBase):
         outListener["loadbalancers"].append({"id":lbID})
         outListener["name"] = inListener["name"]
         outListener["protocol"] = "HTTP"
-        outListener["protocol_port"] = 80
+        outListener["protocol_port"] = int(lnPort)
         outListener["tenant_id"] = ""
         outListener["default_tls_container_ref"] = inListener["default_tls_container_ref"]
         outListener["sni_container_refs"] = inListener["sni_container_refs"]
