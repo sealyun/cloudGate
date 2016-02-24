@@ -828,7 +828,7 @@ class LbaasListenerHandler(NetworkingBaseHandler):
         inListener = json.loads(self.request.body)["listener"]
 
         processor = self.get_processor()
-        outListener = processor.updateListener(listenerID)
+        outListener = processor.updateListener(listenerID, inListener)
         if outListener is None:
             self.set_status(500)
             return

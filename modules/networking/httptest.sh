@@ -17,6 +17,8 @@ LoadBalanceTest.test_LoadbalancersHandler_POST \
 LoadBalanceTest.test_LbaasListenersHandler_GET \
 LoadBalanceTest.test_LbaasListenersHandler_POST \
 LoadBalanceTest.test_LbaasListenerHandler_GET \
+LoadBalanceTest.test_LbaasListenerHandler_PUT \
+LoadBalanceTest.test_LbaasListenerHandler_GET \
 LoadBalanceTest.test_LbaasListenerHandler_DELETE \
 LoadBalanceTest.test_LbaasListenersHandler_GET \
 LoadBalanceTest.test_LoadbalancerHandler_DELETE \
