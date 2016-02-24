@@ -1,41 +1,56 @@
 #!/bin/sh
 
-#networks test set
 echo "-----------------------networks test set begin-----------------------"
-echo "---test sequence---"
-echo "->test list all networks"
-echo "->test create a network"
-echo "->test list all networks"
-echo "->test get the network which just be created"
-echo "->test update network"
-echo "->test get the network which just be updated"
-echo "->test delete the network which just be updated"
-echo "->test get the network which just be deleted"
-echo "->test list all networks"
-#NetworkTest.test_NetworksHandler_GET \
-#NetworkTest.test_NetworksHandler_POST \
-#NetworkTest.test_NetworksHandler_GET \
-#NetworkTest.test_NetworkHandler_GET \
-#NetworkTest.test_NetworkHandler_PUT \
-#NetworkTest.test_NetworkHandler_GET \
-#NetworkTest.test_NetworkHandler_DELETE \
-#NetworkTest.test_NetworkHandler_GET \
-#NetworkTest.test_NetworksHandler_GET \
+echo "1.test list all networks"
+echo "2.test create a network"
+echo "3.test list all networks"
+echo "4.test get the network which just be created"
+echo "5.test update network"
+echo "6.test get the network which just be updated"
+echo "7.test delete the network which just be updated"
+echo "8.test get the network which just be deleted"
+echo "9.test list all networks"
 echo "-----------------------networks test set end-------------------------"
 
-#loadbalancer test set
 echo "---------------------loadbalancer test set begin---------------------"
-echo "---test sequence---"
-echo "->test list all loadbalancers"
-echo "->test create a loadbalancer"
-echo "->test list all loadbalancers"
-echo "->test get the loadbalancer which just be created"
-echo "->test get loadbalancer status"
-echo "->test update loadbalancer"
-echo "->test get the loadbalancer which just be updated"
-echo "->test delete the loadbalancer which just be updated"
-echo "->test get the loadbalancer which just be deleted"
-echo "->test list all loadbalancers"
+echo "1.test list all loadbalancers"
+echo "2.test create a loadbalancer"
+echo "3.test list all loadbalancers"
+echo "4.test get the loadbalancer which just be created"
+echo "5.test get loadbalancer status"
+echo "6.test update loadbalancer"
+echo "7.test get the loadbalancer which just be updated"
+echo "8.test delete the loadbalancer which just be updated"
+echo "9.test get the loadbalancer which just be deleted"
+echo "10.test list all loadbalancers"
+echo "---------------------loadbalancer test set end-----------------------"
+
+echo "-----------------------listener test set begin-----------------------"
+echo "1.test list all loadbalancers"
+echo "2.test create a loadbalancer"
+echo "3.test list all listeners"
+echo "4.test create a listener"
+echo "5.test get the listener which just be created"
+echo "6.test get loadbalancer status"
+echo "7.test update the listener which just be created"
+echo "8.test get the listener which just be updated"
+echo "9.test delete the listener which just be updated"
+echo "10.test get the listener which just be deleted"
+echo "11.test delete the loadbalancer which just be created"
+echo "12.test list all loadbalancers"
+echo "-----------------------listener test set end-------------------------"
+
+python httptest.py \
+NetworkTest.test_NetworksHandler_GET \
+NetworkTest.test_NetworksHandler_POST \
+NetworkTest.test_NetworksHandler_GET \
+NetworkTest.test_NetworkHandler_GET \
+NetworkTest.test_NetworkHandler_PUT \
+NetworkTest.test_NetworkHandler_GET \
+NetworkTest.test_NetworkHandler_DELETE \
+NetworkTest.test_NetworkHandler_GET \
+NetworkTest.test_NetworksHandler_GET \
+
 #LoadBalanceTest.test_LoadbalancersHandler_GET \
 #LoadBalanceTest.test_LoadbalancersHandler_POST \
 #LoadBalanceTest.test_LoadbalancersHandler_GET \
@@ -46,23 +61,7 @@ echo "->test list all loadbalancers"
 #LoadBalanceTest.test_LoadbalancerHandler_DELETE \
 #LoadBalanceTest.test_LoadbalancerHandler_GET \
 #LoadBalanceTest.test_LoadbalancersHandler_GET \
-echo "---------------------loadbalancer test set end-----------------------"
 
-#listener test set
-echo "-----------------------listener test set begin-----------------------"
-echo "---test sequence---"
-echo "->test list all loadbalancers"
-echo "->test create a loadbalancer"
-echo "->test list all listeners"
-echo "->test create a listener"
-echo "->test get the listener which just be created"
-echo "->test get loadbalancer status"
-echo "->test update the listener which just be created"
-echo "->test get the listener which just be updated"
-echo "->test delete the listener which just be updated"
-echo "->test get the listener which just be deleted"
-echo "->test delete the loadbalancer which just be created"
-echo "->test list all loadbalancers"
 #LoadBalanceTest.test_LoadbalancersHandler_GET \
 #LoadBalanceTest.test_LoadbalancersHandler_POST \
 #LoadBalanceTest.test_LbaasListenersHandler_GET \
@@ -75,9 +74,9 @@ echo "->test list all loadbalancers"
 #LoadBalanceTest.test_LbaasListenersHandler_GET \
 #LoadBalanceTest.test_LoadbalancerHandler_DELETE \
 #LoadBalanceTest.test_LoadbalancersHandler_GET \
-echo "-----------------------listener test set end-------------------------"
 
-python httptest.py \
+
+
 
 
 
