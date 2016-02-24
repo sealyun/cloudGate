@@ -186,6 +186,30 @@ class FlavorsDetailHandler(ComputeBaseHandler):
         self.send_json(body)
 
 
+class FloatingIpsHandler(ComputeBaseHandler):
+    def get(self, tenant_id):
+        self.get_processor()
+        headers, body = self.p.queryFloatingIps(tenant_id)
+        self.send_json(body)
+
+    def post(self, tenant_id):
+        self.get_processor()
+        pool = json.loads(self.request.body)["pool"]
+        headers, body = self.p.createFloatingIp(tenant_id, pool)
+        self.send_json(body)
+
+class FloatingIpHandler(ComputeBaseHandler):
+    def get(self, tenant_id, floating_ip_id):
+        self.get_processor()
+        headers, body = self.p.queryFloatingIpDetail(tenant_id, floating_ip_id)
+        self.send_json(body)
+
+    def delete(self, tenant_id, floating_ip_id):
+        self.get_processor()
+        headers, body = self.p.deleteFloatingIp(tenant_id, floating_ip_id)
+        self.send_json(body)
+
+
 class ExtensionsHandler(ComputeBaseHandler):
     def get(self, ob):
         print "ExtensionsHandler get()"

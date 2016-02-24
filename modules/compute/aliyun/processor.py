@@ -11,6 +11,11 @@ from aliyunsdkecs.request.v20140526 import RebootInstanceRequest
 from aliyunsdkecs.request.v20140526 import JoinSecurityGroupRequest
 from aliyunsdkecs.request.v20140526 import LeaveSecurityGroupRequest
 from aliyunsdkecs.request.v20140526 import DescribeInstanceTypesRequest
+from aliyunsdkecs.request.v20140526 import AllocateEipAddressRequest
+from aliyunsdkecs.request.v20140526 import DescribeEipAddressesRequest
+from aliyunsdkecs.request.v20140526 import DescribeRegionsRequest
+from aliyunsdkecs.request.v20140526 import ReleaseEipAddressRequest
+from aliyunsdkecs.request.v20140526 import UnassociateEipAddressRequest
 
 
 from aliyunsdkecs.request.v20140526 import AttachDiskRequest
@@ -413,53 +418,232 @@ class AliyunComputeProcessor(ComputeProcessorBase):
         request.set_InstanceId(server_id)
 
         self.clt.do_action(request)
+    
+    def createFloatingIp(tenant_id, pool):
+        request = AllocateEipAddressRequest.AllocateEipAddressRequest()
+        request.set_accept_format("json")
 
-    def ServerAction(self, tenat_id, server_id, action):
+        request.add_query_param('RegionId', pool)
+
+        response = self.clt.do_action(request)
+
+        resp = json.loads(response)
+        """
+        {
+          "AllocationId": "eip-25877c70x", 
+          "EipAddress": "123.56.0.206", 
+          "RequestId": "B6B9F518-60F8-4D81-9242-1207B356754D"
+        }
+        """
+        
+        return {}, {
+            "floating_ip": {
+                "instance_id": null,
+                "ip": resp["EipAddress"],
+                "fixed_ip": null,
+                "id": resp["AllocationId"],
+                "pool": pool
+            }
+        }
+
+    def queryFloatingIps(tenant_id):
+        request = DescribeEipAddressesRequest.DescribeEipAddressesRequest()
+        request.set_accept_format("json")
+        
+        ips = []
+        regions = self._queryRegions()
+        for region in regions["Regions"]:
+            request.add_query_param('RegionId', pool)
+
+            response = self.clt.do_action(request)
+
+            resp = json.loads(response)
+            """
+            {
+              "EipAddresses": {
+                "EipAddress": [
+                  {
+                    "AllocationId": "eip-2578g5v5a",
+                    "AllocationTime": "2014-05-28T03:03:16Z ",
+                    "Bandwidth": "1",
+                    "InstanceId": "",
+                    "InternetChargeType": " PayByBandwidth ",
+                    "IpAddress": "123.56.0.36",
+                    "OperationLocks": {
+                      "LockReason": []
+                    },
+                    "RegionId": "cn-beijing",
+                    "Status": "Available"
+                  }
+                ]
+              },
+              "PageNumber": 1,
+              "PageSize": 10,
+              "RequestId": "51BE7822-4121-428A-88F3-262AE4FD868D",
+              "TotalCount": 1
+            } 
+            """
+            ips += resp["EipAddresses"]["EipAddress"]
+        return {}, {
+                "floatingips": [
+                    {
+                        "router_id": "",
+                        "tenant_id": tenant_id,
+                        "floating_network_id": "",
+                        "fixed_ip_address": "",
+                        "floating_ip_address": ip["IpAddress"],
+                        "port_id": "",
+                        "id": ip["AllocationId"],
+                        "status": "ACTIVE"
+                    }
+                    for ip in ips
+                ]
+            }
+
+    def queryFloatingIpDetail(tenant_id, floating_ip_id):
+        request = DescribeEipAddressesRequest.DescribeEipAddressesRequest()
+        request.set_accept_format("json")
+        
+        request.set_AllocationId(floating_ip_id)
+
+        response = self.clt.do_action(request)
+
+        resp = json.loads(response)
+        """
+        {
+          "EipAddresses": {
+            "EipAddress": [
+              {
+                "AllocationId": "eip-2578g5v5a",
+                "AllocationTime": "2014-05-28T03:03:16Z ",
+                "Bandwidth": "1",
+                "InstanceId": "",
+                "InternetChargeType": " PayByBandwidth ",
+                "IpAddress": "123.56.0.36",
+                "OperationLocks": {
+                  "LockReason": []
+                },
+                "RegionId": "cn-beijing",
+                "Status": "Available"
+              }
+            ]
+          },
+          "PageNumber": 1,
+          "PageSize": 10,
+          "RequestId": "51BE7822-4121-428A-88F3-262AE4FD868D",
+          "TotalCount": 1
+        } 
+        """
+        ip = resp["EipAddresses"][EipAddress][0]
+        return {}, {
+                "floating_ip": {
+                    "instance_id": "",
+                    "ip": ip["IpAddress"],
+                    "fixed_ip": "",
+                    "id": ip["AllocationId"],
+                    "pool": ip["RegionId"]
+                }
+            }
+
+    def deleteFloatingIp(self, tenant_id, floating_ip_id):
+        request = ReleaseEipAddressRequest.ReleaseEipAddressRequest
+        request.set_accept_format("json")
+        
+        request.set_AllocationId(floating_ip_id)
+
+        response = self.clt.do_action(request)
+
+    
+    def _queryRegions(self):
+        request = DescribeRegionsRequest.DescribeRegionsRequest.py()
+        request.set_accept_format("json")
+
+        response = self.clt.do_action(request)
+
+        resp = json.loads(response)
+        """ 
+        {
+            "RequestId": "611CB80C-B6A9-43DB-9E38-0B0AC3D9B58F",
+            "Regions": {
+                "Region": [{
+                    "RegionId": "cn-hangzhou"
+                },
+                {
+                    "RegionId": "cn-qingdao"
+                }]
+            }
+        }
+        """
+        
+        return resp
+
+    def serverAction(self, tenant_id, server_id, action):
         if "addFixedIp" in action:  # depend network 
             pass 
-        if "addFloatingIp" in action:  # depend network
+        if "removeFixedIp" in action:  # depend network 
+            pass 
+        elif "addFloatingIp" in action:  # depend network
+            request = DescribeEipAddressesRequest.DescribeEipAddressesRequest()
+            request.set_accept_format("json")
+            request.set_EipAddress(action["addFloatingIp"]["address"])
+            response = self.clt.do_action(request)
+            resp = json.loads(response)
+
+            id = resp["EipAddresses"]["EipAddress"][0]["AllocationId"]
+
+            request = AllocateEipAddressRequest.AllocateEipAddressRequest()
+            request.set_accept_format("json")
+            request.set_InstanceId(server_id)
+            request.set_AllocationId(id)
+            self.clt.do_action(request)
+
+        elif "removeFloatingIp" in action:
+            request = DescribeEipAddressesRequest.DescribeEipAddressesRequest()
+            request.set_accept_format("json")
+            request.set_EipAddress(action["removeFloatingIp"]["address"])
+            response = self.clt.do_action(request)
+            resp = json.loads(response)
+
+            id = resp["EipAddresses"]["EipAddress"][0]["AllocationId"]
+
+            request = UnassociateEipAddressRequest.UnassociateEipAddressRequest()
+            request.set_accept_format("json")
+            request.set_InstanceId(server_id)
+            request.set_AllocationId(id)
+            self.clt.do_action(request)
+
+        elif "attach" in action:  # depend volume
             pass
-        if "attach" in action:  # depend volume
+        elif "createImage" in action:  # depend image
             pass
-        if "confirmResize" in action:
+        elif "forceDelete" in action:
+            self.deleteServer(tenant_id, server_id)
+
+        elif "lock" in action:
             pass
-        if "createImage" in action:  # depend image
+        elif "unlock" in action:
             pass
-        if "evacuate" in action:
-            pass
-        if "forceDelete" in action:
-            pass
-        if "lock" in action:
-            pass
-        if "pause" in action:
-            pass
-        if "reboot" in action:
+        elif "reboot" in action:
             request = RebootInstanceRequest.RebootInstanceRequest()
             request.set_accept_format("json")
             request.set_InstanceId(server_id)
             self.clt.do_action(request)
-        if "os-start" in action:
+        elif "os-start" in action:
             request = StartInstanceRequest.StartInstanceRequest()
             request.set_accept_format("json")
             request.set_InstanceId(server_id)
             self.clt.do_action(request)
-        if "os-stop" in action:
+        elif "os-stop" in action:
             request = StopInstanceRequest.StopInstanceRequest()
             request.set_accept_format("json")
             request.set_InstanceId(server_id)
             self.clt.do_action(request)
-        if "unlock" in action:
-            pass
-        if "unpause" in action:
-            pass
-        if "unrescue" in action:
-            pass
-        if "addSecurityGroup" in action:
+        elif "addSecurityGroup" in action:
             request = JoinSecurityGroupRequest.JoinSecurityGroupRequest()
             request.set_accept_format("json")
             request.set_InstanceId(server_id)
             self.clt.do_action(request)
-        if "removeSecurityGroup" in action:
+        elif "removeSecurityGroup" in action:
             request = LeaveSecurityGroupRequest.LeaveSecurityGroupRequest()
             request.set_accept_format("json")
             request.set_InstanceId(server_id)
