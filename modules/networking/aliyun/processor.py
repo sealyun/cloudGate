@@ -616,7 +616,7 @@ class AliyunNetworkingProcessor(NetworkingProcessorBase):
             loadbalancer["vip_subnet_id"] = ""
             loadbalancer["id"] = lb["LoadBalancerId"]
             loadbalancer["operating_status"] = "ONLINE"
-            loadbalancer["name"] = lb["LoadBalancerName"]
+            #loadbalancer["name"] = lb["LoadBalancerName"]
 
             loadbalancers.append(loadbalancer)
 
@@ -1282,7 +1282,7 @@ class AliyunNetworkingProcessor(NetworkingProcessorBase):
 
         for svr in resp["Instances"]["Instance"]:
             if id == svr["InstanceId"]:
-                ip = svr["VpcAttributes"]["NatIpAddress"]
+                ip = svr["InnerIpAddress"]["IpAddress"]
                 return ip
 
         return None
@@ -1300,6 +1300,6 @@ class AliyunNetworkingProcessor(NetworkingProcessorBase):
             return None
 
         for svr in resp["Instances"]["Instance"]:
-            if ip == svr["VpcAttributes"]["NatIpAddress"]:
+            if ip in svr["InnerIpAddress"]["IpAddress"]:
                 return svr["InstanceId"]
         return None
