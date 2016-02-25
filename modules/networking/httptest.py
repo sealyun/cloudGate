@@ -28,7 +28,9 @@ class NetworkTest(unittest.TestCase):
         print "\n----------test_NetworksHandler_GET----------"
         response = requests.get(host + network_url_base + '/v2.0/networks.json', headers=headers)
         print response.status_code
-        print response.text
+        if response.status_code == 200:
+            j = json.loads(response.text)
+            print json.dumps(j, indent=1)
 
     def test_NetworksHandler_POST(self):
         print "\n----------test_NetworksHandler_POST----------"
@@ -36,7 +38,9 @@ class NetworkTest(unittest.TestCase):
                 "tenant_id": "4fd44f30292945e481c7b8a0c8908869"}}'
         response = requests.post(host + network_url_base + '/v2.0/networks.json', data=data, headers=headers)
         print response.status_code
-        print response.text
+        if response.status_code == 201:
+            j = json.loads(response.text)
+            print json.dumps(j, indent=1)
         if response.status_code == 201:
             global network_id
             network_id = json.loads(response.text)["network"]["id"]
@@ -48,7 +52,9 @@ class NetworkTest(unittest.TestCase):
         print "network id: ", network_id
         response = requests.get(host + network_url_base + '/v2.0/networks/' + network_id + '.json', headers=headers)
         print response.status_code
-        print response.text
+        if response.status_code == 200:
+            j = json.loads(response.text)
+            print json.dumps(j, indent=1)
 
     def test_NetworkHandler_PUT(self):
         print "\n----------test_NetworkHandler_PUT----------"
@@ -57,7 +63,9 @@ class NetworkTest(unittest.TestCase):
         data = '{"network":{"name": "vpc-2"}}'
         response = requests.put(host + network_url_base + '/v2.0/networks/' + network_id + '.json', data=data, headers=headers)
         print response.status_code
-        print response.text
+        if response.status_code == 200:
+            j = json.loads(response.text)
+            print json.dumps(j, indent=1)
 
     def test_NetworkHandler_DELETE(self):
         print "\n----------test_NetworkHandler_DELETE----------"
@@ -80,7 +88,9 @@ class LoadBalanceTest(unittest.TestCase):
         print "\n----------test_LoadbalancersHandler_GET----------"
         response = requests.get(host + network_url_base + '/v2.0/lbaas/loadbalancers', headers=headers)
         print response.status_code
-        print response.text
+        if response.status_code == 200:
+            j = json.loads(response.text)
+            print json.dumps(j, indent=1)
 
     def test_LoadbalancersHandler_POST(self):
         print "\n----------test_LoadbalancersHandler_POST----------"
@@ -93,7 +103,9 @@ class LoadBalanceTest(unittest.TestCase):
                 "provider": "sample_provider"}}'
         response = requests.post(host + network_url_base + '/v2.0/lbaas/loadbalancers', data=data, headers=headers)
         print response.status_code
-        print response.text
+        if response.status_code == 201:
+            j = json.loads(response.text)
+            print json.dumps(j, indent=1)
         if response.status_code == 201:
             global loadbalancer_id
             loadbalancer_id = json.loads(response.text)["loadbalancer"]["id"]
@@ -105,7 +117,9 @@ class LoadBalanceTest(unittest.TestCase):
         print "loadbalancer id: ", loadbalancer_id
         response = requests.get(host + network_url_base + '/v2.0/lbaas/loadbalancers/' + loadbalancer_id, headers=headers)
         print response.status_code
-        print response.text
+        if response.status_code == 200:
+            j = json.loads(response.text)
+            print json.dumps(j, indent=1)
 
     def test_LoadbalancerHandler_PUT(self):
         print "\n----------test_LoadbalancerHandler_PUT----------"
@@ -114,7 +128,9 @@ class LoadBalanceTest(unittest.TestCase):
         data = '{"loadbalancer": {"admin_state_up": false,"description": "simple lb2","name": "loadbalancer2"}}'
         response = requests.put(host + network_url_base + '/v2.0/lbaas/loadbalancers/' + loadbalancer_id, data=data, headers=headers)
         print response.status_code
-        print response.text
+        if response.status_code == 200:
+            j = json.loads(response.text)
+            print json.dumps(j, indent=1)
 
     def test_LoadbalancerHandler_DELETE(self):
         print "\n----------test_LoadbalancerHandler_DELETE----------"
@@ -132,13 +148,17 @@ class LoadBalanceTest(unittest.TestCase):
         print "loadbalancer id: ", loadbalancer_id
         response = requests.get(host + network_url_base + '/v2.0/lbaas/loadbalancers/' + loadbalancer_id + '/statuses', headers=headers)
         print response.status_code
-        print response.text
+        if response.status_code == 200:
+            j = json.loads(response.text)
+            print json.dumps(j, indent=1)
 
     def test_LbaasListenersHandler_GET(self):
         print "\n----------test_LbaasListenersHandler_GET----------"
         response = requests.get(host + network_url_base + '/v2.0/lbaas/listeners', headers=headers)
         print response.status_code
-        print response.text
+        if response.status_code == 200:
+            j = json.loads(response.text)
+            print json.dumps(j, indent=1)
 
     def test_LbaasListenersHandler_POST(self):
         print "\n----------test_LbaasListenersHandler_POST----------"
@@ -160,7 +180,9 @@ class LoadBalanceTest(unittest.TestCase):
         data = json.dumps(jd)
         response = requests.post(host + network_url_base + '/v2.0/lbaas/listeners', data=data, headers=headers)
         print response.status_code
-        print response.text
+        if response.status_code == 201:
+            j = json.loads(response.text)
+            print json.dumps(j, indent=1)
         if response.status_code == 201:
             global listener_id
             listener_id = json.loads(response.text)["listener"]["id"]
@@ -172,7 +194,9 @@ class LoadBalanceTest(unittest.TestCase):
         print "listener id: ", listener_id
         response = requests.get(host + network_url_base + '/v2.0/lbaas/listeners/' + listener_id, headers=headers)
         print response.status_code
-        print response.text
+        if response.status_code == 200:
+            j = json.loads(response.text)
+            print json.dumps(j, indent=1)
 
     def test_LbaasListenerHandler_PUT(self):
         print "\n----------test_LbaasListenerHandler_PUT----------"
@@ -186,7 +210,9 @@ class LoadBalanceTest(unittest.TestCase):
                 "sni_container_refs":["https://barbican.endpoint/containers/dd"]}}'
         response = requests.put(host + network_url_base + '/v2.0/lbaas/listeners/' + listener_id, data=data, headers=headers)
         print response.status_code
-        print response.text
+        if response.status_code == 200:
+            j = json.loads(response.text)
+            print json.dumps(j, indent=1)
 
     def test_LbaasListenerHandler_DELETE(self):
         print "\n----------test_LbaasListenerHandler_DELETE----------"
