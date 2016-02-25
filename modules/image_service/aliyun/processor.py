@@ -119,7 +119,7 @@ class AliyunImageServiceProcessor(ImageServiceProcessorBase):
 
         response = self.clt.do_action(request)
         resp = json.loads(response)
-        if resp['Images']['Image']:
+        if resp['Images'] and resp['Images']['Image']:
             return resp['Images']['Image'][0]
         return None
 
