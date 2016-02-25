@@ -13,12 +13,14 @@ urls_v2_1 = [
     (COMPUTE_BASE_URL + r"/v2.1/([^/]+)/flavors", FlavorsHandler),
     (COMPUTE_BASE_URL + r"/v2.1/([^/]+)/flavors/detail", FlavorsDetailHandler),
     (COMPUTE_BASE_URL + r"/v2.1/([^/]+)/flavors/([^/]+)", FlavorHandler),
-    (COMPUTE_BASE_URL + r"/v2.1/([^/]+)/flavors/([^/]+)", FlavorHandler),
     
     (COMPUTE_BASE_URL + r"/v2.1/([^/]+)/os-floating-ips", FloatingIpsHandler),
     (COMPUTE_BASE_URL + r"/v2.1/([^/]+)/os-floating-ips/([^/]+)", FloatingIpHandler),
+
+    (COMPUTE_BASE_URL + r"/v2.1/([^/]+)/os-availability-zone", AvailabilityZoneHandler),
        
-    #(COMPUTE_BASE_URL + r"/v2.1/([^/]+)/extensions", ExtensionsHandler),
+    (COMPUTE_BASE_URL + r"/v2.1/([^/]+)/extensions", ExtensionsHandler),
+    (COMPUTE_BASE_URL + r"/v2.1/([^/]+)//v2.1/{tenant_id}/limits", LimitsHandler),
 ]
 
 #if we support other version api, use urls = urls_v2_1 + urls_other_version

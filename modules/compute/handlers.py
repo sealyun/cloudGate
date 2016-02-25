@@ -80,7 +80,8 @@ class ServerHandler(ComputeBaseHandler):
         
         if "x-openstack-request-id" in headers:
             self.set_header("x-openstack-request-id", headers["x-openstack-request-id"])
-
+        print "----serverHandler, res:"
+        print json.dumps(body, indent=4)
         self.send_json(body)
 
     def put(self, tenant_id, server_id):
@@ -114,7 +115,7 @@ class ServerActionHandler(ComputeBaseHandler):
     def post(self, tenant_id, server_id):
         self.get_processor()
         action = json.loads(self.request.body)
-        self.p.ServerAction(tenant_id, server_id, action)
+        self.p.serverAction(tenant_id, server_id, action)
 
 
 class ServerVolumeHandler(ComputeBaseHandler):
@@ -210,13 +211,26 @@ class FloatingIpHandler(ComputeBaseHandler):
         self.send_json(body)
 
 
+class AvailabilityZoneHandler(ComputeBaseHandler):
+    def get(self, tenant_id):
+        self.get_processor()
+        processor = self.get_processor()
+        headers, body = processor.getAvailabilityZone(tenant_id)
+        self.send_json(body)
+
+
 class ExtensionsHandler(ComputeBaseHandler):
-    def get(self, ob):
+    def get(self, tenant_id):
         print "ExtensionsHandler get()"
         self.get_processor()
         processor = self.get_processor()
-        extensions = processor.getExtensions()
-        resp = {
-            "extensions":extensions
-        }
-        self.send_json(resp)
+        headers, body = processor.getExtensions()
+        self.send_json(body)
+
+
+class LimitsHandler(ComputeBaseHandler):
+    def get(self, tenant_id):
+        self.get_processor()
+        processor = self.get_processor()
+        headers, body = processor.getLimits()
+        self.send_json(body)
