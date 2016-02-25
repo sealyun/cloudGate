@@ -1266,7 +1266,7 @@ class AliyunNetworkingProcessor(NetworkingProcessorBase):
 
         return True
 
-    def queryServerIDByIP(self, id):
+    def queryServerIPByID(self, id):
         request = DescribeInstancesRequest.DescribeInstancesRequest()
         request.set_accept_format('json')
         response = self.clt.do_action(request)
@@ -1285,7 +1285,7 @@ class AliyunNetworkingProcessor(NetworkingProcessorBase):
 
         return None
 
-    def queryServerIPByID(self, ip):
+    def queryServerIDByIP(self, ip):
         request = DescribeInstancesRequest.DescribeInstancesRequest()
         request.set_accept_format('json')
         response = self.clt.do_action(request)
