@@ -1172,11 +1172,12 @@ class AliyunNetworkingProcessor(NetworkingProcessorBase):
         weight = int(float(inMember["weight"])*100)
         server["Weight"] = weight
         serverList.append(server)
-        print "members: ", serverList
+        backendServers = json.dumps(serverList)
+        print "members: ", backendServers
 
         request = AddBackendServersRequest.AddBackendServersRequest()
         request.set_LoadBalancerId(loadbalanceID)
-        request.set_BackendServers(serverList)
+        request.set_BackendServers(backendServers)
         request.set_accept_format('json')
         response = self.clt.do_action(request)
 
