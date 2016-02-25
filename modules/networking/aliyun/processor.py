@@ -616,7 +616,8 @@ class AliyunNetworkingProcessor(NetworkingProcessorBase):
             loadbalancer["vip_subnet_id"] = ""
             loadbalancer["id"] = lb["LoadBalancerId"]
             loadbalancer["operating_status"] = "ONLINE"
-            loadbalancer["name"] = lb["LoadBalancerName"]
+            #loadbalancer["name"] = lb["LoadBalancerName"]
+            loadbalancer["name"] = ""
 
             loadbalancers.append(loadbalancer)
 
@@ -636,6 +637,8 @@ class AliyunNetworkingProcessor(NetworkingProcessorBase):
     def createLoadBalancer(self, inLoadBalancer):
         request = CreateLoadBalancerRequest.CreateLoadBalancerRequest()
         request.set_LoadBalancerName(inLoadBalancer["name"])
+        #create classic network loadbalancer
+        #vpc loadbalancer need set vpc id and switch id
         request.set_accept_format('json')
         response = self.clt.do_action(request)
         resp = json.loads(response)
@@ -1167,13 +1170,14 @@ class AliyunNetworkingProcessor(NetworkingProcessorBase):
         server = {}
         server["ServerId"] = self.queryServerIDByIP(inMember["address"])
         weight = int(float(inMember["weight"])*100)
-        server["Weight"] = str(weight)
+        server["Weight"] = weight
         serverList.append(server)
-        print "members: ", serverList
+        backendServers = json.dumps(serverList)
+        print "members: ", backendServers
 
         request = AddBackendServersRequest.AddBackendServersRequest()
         request.set_LoadBalancerId(loadbalanceID)
-        request.set_BackendServers(serverList)
+        request.set_BackendServers(backendServers)
         request.set_accept_format('json')
         response = self.clt.do_action(request)
 
@@ -1192,6 +1196,7 @@ class AliyunNetworkingProcessor(NetworkingProcessorBase):
         member["subnet_id"] = ""
         member["tenant_id"] = ""
         member["weight"] = server["Weight"]
+        return member
 
     def getPoolMember(self, poolID, memberID):
         loadbalanceID = poolID
@@ -1250,10 +1255,11 @@ class AliyunNetworkingProcessor(NetworkingProcessorBase):
 
         serverList = []
         serverList.append(memberID)
+        backendServers = json.dumps(serverList)
 
         request = RemoveBackendServersRequest.RemoveBackendServersRequest()
         request.set_LoadBalancerId(loadbalanceID)
-        request.set_BackendServers(serverList)
+        request.set_BackendServers(backendServers)
         request.set_accept_format('json')
         response = self.clt.do_action(request)
 
@@ -1280,7 +1286,7 @@ class AliyunNetworkingProcessor(NetworkingProcessorBase):
 
         for svr in resp["Instances"]["Instance"]:
             if id == svr["InstanceId"]:
-                ip = svr["InnerIpAddress"]["IpAddress"][0]
+                ip = svr["InnerIpAddress"]["IpAddress"]
                 return ip
 
         return None
