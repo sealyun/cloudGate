@@ -163,31 +163,46 @@ class AliyunComputeProcessor(ComputeProcessorBase):
             }
         else:
             return {}, {}
-
+    
     def queryServersDetails(self, tenant_id, changes_since, image,
             flavor, name, status, host, limit, marker):
+        
+        regions = self._queryRegions()
+        #print "---regions:"
+        #print json.dumps(regions, indent=4)
+        servers = []
+        for region in regions["Regions"]["Region"]:
+            id = region["RegionId"]
+            servers += self._queryServersDetails(tenant_id, changes_since, image, flavor, name, status, host, limit, marker, id)
+        print "------servers:"
+        print json.dumps(servers, indent=4)
+        return {}, {"servers": servers}
+
+    def _queryServersDetails(self, tenant_id, changes_since, image,
+            flavor, name, status, host, limit, marker, region):
+
         request = DescribeInstancesRequest.DescribeInstancesRequest()
         request.set_accept_format('json')
+
+        request.add_query_param('RegionId', region)
         # not support query by "changes_since"
-        request.set_ImageId(image) if image else None
-        request.set_InstanceType(flavor) if flavor else None
-        request.set_InstanceName(name) if name else None
-        request.set_Status(status) if status else None
+        #request.set_ImageId(image) if image else None
+        #request.set_InstanceType(flavor) if flavor else None
+        #request.set_InstanceName(name) if name else None
+        #request.set_Status(status) if status else None
         # not support query by "host"
-        request.set_PageSize(limit) if limit else None
+        #request.set_PageSize(limit) if limit else None
         # not support query by "marker"
 
         response = self.clt.do_action(request)
 
         resp = json.loads(response)
-        #print "resp :", json.dumps(resp, indent=4)
+        #print "---query serversdetail resp :", json.dumps(resp, indent=4)
 
         if "Instances" not in resp.keys():
-            return {}, {}
+            return []
 
-        headers = {}
-        body = {
-            "servers": [
+        return [
                 {
                     "addresses": {
                         "private": [
@@ -267,17 +282,14 @@ class AliyunComputeProcessor(ComputeProcessorBase):
                     for name in s["SecurityGroupIds"]["SecurityGroupId"]
                     ],
                     #"status": s["Status"],
-                    "status": "ACTIVE",
-                    "host_status": "UP",  #todo
+                    "status": "ACTIVE" if s["Status"] != "Stopped" else "Stopped",
+                    "host_status": "DOWN" if s["Status"] == "Stopped" else "UP",  #todo
                     "tenant_id": "openstack",  #todo
                     "updated": s["ExpiredTime"],
                     "user_id": "fake"  #todo
                 }
                 for s in resp["Instances"]["Instance"]
             ]
-        }
-
-        return headers, body
 
     def queryServer(self, tenant_id, server_id):
         request = DescribeInstancesRequest.DescribeInstancesRequest()
@@ -625,33 +637,44 @@ class AliyunComputeProcessor(ComputeProcessorBase):
             pass
         elif "reboot" in action:
             print "----reboot"
-            return
+            print "server_id:", server_id
             request = RebootInstanceRequest.RebootInstanceRequest()
             request.set_accept_format("json")
             request.set_InstanceId(server_id)
-            self.clt.do_action(request)
+            s = self.clt.do_action(request)
+            print 'rep:', s
         elif "os-start" in action:
+            print "----start"
+            print "server_id:", server_id
             request = StartInstanceRequest.StartInstanceRequest()
             request.set_accept_format("json")
             request.set_InstanceId(server_id)
-            self.clt.do_action(request)
+            s = self.clt.do_action(request)
+            print 'rep:', s
         elif "os-stop" in action:
             print "----stop"
-            return
+            print "server_id:", server_id
             request = StopInstanceRequest.StopInstanceRequest()
             request.set_accept_format("json")
             request.set_InstanceId(server_id)
-            self.clt.do_action(request)
+            s = self.clt.do_action(request)
+            print 'rep:', s
         elif "addSecurityGroup" in action:
+            print "------addSecurityGroup"
+            print "server_id:", server_id
             request = JoinSecurityGroupRequest.JoinSecurityGroupRequest()
             request.set_accept_format("json")
             request.set_InstanceId(server_id)
-            self.clt.do_action(request)
+            s = self.clt.do_action(request)
+            print 'rep:', s
         elif "removeSecurityGroup" in action:
+            print "------removeSecurityGroup"
+            print "server_id:", server_id
             request = LeaveSecurityGroupRequest.LeaveSecurityGroupRequest()
             request.set_accept_format("json")
             request.set_InstanceId(server_id)
-            self.clt.do_action(request)
+            s = self.clt.do_action(request)
+            print 'rep:', s
     
     def serverAttachVolume(self, tenant_id, instance_id, volume_id, device):
         headers = {}
@@ -694,7 +717,27 @@ class AliyunComputeProcessor(ComputeProcessorBase):
         body = {}
         
         return headers, body
-
+    
+    def getQuotaSets(self, admin_tenant_id, tenant_id):
+        return {}, {
+                "quota_set": {
+                "injected_file_content_bytes": 10240,
+                "metadata_items": 128,
+                "server_group_members": 10,
+                "server_groups": 10,
+                "ram": 51200,
+                "floating_ips": 10,
+                "key_pairs": 100,
+                "id": "91a3c6da787643c78f2a7c7428fa54f2",
+                "instances": 10,
+                "security_group_rules": 20,
+                "injected_files": 5,
+                "cores": 20,
+                "fixed_ips": -1,
+                "injected_file_path_bytes": 255,
+                "security_groups": 10
+            }
+        } 
 
     def queryFlavors(self, tenant_id):
         headers = {}
@@ -828,7 +871,7 @@ class AliyunComputeProcessor(ComputeProcessorBase):
             ]
         }    
         print "---queryFlavorsDeatil, body:"
-        print body
+        #print body
         return headers, body
     
     def getAvailabilityZone(self, tenant_id):
