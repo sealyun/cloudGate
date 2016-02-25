@@ -245,7 +245,12 @@ class AliyunIdentityProcessor(IdentityProcessorBase):
 
         resp = json.loads(response)
 
-        return resp["Users"]["User"]
+        users = []
+
+        for u in resp["Users"]["User"]:
+            users.append(self.queryUserById(u["UserName"]))
+
+        return users
 
     def addUserInGroup(self, group_id, user_id):
         r = AddUserToGroupRequest.AddUserToGroupRequest()

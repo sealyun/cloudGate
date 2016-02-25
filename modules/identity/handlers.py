@@ -917,7 +917,7 @@ class GroupUsersHandler(IdentityBaseHandler):
                     },
                     "domain_id":"",
                     "enabled":True,
-                    "email":"email",
+                    "email":u["Email"],
                     "id":u["UserName"]
                 }
                 for u in users
