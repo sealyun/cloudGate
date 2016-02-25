@@ -1166,8 +1166,10 @@ class AliyunNetworkingProcessor(NetworkingProcessorBase):
         serverList = []
         server = {}
         server["ServerId"] = self.queryServerIDByIP(inMember["address"])
-        server["Weight"] = float(inMember["weight"])*100
+        weight = int(float(inMember["weight"])*100)
+        server["Weight"] = str(weight)
         serverList.append(server)
+        print "members: ", serverList
 
         request = AddBackendServersRequest.AddBackendServersRequest()
         request.set_LoadBalancerId(loadbalanceID)
