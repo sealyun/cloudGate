@@ -1297,7 +1297,7 @@ class AliyunNetworkingProcessor(NetworkingProcessorBase):
         if "Code" in resp.keys() and "Message" in resp.keys():
             return None
 
-        for svr in resp["Instances"]["Instances"]:
+        for svr in resp["Instances"]["Instance"]:
             if ip in svr["InnerIpAddress"]["IpAddress"]:
                 return svr["InstanceId"]
         return None
