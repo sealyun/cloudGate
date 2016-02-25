@@ -965,7 +965,7 @@ class LbaasPoolMembersHandler(NetworkingBaseHandler):
         inMember = json.loads(self.request.body)["member"]
 
         processor = self.get_processor()
-        outMember = processor.createPoolMember(inMember)
+        outMember = processor.createPoolMember(poolID, inMember)
         if outMember is None:
             self.set_status(500)
             return

@@ -15,6 +15,7 @@ headers["X-Auth-Token"] = "admintest:admintest"
 network_id = ""
 loadbalancer_id = ""
 listener_id = ""
+member_id = ""
 
 class NetworkTest(unittest.TestCase):
 
@@ -221,6 +222,48 @@ class LoadBalanceTest(unittest.TestCase):
         global listener_id
         print "listener id: ", listener_id
         response = requests.delete(host + network_url_base + '/v2.0/lbaas/listeners/' + listener_id, headers=headers)
+        print response.status_code
+        print response.text
+
+    def test_LbaasPoolMembersHandler_GET(self):
+        print "\n----------test_LbaasPoolMembersHandler_GET----------"
+        response = requests.get(host + network_url_base + '/v2.0/lbaas/pools/' + loadbalancer_id + '/members', headers=headers)
+        print response.status_code
+        if response.status_code == 200:
+            j = json.loads(response.text)
+            print json.dumps(j, indent=1)
+
+    def test_LbaasPoolMembersHandler_POST(self):
+        print "\n----------test_LbaasPoolMembersHandler_POST----------"
+        data = '{"member": \
+                {"address": "10.47.44.13", \
+                "admin_state_up": true, \
+                "protocol_port": "80", \
+                "subnet_id": "013d3059-87a4-45a5-91e9-d721068ae0b2", \
+                "weight": "1"}}'
+        response = requests.post(host + network_url_base + '/v2.0/lbaas/pools/' + loadbalancer_id + '/members', data=data, headers=headers)
+        print response.status_code
+        if response.status_code == 201:
+            j = json.loads(response.text)
+            print json.dumps(j, indent=1)
+        if response.status_code == 201:
+            global member_id
+            member_id = json.loads(response.text)["member"]["id"]
+            print "create member id: ", member_id
+
+    def test_LbaasPoolMemberHandler_GET(self):
+        pass
+
+    def test_LbaasPoolMemberHandler_PUT(self):
+        pass
+
+    def test_LbaasPoolMemberHandler_DELETE(self):
+        print "\n----------test_LbaasPoolMemberHandler_DELETE----------"
+        print "sleep 5 second, waiting for the member status change to be active"
+        time.sleep(5)
+        global member_id
+        print "member id: ", member_id
+        response = requests.delete(host + network_url_base + '/v2.0/lbaas/pools/' + loadbalancer_id + '/members/' + member_id, headers=headers)
         print response.status_code
         print response.text
 

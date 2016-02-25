@@ -40,16 +40,16 @@ echo "11.test delete the loadbalancer which just be created"
 echo "12.test list all loadbalancers"
 echo "-----------------------listener test set end-------------------------"
 
-python httptest.py \
-NetworkTest.test_NetworksHandler_GET \
-NetworkTest.test_NetworksHandler_POST \
-NetworkTest.test_NetworksHandler_GET \
-NetworkTest.test_NetworkHandler_GET \
-NetworkTest.test_NetworkHandler_PUT \
-NetworkTest.test_NetworkHandler_GET \
-NetworkTest.test_NetworkHandler_DELETE \
-NetworkTest.test_NetworkHandler_GET \
-NetworkTest.test_NetworksHandler_GET \
+#python httptest.py \
+#NetworkTest.test_NetworksHandler_GET \
+#NetworkTest.test_NetworksHandler_POST \
+#NetworkTest.test_NetworksHandler_GET \
+#NetworkTest.test_NetworkHandler_GET \
+#NetworkTest.test_NetworkHandler_PUT \
+#NetworkTest.test_NetworkHandler_GET \
+#NetworkTest.test_NetworkHandler_DELETE \
+#NetworkTest.test_NetworkHandler_GET \
+#NetworkTest.test_NetworksHandler_GET \
 
 #python httptest.py \
 #LoadBalanceTest.test_LoadbalancersHandler_GET \
@@ -77,8 +77,16 @@ NetworkTest.test_NetworksHandler_GET \
 #LoadBalanceTest.test_LoadbalancerHandler_DELETE \
 #LoadBalanceTest.test_LoadbalancersHandler_GET \
 
-
-
+python httptest.py \
+LoadBalanceTest.test_LoadbalancersHandler_GET \
+LoadBalanceTest.test_LoadbalancersHandler_POST \
+LoadBalanceTest.test_LbaasPoolMembersHandler_GET \
+LoadBalanceTest.test_LbaasPoolMembersHandler_POST \
+LoadBalanceTest.test_LbaasPoolMembersHandler_GET \
+LoadBalanceTest.test_LbaasPoolMemberHandler_DELETE \
+LoadBalanceTest.test_LbaasPoolMembersHandler_GET \
+LoadBalanceTest.test_LoadbalancerHandler_DELETE \
+LoadBalanceTest.test_LoadbalancersHandler_GET \
 
 
 
