@@ -9,6 +9,7 @@ from aliyunsdkecs.request.v20140526 import CreateVpcRequest
 from aliyunsdkecs.request.v20140526 import DeleteVpcRequest
 from aliyunsdkecs.request.v20140526 import ModifyVpcAttributeRequest
 from aliyunsdkecs.request.v20140526 import DescribeRouteTablesRequest
+from aliyunsdkecs.request.v20140526 import DescribeInstancesRequest
 from aliyunsdkecs.request.v20140526 import CreateRouteEntryRequest
 from aliyunsdkecs.request.v20140526 import DeleteRouteEntryRequest
 from aliyunsdkslb.request.v20140515 import DescribeLoadBalancersRequest
@@ -20,6 +21,9 @@ from aliyunsdkslb.request.v20140515 import DescribeLoadBalancerHTTPListenerAttri
 from aliyunsdkslb.request.v20140515 import DescribeHealthStatusRequest
 from aliyunsdkslb.request.v20140515 import CreateLoadBalancerHTTPListenerRequest
 from aliyunsdkslb.request.v20140515 import DeleteLoadBalancerListenerRequest
+from aliyunsdkslb.request.v20140515 import AddBackendServersRequest
+from aliyunsdkslb.request.v20140515 import SetBackendServersRequest
+from aliyunsdkslb.request.v20140515 import RemoveBackendServersRequest
 
 import json
 
@@ -688,7 +692,7 @@ class AliyunNetworkingProcessor(NetworkingProcessorBase):
 
         return portList
 
-    def getLoadBalancer(self, lbID):
+    def getLoadBalancerDetail(self, lbID):
         request = DescribeLoadBalancerAttributeRequest.DescribeLoadBalancerAttributeRequest()
         request.set_LoadBalancerId(lbID)
         request.set_accept_format('json')
@@ -734,8 +738,13 @@ class AliyunNetworkingProcessor(NetworkingProcessorBase):
             "SlaveZoneId":"cn-hangzhou-d"
         }
         '''
+        return resp
 
-        lb = resp
+    def getLoadBalancer(self, lbID):
+
+        lb = self.getLoadBalancerDetail(lbID)
+        if lb is None:
+            return None
 
         loadBalancer = {}
         loadBalancer["description"] = ""
@@ -1104,3 +1113,189 @@ class AliyunNetworkingProcessor(NetworkingProcessorBase):
             return False
 
         return True
+
+    def getPools(self):
+        #aliyun unsupport
+        #TODO
+        return []
+
+    def createPool(self, inPool):
+        #aliyun unsupport
+        #TODO
+        return {}
+
+    def getPool(self, poolID):
+        #aliyun unsupport
+        #TODO
+        return {}
+
+    def updatePool(self, poolID, inPool):
+        #aliyun unsupport
+        #TODO
+        return {}
+
+    def deletePool(self, poolID):
+        #aliyun unsupport
+        #TODO
+        return True
+
+    def getPoolMembers(self, poolID):
+        #aliyun unsupport pools, each loadbalancer has a default port, use loadbalancer id as pool id
+        loadbalanceID = poolID
+        loadbalancer = self.getLoadBalancerDetail(loadbalanceID)
+
+        members = []
+        for svr in loadbalancer["BackendServers"]["BackendServer"]:
+            member = {}
+            member["id"] = svr["ServerId"]
+            #query ip address by server id
+            member["address"] = self.queryServerIPByID(svr["ServerId"])
+            member["admin_state_up"] = True
+            member["protocol_port"] = 80
+            member["subnet_id"] = ""
+            member["tenant_id"] = ""
+            member["weight"] = svr["Weight"]/100
+
+            members.append(member)
+
+        return members
+
+    def createPoolMember(self, poolID, inMember):
+        loadbalanceID = poolID
+
+        serverList = []
+        server = {}
+        server["ServerId"] = self.queryServerIDByIP(inMember["address"])
+        server["Weight"] = float(inMember["weight"])*100
+        serverList.append(server)
+
+        request = AddBackendServersRequest.AddBackendServersRequest()
+        request.set_LoadBalancerId(loadbalanceID)
+        request.set_BackendServers(serverList)
+        request.set_accept_format('json')
+        response = self.clt.do_action(request)
+
+        resp = json.loads(response)
+
+        print "response: ", resp
+
+        if "Code" in resp.keys() and "Message" in resp.keys():
+            return None
+
+        member = {}
+        member["id"] = server["ServerId"]
+        member["address"] = inMember["address"]
+        member["admin_state_up"] = True
+        member["protocol_port"] = 80
+        member["subnet_id"] = ""
+        member["tenant_id"] = ""
+        member["weight"] = server["Weight"]
+
+    def getPoolMember(self, poolID, memberID):
+        loadbalanceID = poolID
+        loadbalancer = self.getLoadBalancerDetail(loadbalanceID)
+
+        for svr in loadbalancer["BackendServers"]["BackendServer"]:
+            if svr["ServerId"] == memberID:
+                member = {}
+                member["id"] = svr["ServerId"]
+                #query ip address by server id
+                member["address"] = self.queryServerIPByID(svr["ServerId"])
+                member["admin_state_up"] = True
+                member["protocol_port"] = 80
+                member["subnet_id"] = ""
+                member["tenant_id"] = ""
+                member["weight"] = svr["Weight"]/100
+
+                return member
+        return None
+
+    def updatePoolMember(self, poolID, memberID, inMember):
+        loadbalanceID = poolID
+        loadbalancer = self.getLoadBalancerDetail(loadbalanceID)
+
+        serverList = []
+        server = {}
+        server["ServerId"] = memberID
+        server["Weight"] = float(inMember["weight"])*100
+        serverList.append(server)
+
+        request = SetBackendServersRequest.SetBackendServersRequest()
+        request.set_LoadBalancerId(loadbalanceID)
+        request.set_BackendServers(serverList)
+        request.set_accept_format('json')
+        response = self.clt.do_action(request)
+
+        resp = json.loads(response)
+
+        print "response: ", resp
+
+        if "Code" in resp.keys() and "Message" in resp.keys():
+            return None
+
+        outMember = {}
+        outMember["id"] = memberID
+        outMember["address"] = self.queryServerIPByID(memberID)
+        outMember["admin_state_up"] = True
+        outMember["protocol_port"] = 80
+        outMember["subnet_id"] = ""
+        outMember["tenant_id"] = ""
+        outMember["weight"] = inMember["weight"]
+        return outMember
+
+    def deletePoolMember(self, poolID, memberID):
+        loadbalanceID = poolID
+
+        serverList = []
+        serverList.append(memberID)
+
+        request = RemoveBackendServersRequest.RemoveBackendServersRequest()
+        request.set_LoadBalancerId(loadbalanceID)
+        request.set_BackendServers(serverList)
+        request.set_accept_format('json')
+        response = self.clt.do_action(request)
+
+        resp = json.loads(response)
+
+        print "response: ", resp
+
+        if "Code" in resp.keys() and "Message" in resp.keys():
+            return False
+
+        return True
+
+    def queryServerIDByIP(self, id):
+        request = DescribeInstancesRequest.DescribeInstancesRequest()
+        request.set_accept_format('json')
+        response = self.clt.do_action(request)
+
+        resp = json.loads(response)
+
+        print "response: ", resp
+
+        if "Code" in resp.keys() and "Message" in resp.keys():
+            return None
+
+        for svr in resp["Instances"]["Instances"]:
+            if id == svr["InstanceId"]:
+                ip = svr["InnerIpAddress"]["IpAddress"][0]
+                return ip
+
+        return None
+
+    def queryServerIPByID(self, ip):
+        request = DescribeInstancesRequest.DescribeInstancesRequest()
+        request.set_accept_format('json')
+        response = self.clt.do_action(request)
+
+        resp = json.loads(response)
+
+        print "response: ", resp
+
+        if "Code" in resp.keys() and "Message" in resp.keys():
+            return None
+
+        for svr in resp["Instances"]["Instances"]:
+            if ip in svr["InnerIpAddress"]["IpAddress"]:
+                return svr["InstanceId"]
+        return None

@@ -817,7 +817,7 @@ class LbaasListenerHandler(NetworkingBaseHandler):
             self.set_status(200)
 
         resp = {
-            "listeners":listener
+            "listener":listener
         }
 
         self.send_json(resp)
@@ -836,7 +836,7 @@ class LbaasListenerHandler(NetworkingBaseHandler):
             self.set_status(200)
 
         resp = {
-            "listeners":outListener
+            "listener":outListener
         }
 
         self.send_json(resp)
@@ -856,265 +856,177 @@ class LbaasListenerHandler(NetworkingBaseHandler):
 class LbaasPoolsHandler(NetworkingBaseHandler):
     def get(self):
         print "[----------LbaasPoolsHandler GET----------]"
-        #TODO
 
-        pools = self.p.getLbaasPools()
+        processor = self.get_processor()
+        pools = processor.getPools()
 
-        if pools:
-            self.set_status(200)
-        else:
-            self.set_status(400)
+        if pools is None:
+            self.set_status(500)
             return
+        else:
+            self.set_status(200)
 
         resp = {
-            "pools":[
-                {
-                    "status": p.status,
-                    "lb_method": p.lb_method,
-                    "protocol": p.protocol,
-                    "description": p.description,
-                    "health_monitors": p.health_moniters,
-                    "subnet_id": p.subnet_id,
-                    "tenant_id": p.tenant_id,
-                    "admin_state_up": p.admin_state_up,
-                    "name": p.name,
-                    "members": p.members,
-                    "id": p.id,
-                    "vip_id": p.vip_id
-                }
-                for p in pools
-            ]
+            "pools":pools
         }
 
         self.send_json(resp)
 
     def post(self):
         print "[----------LbaasPoolsHandler POST----------]"
-        #TODO
 
-        pool = json.loads(self.request.body)["pool"]
+        inPool = json.loads(self.request.body)["pool"]
 
-        pool = self.p.createPool(pool["admin_state_up"],
-                pool["description"],
-                pool["lb_algorithm"],
-                pool["listener_id"],
-                pool["name"],
-                pool["protocol"],
-                pool["session_persistence"])
-
-        if pool:
-            self.set_status(201)
-        else:
-            self.set_status(409)
+        processor = self.get_processor()
+        outPool = processor.createPool(inPool)
+        if outPool is None:
+            self.set_status(500)
             return
+        else:
+            self.set_status(201)
 
         resp = {
-            "pool":{
-                "admin_state_up": pool.admin_state_up,
-                "description": pool.description,
-                "healthmonitor_id": pool.healthmoniter_id,
-                "id": pool.id,
-                "lb_algorithm": pool.lb_algorithm,
-                "listeners": pool.listeners,
-                "members": pool.members,
-                "name": pool.name,
-                "protocol": pool.protocol,
-                "session_persistence": pool.session_persistence,
-                "tenant_id": pool.tenant_id 
-            }
+            "pool":outPool
         }
 
         self.send_json(resp)
 
 class LbaasPoolHandler(NetworkingBaseHandler):
-    def get(self, pool_id):
+    def get(self, poolID):
         print "[----------LbaasPoolHandler GET----------]"
-        #TODO
 
-        pool = self.p.queryLbaasPool(pool_id)
-
-        resp = {
-            "pool":{
-                "admin_state_up": pool.admin_state_up,
-                "description": pool.description,
-                "healthmonitor_id": pool.healthmoniter_id,
-                "id": pool.id,
-                "lb_algorithm": pool.lb_algorithm,
-                "listeners": pool.listeners,
-                "members": pool.members,
-                "name": pool.name,
-                "protocol": pool.protocol,
-                "tenant_id": pool.tenant_id 
-            }
-        }
-
-        self.send_json(resp)
-
-    def put(self, pool_id):
-        print "[----------LbaasPoolHandler POST----------]"
-        #TODO
-
-        pool = json.loads(self.request.body)["pool"]
-
-        pool = self.p.updateLbaasPool(pool_id, pool["name"],
-                pool["description"],
-                pool["admin_state_up"],
-                pool["lb_algorithm"],
-                pool["session_persistence"])
-
-        if pool:
-            self.set_status(200)
-        else:
-            self.set_status(400)
+        processor = self.get_processor()
+        pool = processor.getPool(poolID)
+        if pool is None:
+            self.set_status(500)
             return
+        else:
+            self.set_status(200)
 
         resp = {
-            "pool":{
-                "status": pool.status,
-                "lb_method": pool.lb_method,
-                "protocol": pool.protocol,
-                "description": pool.description,
-                "health_monitors": pool.health_moniters,
-                "subnet_id": pool.subnet_id,
-                "tenant_id": pool.tenant_id,
-                "admin_state_up": pool.admin_state_up,
-                "name": pool.name,
-                "members": pool.members,
-                "id": pool.id,
-                "vip_id": pool.vip_id 
-            }
+            "pool":pool
         }
 
         self.send_json(resp)
 
-    def delete(self, pool_id):
-        print "[----------LbaasPoolHandler DELETE----------]"
-        #TODO
+    def put(self, poolID):
+        print "[----------LbaasPoolHandler POST----------]"
 
-        if self.p.deleteLbaasPool(pool_id):
-            self.set_status(204)
+        inPool = json.loads(self.request.body)["pool"]
+
+        processor = self.get_processor()
+        outPool = processor.updateListener(poolID, inPool)
+        if outPool is None:
+            self.set_status(500)
+            return
         else:
-            self.set_status(400)
+            self.set_status(200)
+
+        resp = {
+            "pool":outPool
+        }
+
+        self.send_json(resp)
+
+    def delete(self, poolID):
+        print "[----------LbaasPoolHandler DELETE----------]"
+
+        processor = self.get_processor()
+
+        if processor.deletePool(poolID):
+            self.set_status(204)
+            return
+        else:
+            self.set_status(500)
             return
 
 class LbaasPoolMembersHandler(NetworkingBaseHandler):
-    def get(self, pool_id):
+    def get(self, poolID):
         print "[----------LbaasPoolMembersHandler GET----------]"
-        #TODO
 
-        members = self.p.queryLbaasPoolMembers(pool_id)
+        processor = self.get_processor()
+        members = processor.getPoolMembers(poolID)
+
+        if members is None:
+            self.set_status(500)
+            return
+        else:
+            self.set_status(200)
 
         resp = {
-            "members":[
-                {
-                    "address": m.address,
-                    "admin_state_up": m.admin_state_up,
-                    "id": m.id,
-                    "protocol_port": m.protocol_port,
-                    "subnet_id": m.subnet_id,
-                    "tenant_id": m.tenant_id,
-                    "weight": m.weight
-                }
-                for m in members
-            ]
+            "members":members
         }
 
         self.send_json(resp)
 
-    def post(self, pool_id):
+    def post(self, poolID):
         print "[----------LbaasPoolMembersHandler POST----------]"
-        #TODO
 
-        member = json.loads(self.request.body)["member"]
+        inMember = json.loads(self.request.body)["member"]
 
-        member = self.p.addMemberToPool(pool_id,
-                member["address"],
-                member["admin_state_up"],
-                member["protocol_port"],
-                member["subnet_id"],
-                member["weight"])
-
-        if member:
-            self.set_status(201)
-        else:
-            self.set_status(400)
+        processor = self.get_processor()
+        outMember = processor.createPoolMember(inMember)
+        if outMember is None:
+            self.set_status(500)
             return
+        else:
+            self.set_status(201)
 
         resp = {
-            "member":{
-                "address": member.address,
-                "admin_state_up": member.admin_state_up,
-                "id": member.id,
-                "protocol_port": member.protocol_port,
-                "subnet_id": member.subnet_id,
-                "tenant_id": member.tenant_id,
-                "weight": member.weight
-            }
+            "member":outMember
         }
 
         self.send_json(resp)
 
 class LbaasPoolMemberHandler(NetworkingBaseHandler):
-    def get(self, pool_id, member_id):
+    def get(self, poolID, memberID):
         print "[----------LbaasPoolMemberHandler GET----------]"
-        #TODO
 
-        member = self.p.queryLbaasPoolMember(pool_id, member_id)
-
-        if member:
-            self.set_status(200)
-        else:
-            self.set_status(400)
+        processor = self.get_processor()
+        member = processor.getPoolMember(poolID, memberID)
+        if member is None:
+            self.set_status(500)
             return
+        else:
+            self.set_status(200)
 
         resp = {
-            "member":{
-                "address": member.address,
-                "admin_state_up": member.admin_state_up,
-                "id": member.id,
-                "protocol_port": member.protocol_port,
-                "subnet_id": member.subnet_id,
-                "tenant_id": member.tenant_id,
-                "weight": member.weight
-            }
+            "member":member
         }
 
         self.send_json(resp)
 
-    def put(self, pool_id, member_id):
+
+    def put(self, poolID, memberID):
         print "[----------LbaasPoolMemberHandler PUT----------]"
-        #TODO
 
-        member = json.loads(self.request.body)["member"]
+        inMember = json.loads(self.request.body)["member"]
 
-        if member:
-            self.set_status(200)
-        else:
-            self.set_status(400)
+        processor = self.get_processor()
+        outMember = processor.updatePoolMember(poolID, memberID, inMember)
+        if outMember is None:
+            self.set_status(500)
             return
+        else:
+            self.set_status(200)
 
         resp = {
-            "member":{
-                "address": member.address,
-                "admin_state_up": member.admin_state_up,
-                "id": member.id,
-                "protocol_port": member.protocol_port,
-                "subnet_id": member.subnet_id,
-                "tenant_id": member.tenant_id,
-                "weight": member.weight
-            }
+            "member":outMember
         }
 
         self.send_json(resp)
 
-    def delete(self, pool_id, member_id):
+    def delete(self, poolID, memberID):
         print "[----------LbaasPoolMemberHandler DELETE----------]"
-        #TODO
 
-        if self.p.deleteLbaasPoolMember(pool_id, member_id):
+        processor = self.get_processor()
+
+        if processor.deletePoolMember(poolID, memberID):
             self.set_status(204)
+            return
         else:
-            self.set_status(400)
+            self.set_status(500)
+            return
 
 class LbaasHealthMonitorsHandler(NetworkingBaseHandler):
     def post(self):

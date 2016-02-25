@@ -97,3 +97,33 @@ class NetworkingProcessorBase():
 
     def deleteListener(self, listenerID):
         pass
+
+    def getPools(self):
+        pass
+
+    def createPool(self, inPool):
+        pass
+
+    def getPool(self, poolID):
+        pass
+
+    def updatePool(self, poolID, inPool):
+        pass
+
+    def deletePool(self, poolID):
+        pass
+
+    def getPoolMembers(self, poolID):
+        pass
+
+    def createPoolMember(self, poolID, inMember):
+        pass
+
+    def getPoolMember(self, poolID, memberID):
+        pass
+
+    def updatePoolMember(self, poolID, memberID, inMember):
+        pass
+
+    def deletePoolMember(self, poolID, memberID):
+        pass

@@ -117,21 +117,21 @@ DELETE
 	备注：阿里缺字段,阿里云的listener没有唯一标识符如ID、名称等，使用loadbalancer_id和listener_port拼接为listener_id
 6)/v2.0/lbass/pools 
 GET
-	完成情况：努力开发中
-	备注：无
+	完成情况：其他问题
+	备注：阿里云每个loadbalancer只有一个默认的pool，故pool相关接口无法实现，为实现member相关接口，使用loadbalancer_id作为pool_id传给后台进行member相关操作
 POST
-	完成情况：努力开发中
-	备注：无
+	完成情况：其他问题
+	备注：阿里云每个loadbalancer只有一个默认的pool，故pool相关接口无法实现，为实现member相关接口，使用loadbalancer_id作为pool_id传给后台进行member相关操作
 7)/v2.0/lbass/pools/{pool_id}
 GET
-	完成情况：努力开发中
-	备注：无
+	完成情况：其他问题
+	备注：阿里云每个loadbalancer只有一个默认的pool，故pool相关接口无法实现，为实现member相关接口，使用loadbalancer_id作为pool_id传给后台进行member相关操作
 PUT
-	完成情况：努力开发中
-	备注：无
+	完成情况：其他问题
+	备注：阿里云每个loadbalancer只有一个默认的pool，故pool相关接口无法实现，为实现member相关接口，使用loadbalancer_id作为pool_id传给后台进行member相关操作
 DELETE
-	完成情况：努力开发中
-	备注：无
+	完成情况：其他问题
+	备注：阿里云每个loadbalancer只有一个默认的pool，故pool相关接口无法实现，为实现member相关接口，使用loadbalancer_id作为pool_id传给后台进行member相关操作
 8)/v2.0/lbass/pools/{pool_id}/members
 GET
 	完成情况：努力开发中
