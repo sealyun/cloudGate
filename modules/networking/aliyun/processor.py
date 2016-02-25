@@ -1170,7 +1170,7 @@ class AliyunNetworkingProcessor(NetworkingProcessorBase):
         server = {}
         server["ServerId"] = self.queryServerIDByIP(inMember["address"])
         weight = int(float(inMember["weight"])*100)
-        server["Weight"] = str(weight)
+        server["Weight"] = weight
         serverList.append(server)
         print "members: ", serverList
 
