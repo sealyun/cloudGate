@@ -636,6 +636,8 @@ class AliyunNetworkingProcessor(NetworkingProcessorBase):
     def createLoadBalancer(self, inLoadBalancer):
         request = CreateLoadBalancerRequest.CreateLoadBalancerRequest()
         request.set_LoadBalancerName(inLoadBalancer["name"])
+        #create classic network loadbalancer
+        #vpc loadbalancer need set vpc id and switch id
         request.set_accept_format('json')
         response = self.clt.do_action(request)
         resp = json.loads(response)
@@ -1280,7 +1282,7 @@ class AliyunNetworkingProcessor(NetworkingProcessorBase):
 
         for svr in resp["Instances"]["Instance"]:
             if id == svr["InstanceId"]:
-                ip = svr["InnerIpAddress"]["IpAddress"][0]
+                ip = svr["VpcAttributes"]["NatIpAddress"]
                 return ip
 
         return None
@@ -1298,6 +1300,6 @@ class AliyunNetworkingProcessor(NetworkingProcessorBase):
             return None
 
         for svr in resp["Instances"]["Instance"]:
-            if ip in svr["InnerIpAddress"]["IpAddress"]:
+            if ip == svr["VpcAttributes"]["NatIpAddress"]:
                 return svr["InstanceId"]
         return None

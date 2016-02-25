@@ -236,7 +236,7 @@ class LoadBalanceTest(unittest.TestCase):
     def test_LbaasPoolMembersHandler_POST(self):
         print "\n----------test_LbaasPoolMembersHandler_POST----------"
         data = '{"member": \
-                {"address": "10.47.44.13", \
+                {"address": "100.96.178.13", \
                 "admin_state_up": true, \
                 "protocol_port": "80", \
                 "subnet_id": "013d3059-87a4-45a5-91e9-d721068ae0b2", \
