@@ -1196,6 +1196,7 @@ class AliyunNetworkingProcessor(NetworkingProcessorBase):
         member["subnet_id"] = ""
         member["tenant_id"] = ""
         member["weight"] = server["Weight"]
+        return member
 
     def getPoolMember(self, poolID, memberID):
         loadbalanceID = poolID
