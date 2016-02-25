@@ -1255,10 +1255,11 @@ class AliyunNetworkingProcessor(NetworkingProcessorBase):
 
         serverList = []
         serverList.append(memberID)
+        backendServers = json.dumps(serverList)
 
         request = RemoveBackendServersRequest.RemoveBackendServersRequest()
         request.set_LoadBalancerId(loadbalanceID)
-        request.set_BackendServers(serverList)
+        request.set_BackendServers(backendServers)
         request.set_accept_format('json')
         response = self.clt.do_action(request)
 
