@@ -169,7 +169,6 @@ class AliyunComputeProcessor(ComputeProcessorBase):
     
     def queryServersDetails(self, tenant_id, changes_since, image,
             flavor, name, status, host, limit, marker):
-        
         regions = self._queryRegions()
         #print "---regions:"
         #print json.dumps(regions, indent=4)
@@ -177,8 +176,8 @@ class AliyunComputeProcessor(ComputeProcessorBase):
         for region in regions["Regions"]["Region"]:
             id = region["RegionId"]
             servers += self._queryServersDetails(tenant_id, changes_since, image, flavor, name, status, host, limit, marker, id)
-        print "------servers:"
-        print json.dumps(servers, indent=4)
+        #print "------servers:"
+        #print json.dumps(servers, indent=4)
         return {}, {"servers": servers}
 
     def _queryServersDetails(self, tenant_id, changes_since, image,
@@ -260,7 +259,7 @@ class AliyunComputeProcessor(ComputeProcessorBase):
                     }
                     ],
                     "metadata": {
-                    "My Server Name": s["InstanceName"]
+                        "My Server Name": s["InstanceName"]
                     },
                     "name": s["InstanceName"],
                     "accessIPv4": "",  #todo
@@ -279,10 +278,10 @@ class AliyunComputeProcessor(ComputeProcessorBase):
                     "OS-SRV-USG:terminated_at": "",  #todo
                     "progress": 0,  #todo
                     "security_groups": [
-                    {
-                        "name": name
-                    }
-                    for name in s["SecurityGroupIds"]["SecurityGroupId"]
+                        {
+                            "name": name
+                        }
+                        for name in s["SecurityGroupIds"]["SecurityGroupId"]
                     ],
                     #"status": s["Status"],
                     "status": "ACTIVE" if s["Status"] != "Stopped" else "Stopped",
