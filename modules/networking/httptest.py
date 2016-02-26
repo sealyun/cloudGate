@@ -252,10 +252,25 @@ class LoadBalanceTest(unittest.TestCase):
             print "create member id: ", member_id
 
     def test_LbaasPoolMemberHandler_GET(self):
-        pass
+        print "\n----------test_LbaasPoolMemberHandler_GET----------"
+        global member_id
+        print "member id: ", member_id
+        response = requests.get(host + network_url_base + '/v2.0/lbaas/pools/' + loadbalancer_id + '/members/' + member_id, headers=headers)
+        print response.status_code
+        if response.status_code == 200:
+            j = json.loads(response.text)
+            print json.dumps(j, indent=1)
 
     def test_LbaasPoolMemberHandler_PUT(self):
-        pass
+        print "\n----------test_LbaasPoolMemberHandler_PUT----------"
+        global member
+        print "member id: ", member_id
+        data = '{"member": {"admin_state_up": false,"weight": 5}}'
+        response = requests.put(host + network_url_base + '/v2.0/lbaas/pools/' + loadbalancer_id + '/members/' + member_id, data=data, headers=headers)
+        print response.status_code
+        if response.status_code == 200:
+            j = json.loads(response.text)
+            print json.dumps(j, indent=1)
 
     def test_LbaasPoolMemberHandler_DELETE(self):
         print "\n----------test_LbaasPoolMemberHandler_DELETE----------"
