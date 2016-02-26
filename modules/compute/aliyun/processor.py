@@ -67,7 +67,7 @@ class AliyunComputeProcessor(ComputeProcessorBase):
             "id": "1",  
             "links": [
                 {
-                "href": "http://openstack.example.com/openstack/flavors/1",
+                "href": "",
                 "rel": "bookmark"
                 }
             ]
@@ -188,9 +188,9 @@ class AliyunComputeProcessor(ComputeProcessorBase):
 
         request.add_query_param('RegionId', region)
         # not support query by "changes_since"
-        #request.set_ImageId(image) if image else None
-        #request.set_InstanceType(flavor) if flavor else None
-        #request.set_InstanceName(name) if name else None
+        request.set_ImageId(image) if image else None
+        request.set_InstanceType(flavor) if flavor else None
+        request.set_InstanceName(name) if name else None
         #request.set_Status(status) if status else None
         # not support query by "host"
         #request.set_PageSize(limit) if limit else None
@@ -231,7 +231,7 @@ class AliyunComputeProcessor(ComputeProcessorBase):
                         "id": s["InstanceType"],  
                         "links": [  # todo
                             {
-                            "href": "http://openstack.example.com/openstack/flavors/1",
+                            "href": "",
                             "rel": "bookmark"
                             }
                         ]
@@ -336,7 +336,7 @@ class AliyunComputeProcessor(ComputeProcessorBase):
                         "id": s["InstanceType"],  
                         "links": [  # todo
                             {
-                            "href": "http://openstack.example.com/openstack/flavors/1",
+                            "href": "",
                             "rel": "bookmark"
                             }
                         ]
@@ -799,11 +799,11 @@ class AliyunComputeProcessor(ComputeProcessorBase):
                     "id": "1",
                     "links": [
                         {
-                            "href": "http://openstack.example.com/v2.1/openstack/flavors/1",
+                            "href": "",
                             "rel": "self"
                         },
                         {
-                            "href": "http://openstack.example.com/openstack/flavors/1",
+                            "href": "",
                             "rel": "bookmark"
                         }
                 }
@@ -902,16 +902,16 @@ class AliyunComputeProcessor(ComputeProcessorBase):
                     "id": f["InstanceTypeId"],
                     "links": [
                         {
-                            "href": "http://openstack.example.com/v2.1/openstack/flavors/1",
+                            "href": "",
                             "rel": "self"
                         },
                         {
-                            "href": "http://openstack.example.com/openstack/flavors/1",
+                            "href": "",
                             "rel": "bookmark"
                         }
                     ],
                     "name": f["InstanceTypeId"],
-                    "ram": f["MemorySize"],
+                    "ram": 1024 * f["MemorySize"],
                     "swap": "",
                     "vcpus": f["CpuCoreCount"]
                 }
