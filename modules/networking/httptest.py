@@ -6,11 +6,14 @@ import time
 
 import requests
 
-host = 'http://121.199.9.187:8082'
-network_url_base = "/networking"
+from cloudGate.common.define import *
+from cloudGate.config import *
 
-headers = {}
-headers["X-Auth-Token"] = "admintest:admintest"
+#host = 'http://121.199.9.187:8082'
+network_url_base = 'http://' + HOST + ':' + PORT + NETWORKING_BASE_URL
+
+headers = {"X-Auth-Token": "admintest:admintest"}
+#headers["X-Auth-Token"] = "admintest:admintest"
 
 network_id = ""
 loadbalancer_id = ""
@@ -27,7 +30,7 @@ class NetworkTest(unittest.TestCase):
 
     def test_NetworksHandler_GET(self):
         print "\n----------test_NetworksHandler_GET----------"
-        response = requests.get(host + network_url_base + '/v2.0/networks.json', headers=headers)
+        response = requests.get(network_url_base + '/v2.0/networks.json', headers=headers)
         print response.status_code
         if response.status_code == 200:
             j = json.loads(response.text)
@@ -37,7 +40,7 @@ class NetworkTest(unittest.TestCase):
         print "\n----------test_NetworksHandler_POST----------"
         data = '{"network":{"name": "vpc-1", "admin_state_up": false, "shared": false,"router:external": false,\
                 "tenant_id": "4fd44f30292945e481c7b8a0c8908869"}}'
-        response = requests.post(host + network_url_base + '/v2.0/networks.json', data=data, headers=headers)
+        response = requests.post(network_url_base + '/v2.0/networks.json', data=data, headers=headers)
         print response.status_code
         if response.status_code == 201:
             j = json.loads(response.text)
@@ -51,7 +54,7 @@ class NetworkTest(unittest.TestCase):
         print "\n----------test_NetworkHandler_GET----------"
         global network_id
         print "network id: ", network_id
-        response = requests.get(host + network_url_base + '/v2.0/networks/' + network_id + '.json', headers=headers)
+        response = requests.get(network_url_base + '/v2.0/networks/' + network_id + '.json', headers=headers)
         print response.status_code
         if response.status_code == 200:
             j = json.loads(response.text)
@@ -62,7 +65,7 @@ class NetworkTest(unittest.TestCase):
         global network_id
         print "network id: ", network_id
         data = '{"network":{"name": "vpc-2"}}'
-        response = requests.put(host + network_url_base + '/v2.0/networks/' + network_id + '.json', data=data, headers=headers)
+        response = requests.put(network_url_base + '/v2.0/networks/' + network_id + '.json', data=data, headers=headers)
         print response.status_code
         if response.status_code == 200:
             j = json.loads(response.text)
@@ -74,7 +77,7 @@ class NetworkTest(unittest.TestCase):
         time.sleep(5)
         global network_id
         print "network id: ", network_id
-        response = requests.delete(host + network_url_base + '/v2.0/networks/' + network_id + '.json', headers=headers)
+        response = requests.delete(network_url_base + '/v2.0/networks/' + network_id + '.json', headers=headers)
         print response.status_code
         print response.text
 
@@ -87,7 +90,7 @@ class LoadBalanceTest(unittest.TestCase):
 
     def test_LoadbalancersHandler_GET(self):
         print "\n----------test_LoadbalancersHandler_GET----------"
-        response = requests.get(host + network_url_base + '/v2.0/lbaas/loadbalancers', headers=headers)
+        response = requests.get(network_url_base + '/v2.0/lbaas/loadbalancers', headers=headers)
         print response.status_code
         if response.status_code == 200:
             j = json.loads(response.text)
@@ -102,7 +105,7 @@ class LoadBalanceTest(unittest.TestCase):
                 "vip_address": "10.0.0.4", \
                 "admin_state_up": true, \
                 "provider": "sample_provider"}}'
-        response = requests.post(host + network_url_base + '/v2.0/lbaas/loadbalancers', data=data, headers=headers)
+        response = requests.post(network_url_base + '/v2.0/lbaas/loadbalancers', data=data, headers=headers)
         print response.status_code
         if response.status_code == 201:
             j = json.loads(response.text)
@@ -116,7 +119,7 @@ class LoadBalanceTest(unittest.TestCase):
         print "\n----------test_LoadbalancerHandler_GET----------"
         global loadbalancer_id
         print "loadbalancer id: ", loadbalancer_id
-        response = requests.get(host + network_url_base + '/v2.0/lbaas/loadbalancers/' + loadbalancer_id, headers=headers)
+        response = requests.get(network_url_base + '/v2.0/lbaas/loadbalancers/' + loadbalancer_id, headers=headers)
         print response.status_code
         if response.status_code == 200:
             j = json.loads(response.text)
@@ -127,7 +130,7 @@ class LoadBalanceTest(unittest.TestCase):
         global loadbalancer_id
         print "loadbalancer id: ", loadbalancer_id
         data = '{"loadbalancer": {"admin_state_up": false,"description": "simple lb2","name": "loadbalancer2"}}'
-        response = requests.put(host + network_url_base + '/v2.0/lbaas/loadbalancers/' + loadbalancer_id, data=data, headers=headers)
+        response = requests.put(network_url_base + '/v2.0/lbaas/loadbalancers/' + loadbalancer_id, data=data, headers=headers)
         print response.status_code
         if response.status_code == 200:
             j = json.loads(response.text)
@@ -139,7 +142,7 @@ class LoadBalanceTest(unittest.TestCase):
         time.sleep(5)
         global loadbalancer_id
         print "loadbalancer id: ", loadbalancer_id
-        response = requests.delete(host + network_url_base + '/v2.0/lbaas/loadbalancers/' + loadbalancer_id, headers=headers)
+        response = requests.delete(network_url_base + '/v2.0/lbaas/loadbalancers/' + loadbalancer_id, headers=headers)
         print response.status_code
         print response.text
 
@@ -147,7 +150,7 @@ class LoadBalanceTest(unittest.TestCase):
         print "\n----------test_LoadbalancerStatusesHandler_GET----------"
         global loadbalancer_id
         print "loadbalancer id: ", loadbalancer_id
-        response = requests.get(host + network_url_base + '/v2.0/lbaas/loadbalancers/' + loadbalancer_id + '/statuses', headers=headers)
+        response = requests.get(network_url_base + '/v2.0/lbaas/loadbalancers/' + loadbalancer_id + '/statuses', headers=headers)
         print response.status_code
         if response.status_code == 200:
             j = json.loads(response.text)
@@ -155,7 +158,7 @@ class LoadBalanceTest(unittest.TestCase):
 
     def test_LbaasListenersHandler_GET(self):
         print "\n----------test_LbaasListenersHandler_GET----------"
-        response = requests.get(host + network_url_base + '/v2.0/lbaas/listeners', headers=headers)
+        response = requests.get(network_url_base + '/v2.0/lbaas/listeners', headers=headers)
         print response.status_code
         if response.status_code == 200:
             j = json.loads(response.text)
@@ -179,7 +182,7 @@ class LoadBalanceTest(unittest.TestCase):
         jd["listener"] = jl
 
         data = json.dumps(jd)
-        response = requests.post(host + network_url_base + '/v2.0/lbaas/listeners', data=data, headers=headers)
+        response = requests.post(network_url_base + '/v2.0/lbaas/listeners', data=data, headers=headers)
         print response.status_code
         if response.status_code == 201:
             j = json.loads(response.text)
@@ -193,7 +196,7 @@ class LoadBalanceTest(unittest.TestCase):
         print "\n----------test_LbaasListenerHandler_GET----------"
         global listener_id
         print "listener id: ", listener_id
-        response = requests.get(host + network_url_base + '/v2.0/lbaas/listeners/' + listener_id, headers=headers)
+        response = requests.get(network_url_base + '/v2.0/lbaas/listeners/' + listener_id, headers=headers)
         print response.status_code
         if response.status_code == 200:
             j = json.loads(response.text)
@@ -209,7 +212,7 @@ class LoadBalanceTest(unittest.TestCase):
                 "name": "listener2", \
                 "default_tls_container_ref": "https://barbican.endpoint/containers/cc", \
                 "sni_container_refs":["https://barbican.endpoint/containers/dd"]}}'
-        response = requests.put(host + network_url_base + '/v2.0/lbaas/listeners/' + listener_id, data=data, headers=headers)
+        response = requests.put(network_url_base + '/v2.0/lbaas/listeners/' + listener_id, data=data, headers=headers)
         print response.status_code
         if response.status_code == 200:
             j = json.loads(response.text)
@@ -221,13 +224,13 @@ class LoadBalanceTest(unittest.TestCase):
         time.sleep(5)
         global listener_id
         print "listener id: ", listener_id
-        response = requests.delete(host + network_url_base + '/v2.0/lbaas/listeners/' + listener_id, headers=headers)
+        response = requests.delete(network_url_base + '/v2.0/lbaas/listeners/' + listener_id, headers=headers)
         print response.status_code
         print response.text
 
     def test_LbaasPoolMembersHandler_GET(self):
         print "\n----------test_LbaasPoolMembersHandler_GET----------"
-        response = requests.get(host + network_url_base + '/v2.0/lbaas/pools/' + loadbalancer_id + '/members', headers=headers)
+        response = requests.get(network_url_base + '/v2.0/lbaas/pools/' + loadbalancer_id + '/members', headers=headers)
         print response.status_code
         if response.status_code == 200:
             j = json.loads(response.text)
@@ -241,7 +244,7 @@ class LoadBalanceTest(unittest.TestCase):
                 "protocol_port": "80", \
                 "subnet_id": "013d3059-87a4-45a5-91e9-d721068ae0b2", \
                 "weight": "1"}}'
-        response = requests.post(host + network_url_base + '/v2.0/lbaas/pools/' + loadbalancer_id + '/members', data=data, headers=headers)
+        response = requests.post(network_url_base + '/v2.0/lbaas/pools/' + loadbalancer_id + '/members', data=data, headers=headers)
         print response.status_code
         if response.status_code == 201:
             j = json.loads(response.text)
@@ -255,7 +258,7 @@ class LoadBalanceTest(unittest.TestCase):
         print "\n----------test_LbaasPoolMemberHandler_GET----------"
         global member_id
         print "member id: ", member_id
-        response = requests.get(host + network_url_base + '/v2.0/lbaas/pools/' + loadbalancer_id + '/members/' + member_id, headers=headers)
+        response = requests.get(network_url_base + '/v2.0/lbaas/pools/' + loadbalancer_id + '/members/' + member_id, headers=headers)
         print response.status_code
         if response.status_code == 200:
             j = json.loads(response.text)
@@ -266,7 +269,7 @@ class LoadBalanceTest(unittest.TestCase):
         global member
         print "member id: ", member_id
         data = '{"member": {"admin_state_up": false,"weight": 5}}'
-        response = requests.put(host + network_url_base + '/v2.0/lbaas/pools/' + loadbalancer_id + '/members/' + member_id, data=data, headers=headers)
+        response = requests.put(network_url_base + '/v2.0/lbaas/pools/' + loadbalancer_id + '/members/' + member_id, data=data, headers=headers)
         print response.status_code
         if response.status_code == 200:
             j = json.loads(response.text)
@@ -278,7 +281,7 @@ class LoadBalanceTest(unittest.TestCase):
         time.sleep(5)
         global member_id
         print "member id: ", member_id
-        response = requests.delete(host + network_url_base + '/v2.0/lbaas/pools/' + loadbalancer_id + '/members/' + member_id, headers=headers)
+        response = requests.delete(network_url_base + '/v2.0/lbaas/pools/' + loadbalancer_id + '/members/' + member_id, headers=headers)
         print response.status_code
         print response.text
 
