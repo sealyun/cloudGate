@@ -1157,7 +1157,7 @@ class AliyunNetworkingProcessor(NetworkingProcessorBase):
             member["protocol_port"] = 80
             member["subnet_id"] = ""
             member["tenant_id"] = ""
-            member["weight"] = svr["Weight"]/100
+            member["weight"] = svr["Weight"]
 
             members.append(member)
 
@@ -1169,8 +1169,8 @@ class AliyunNetworkingProcessor(NetworkingProcessorBase):
         serverList = []
         server = {}
         server["ServerId"] = self.queryServerIDByIP(inMember["address"])
-        weight = int(float(inMember["weight"])*100)
-        server["Weight"] = weight
+        #weight = int(float(inMember["weight"])*100)
+        server["Weight"] = inMember["weight"]
         serverList.append(server)
         backendServers = json.dumps(serverList)
         print "members: ", backendServers
@@ -1212,7 +1212,7 @@ class AliyunNetworkingProcessor(NetworkingProcessorBase):
                 member["protocol_port"] = 80
                 member["subnet_id"] = ""
                 member["tenant_id"] = ""
-                member["weight"] = svr["Weight"]/100
+                member["weight"] = svr["Weight"]
 
                 return member
         return None
@@ -1224,12 +1224,14 @@ class AliyunNetworkingProcessor(NetworkingProcessorBase):
         serverList = []
         server = {}
         server["ServerId"] = memberID
-        server["Weight"] = float(inMember["weight"])*100
+        server["Weight"] = inMember["weight"]
         serverList.append(server)
+        backendServers = json.dumps(serverList)
+        print "members: ", backendServers
 
         request = SetBackendServersRequest.SetBackendServersRequest()
         request.set_LoadBalancerId(loadbalanceID)
-        request.set_BackendServers(serverList)
+        request.set_BackendServers(backendServers)
         request.set_accept_format('json')
         response = self.clt.do_action(request)
 
@@ -1243,7 +1245,7 @@ class AliyunNetworkingProcessor(NetworkingProcessorBase):
         outMember = {}
         outMember["id"] = memberID
         outMember["address"] = self.queryServerIPByID(memberID)
-        outMember["admin_state_up"] = True
+        outMember["admin_state_up"] = inMember["admin_state_up"]
         outMember["protocol_port"] = 80
         outMember["subnet_id"] = ""
         outMember["tenant_id"] = ""
