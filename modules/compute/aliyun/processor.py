@@ -12,12 +12,14 @@ from aliyunsdkecs.request.v20140526 import JoinSecurityGroupRequest
 from aliyunsdkecs.request.v20140526 import LeaveSecurityGroupRequest
 from aliyunsdkecs.request.v20140526 import DescribeInstanceTypesRequest
 from aliyunsdkecs.request.v20140526 import AllocateEipAddressRequest
+from aliyunsdkecs.request.v20140526 import AssociateEipAddressRequest
 from aliyunsdkecs.request.v20140526 import DescribeEipAddressesRequest
 from aliyunsdkecs.request.v20140526 import DescribeRegionsRequest
 from aliyunsdkecs.request.v20140526 import ReleaseEipAddressRequest
 from aliyunsdkecs.request.v20140526 import UnassociateEipAddressRequest
 from aliyunsdkecs.request.v20140526 import DescribeZonesRequest
-
+from aliyunsdkecs.request.v20140526 import CreateImageRequest
+from aliyunsdkecs.request.v20140526 import DescribeInstanceVncUrlRequest
 
 from aliyunsdkecs.request.v20140526 import AttachDiskRequest
 from aliyunsdkecs.request.v20140526 import DetachDiskRequest
@@ -140,16 +142,17 @@ class AliyunComputeProcessor(ComputeProcessorBase):
         }
 	    	
     def createServer(self, tenant_id, name, imageRef, flavorRef, metadata):
-        request = CreateInstancesRequest.CreateInstancesRequest()
+        request = CreateInstanceRequest.CreateInstanceRequest()
         request.set_accept_format('json')
         request.set_InstanceName(name)
         request.set_ImageId(imageRef)
-        #todo set flavorRef
-        #todo set metadata
+        request.set_InstanceType(flavorRef)
+        request.set_SecurityGroupId("sg-62m1xgqht")
+        #request.add_query_param("RegionId", "cn-hongkong")
         response = self.clt.do_action(request)
 
         resp = json.loads(response)
-        #print "resp :", json.dumps(resp, indent=4)
+        print "resp :", json.dumps(resp, indent=4)
         if "InstanceId" in resp:
             headers, s = self.query_server(tenant_id, resp["InstanceId"])
             return {}, {
@@ -430,7 +433,8 @@ class AliyunComputeProcessor(ComputeProcessorBase):
         request.set_accept_format("json")
         request.set_InstanceId(server_id)
 
-        self.clt.do_action(request)
+        rep = self.clt.do_action(request)
+        print "---rep:", rep
     
     def createFloatingIp(tenant_id, pool):
         request = AllocateEipAddressRequest.AllocateEipAddressRequest()
@@ -589,34 +593,39 @@ class AliyunComputeProcessor(ComputeProcessorBase):
         
         return resp
 
+    def _queryFloatingIpAllocationId(self, ip):
+        regions = self._queryRegions()
+        for region in regions["Regions"]["Region"]:
+            request = DescribeEipAddressesRequest.DescribeEipAddressesRequest()
+            request.set_accept_format("json")
+            request.add_query_param("RegionId", region['RegionId'])
+            response = self.clt.do_action(request)
+            resp = json.loads(response)
+            print "---resp:", resp
+            for eip in resp["EipAddresses"]["EipAddress"]:
+                if ip == eip["IpAddress"]:
+                    return eip["AllocationId"]
+        return ""
+
     def serverAction(self, tenant_id, server_id, action):
         if "addFixedIp" in action:  # depend network 
             pass 
         if "removeFixedIp" in action:  # depend network 
             pass 
         elif "addFloatingIp" in action:  # depend network
-            request = DescribeEipAddressesRequest.DescribeEipAddressesRequest()
-            request.set_accept_format("json")
-            request.set_EipAddress(action["addFloatingIp"]["address"])
-            response = self.clt.do_action(request)
-            resp = json.loads(response)
-
-            id = resp["EipAddresses"]["EipAddress"][0]["AllocationId"]
-
-            request = AllocateEipAddressRequest.AllocateEipAddressRequest()
+            id = self._queryFloatingIpAllocationId(action["addFloatingIp"]["address"])    
+            if not id:
+                return
+            request = AssociateEipAddressRequest.AssociateEipAddressRequest()
             request.set_accept_format("json")
             request.set_InstanceId(server_id)
             request.set_AllocationId(id)
             self.clt.do_action(request)
 
         elif "removeFloatingIp" in action:
-            request = DescribeEipAddressesRequest.DescribeEipAddressesRequest()
-            request.set_accept_format("json")
-            request.set_EipAddress(action["removeFloatingIp"]["address"])
-            response = self.clt.do_action(request)
-            resp = json.loads(response)
-
-            id = resp["EipAddresses"]["EipAddress"][0]["AllocationId"]
+            id = self._queryFloatingIpAllocationId(action["removeFloatingIp"]["address"])    
+            if not id:
+                return 
 
             request = UnassociateEipAddressRequest.UnassociateEipAddressRequest()
             request.set_accept_format("json")
@@ -625,16 +634,48 @@ class AliyunComputeProcessor(ComputeProcessorBase):
             self.clt.do_action(request)
 
         elif "attach" in action:  # depend volume
-            pass
+            '''
+            action
+            {
+                "attach": {
+                    "volume_id": "15e59938-07d5-11e1-90e3-e3dffe0c5983",
+                    "device": "/dev/vdb",
+                    "disk_bus": "ide",
+                    "device_type": "cdrom"
+                }
+            }
+            '''
+            self.serverAttachVolume(tenant_id, server_id, action["attach"]["volume_id"], None)
         elif "createImage" in action:  # depend image
-            pass
+            print "---createImage"
+            request = CreateImageRequest.CreateImageRequest()
+            request.set_accept_format('json')
+            request.set_SnapshotId(action["createImage"]["snapshot_id"])
+            request.set_ImageName(action["createImage"]["name"])
+
+            response = self.clt.do_action(request)
+            resp = json.loads(response)
+            print "---resp:", resp
         elif "forceDelete" in action:
+            print "----forceDelete"
             self.deleteServer(tenant_id, server_id)
 
         elif "lock" in action:
             pass
         elif "unlock" in action:
             pass
+        elif "os-getVNCConsole" in action:
+            request = DescribeInstanceVncUrlRequest.DescribeInstanceVncUrlRequest()
+            request.set_accept_format("json")
+            request.set_InstanceId(server_id)
+            response = self.clt.do_action(request)
+            res = json.loads(response)
+            return {}, {
+                 "console": {
+                 "type": "",
+                 "url": res["VncUrl"]
+                 }
+            }
         elif "reboot" in action:
             print "----reboot"
             print "server_id:", server_id
@@ -661,20 +702,28 @@ class AliyunComputeProcessor(ComputeProcessorBase):
             print 'rep:', s
         elif "addSecurityGroup" in action:
             print "------addSecurityGroup"
+            security_group_id = action["addSecurityGroup"]["name"] #todo
             print "server_id:", server_id
+            print "security_group_id:", security_group_id
             request = JoinSecurityGroupRequest.JoinSecurityGroupRequest()
             request.set_accept_format("json")
             request.set_InstanceId(server_id)
+            request.set_SecurityGroupId(security_group_id)
+
             s = self.clt.do_action(request)
             print 'rep:', s
         elif "removeSecurityGroup" in action:
             print "------removeSecurityGroup"
+            security_group_id = action["removeSecurityGroup"]["name"] #todo
             print "server_id:", server_id
+            print "security_group_id:", security_group_id
             request = LeaveSecurityGroupRequest.LeaveSecurityGroupRequest()
             request.set_accept_format("json")
             request.set_InstanceId(server_id)
+            request.set_SecurityGroupId(security_group_id)
             s = self.clt.do_action(request)
             print 'rep:', s
+        return {}, {}
     
     def serverAttachVolume(self, tenant_id, instance_id, volume_id, device):
         headers = {}

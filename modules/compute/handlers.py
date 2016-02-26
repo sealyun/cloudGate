@@ -115,8 +115,9 @@ class ServerActionHandler(ComputeBaseHandler):
     def post(self, tenant_id, server_id):
         self.get_processor()
         action = json.loads(self.request.body)
-        self.p.serverAction(tenant_id, server_id, action)
-
+        headers, body = self.p.serverAction(tenant_id, server_id, action)
+        if body:
+            self.send_json(body)
 
 class ServerVolumeHandler(ComputeBaseHandler):
     def post(self, tenant_id, server_id):
