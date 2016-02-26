@@ -140,7 +140,7 @@ class ImageHandler(ImageBaseHandler):
         }
         self.send_json(resp)
 
-    def head(self, image_id):
+    def bak_head(self, image_id):
         self.set_header('Content-Type', 'application/json')
         self.get_processor()
         i = self.p.queryImageId(image_id)
