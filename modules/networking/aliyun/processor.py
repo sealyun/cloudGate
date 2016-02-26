@@ -1245,7 +1245,7 @@ class AliyunNetworkingProcessor(NetworkingProcessorBase):
         outMember = {}
         outMember["id"] = memberID
         outMember["address"] = self.queryServerIPByID(memberID)
-        outMember["admin_state_up"] = True
+        outMember["admin_state_up"] = inMember["admin_state_up"]
         outMember["protocol_port"] = 80
         outMember["subnet_id"] = ""
         outMember["tenant_id"] = ""
