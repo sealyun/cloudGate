@@ -20,8 +20,8 @@ urls_v2_1 = [
     (COMPUTE_BASE_URL + r"/v2.1/([^/]+)/os-availability-zone", AvailabilityZoneHandler),
     (COMPUTE_BASE_URL + r"/v2.1/([^/]+)/os-quota-sets/([^/]+)", QuotaHandler),
        
-    (COMPUTE_BASE_URL + r"/v2.1/([^/]+)/extensions", ExtensionsHandler),
-    (COMPUTE_BASE_URL + r"/v2.1/([^/]+)//v2.1/{tenant_id}/limits", LimitsHandler),
+    #(COMPUTE_BASE_URL + r"/v2.1/([^/]+)/extensions", ExtensionsHandler),
+    #(COMPUTE_BASE_URL + r"/v2.1/([^/]+)//v2.1/{tenant_id}/limits", LimitsHandler),
 ]
 
 #if we support other version api, use urls = urls_v2_1 + urls_other_version
