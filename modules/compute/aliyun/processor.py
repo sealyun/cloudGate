@@ -148,20 +148,31 @@ class AliyunComputeProcessor(ComputeProcessorBase):
         request.set_ImageId(imageRef)
         request.set_InstanceType(flavorRef)
         request.set_SecurityGroupId("sg-62m1xgqht")
+        #request.set_VSwitchId("vsw-62b7n1bsk") #for test
         #request.add_query_param("RegionId", "cn-hongkong")
         response = self.clt.do_action(request)
-
         resp = json.loads(response)
         print "resp :", json.dumps(resp, indent=4)
+
+        return {}, {
+                "server": {
+                "OS-DCF:diskConfig": "AUTO",
+                "adminPass": "", #todo
+                "id": resp["InstanceId"],
+                "links": [],
+                "security_groups": []
+                }
+            }
         if "InstanceId" in resp:
-            headers, s = self.query_server(tenant_id, resp["InstanceId"])
+            headers, server = self.queryServer(tenant_id, resp["InstanceId"])
+            s = server["server"]
             return {}, {
                 "server": {
-                "OS-DCF:diskConfig": s["OS-DCF:diskConfig"],
-                "adminPass": "zPnp2GseTqG4", #todo
-                "id": s["id"],
-                "links": s["links"],
-                "security_groups": s["security_groups"]
+                "OS-DCF:diskConfig": "AUTO",
+                "adminPass": "", #todo
+                "id": resp["InstanceId"],
+                "links": [],
+                "security_groups": []
                 }
             }
         else:
