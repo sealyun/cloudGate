@@ -159,7 +159,7 @@ class LoadBalanceTest(unittest.TestCase):
             j = json.loads(response.text)
             print json.dumps(j, indent=1)
 
-     def test_LoadbalancerHandler_DELETE(self):
+    def test_LoadbalancerHandler_DELETE(self):
         print "\n----------test_LoadbalancerHandler_DELETE----------"
         raw_input("press enter to continue")
         print "sleep 3 second, waiting for the loadbalancer status change to be active"
