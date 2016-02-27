@@ -211,7 +211,7 @@ class AliyunComputeProcessor(ComputeProcessorBase):
 
         resp = json.loads(response)
         #print "---query serversdetail resp :", json.dumps(resp, indent=4)
-
+        
         if "Instances" not in resp.keys():
             return []
 
@@ -295,8 +295,8 @@ class AliyunComputeProcessor(ComputeProcessorBase):
                         for name in s["SecurityGroupIds"]["SecurityGroupId"]
                     ],
                     #"status": s["Status"],
-                    "status": "ACTIVE" if s["Status"] != "Stopped" else "Stopped",
-                    "host_status": "DOWN" if s["Status"] == "Stopped" else "UP",  #todo
+                    "status": "ACTIVE" if s["Status"] == "Running" else "SHUTOFF",
+                    "host_status": "UP" if s["Status"] == "Running" else "DOWN",  #todo
                     "tenant_id": "openstack",  #todo
                     "updated": s["ExpiredTime"],
                     "user_id": "fake"  #todo
@@ -312,11 +312,9 @@ class AliyunComputeProcessor(ComputeProcessorBase):
         response = self.clt.do_action(request)
         
         resp = json.loads(response)
-        #print "resp :", json.dumps(resp, indent=4)
 
         if "Instances" not in resp.keys() or len(resp["Instances"]["Instance"]) < 1:
             return {}, {}
-
         s = resp["Instances"]["Instance"][0]
         headers = {}
         body = {
@@ -375,7 +373,7 @@ class AliyunComputeProcessor(ComputeProcessorBase):
                     }
                     ],
                     "metadata": {
-                    "My Server Name": s["InstanceName"]
+                        "My Server Name": s["InstanceName"]
                     },
                     "name": s["InstanceName"],
                     "accessIPv4": "",  #todo
@@ -394,14 +392,14 @@ class AliyunComputeProcessor(ComputeProcessorBase):
                     "OS-SRV-USG:terminated_at": "",  #todo
                     "progress": 0,  #todo
                     "security_groups": [
-                    {
-                        "name": name
-                    }
-                    for name in s["SecurityGroupIds"]["SecurityGroupId"]
+                        {
+                            "name": name
+                        }
+                        for name in s["SecurityGroupIds"]["SecurityGroupId"]
                     ],
                     #"status": s["Status"],
-                    "status": "ACTIVE",
-                    "host_status": "UP",  #todo
+                    "status": "ACTIVE" if s["Status"] == "Running" else "SHUTOFF",
+                    "host_status": "UP" if s["Status"] == "Running" else "DOWN",  #todo
                     "tenant_id": "openstack",  #todo
                     "updated": s["ExpiredTime"],
                     "user_id": "fake"  #todo
