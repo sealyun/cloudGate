@@ -83,7 +83,7 @@ class ImagesHandler(ImageBaseHandler):
         resp = {
             "image": {
                 "status": "queued",
-                "name": "Ubuntu",
+                "name": name,
                 "tags": [],
                 "container_format": "bare",
                 "created_at": "2015-11-29T22:21:42Z",
@@ -92,12 +92,12 @@ class ImagesHandler(ImageBaseHandler):
                 "updated_at": "2015-11-29T22:21:42Z",
                 "visibility": "private",
                 "locations": [],
-                "location": "http://www.baidu.com",
-                "self": "/v2/images/b2173dd3-7ad6-4362-baa6-a68bce3565cb",
+                "location": "",
+                "self": "/v2/images/" + i['ImageId'],
                 "min_disk": 0,
                 "protected": False,
-                "id": "b2173dd3-7ad6-4362-baa6-a68bce3565cb",
-                "file": "/v2/images/b2173dd3-7ad6-4362-baa6-a68bce3565cb/file",
+                "id": i['ImageId'],
+                "file": "/v2/images/" + i['ImageId'] + "/file",
                 "checksum": None,
                 "owner": "bab7d5c60cd041a0a36f7c4b6e1dd978",
                 "virtual_size": None,
@@ -183,32 +183,13 @@ class ImageHandler(ImageBaseHandler):
 
     def patch(self, image_id):
         self.get_processor()
-        update_list = json.laods(self.request.body)
+        update_list = json.loads(self.request.body)
         #"op" "path" "value"
         if update_list['op'] == 'replace' and update_list['path'] == 'ImageName':
             i = self.p.updateImage(image_id, update_list['value'])
 
-            resp = {
-                "id": i.id,
-                "name": i.name,
-                "status": i.status,
-                "visibility": i.visibility,
-                "size": i.size,
-                "checksum": i.checksum,
-                "tags": i.tags,
-                "create_at": i.create_at,
-                "updated_at": i.updated_at,
-                "self": "/v2/images/" + i.id,
-                "file": "/v2/images/" + i.id + "/file",
-                "schema": i.schema,
-                "owner": i.owner,
-                "min_ram": i.min_ram,
-                "min_disk": i.min_disk,
-                "disk_format": i.disk_format,
-                "virtual_size": i.virtual_size
-                # "container_format":i.container_format,
-            }
-            self.send_json(resp)
+
+            self.send_json(self.p.queryImageId(image_id))
         return
 
     def delete(self, image_id):
