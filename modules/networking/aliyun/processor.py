@@ -202,7 +202,7 @@ class AliyunNetworkingProcessor(NetworkingProcessorBase):
                 network["status"] = vpc["Status"]
             #network["subnets"] = self.getSubsetIDList(vpc["VRouterId"])
             network["subnets"] = []
-            network["subnets"].append(vpc["CidrBlock"])
+            #network["subnets"].append(vpc["CidrBlock"])
             network["name"] = vpc["VpcName"]
             network["router:external"] = False
             network["admin_state_up"] = True
