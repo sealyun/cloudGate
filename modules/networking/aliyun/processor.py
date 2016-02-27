@@ -617,7 +617,7 @@ class AliyunNetworkingProcessor(NetworkingProcessorBase):
             loadbalancer["id"] = lb["LoadBalancerId"]
             loadbalancer["operating_status"] = "ONLINE"
             loadbalancer["name"] = lb["LoadBalancerName"]
-            loadbalancer["name"] = ""
+            #loadbalancer["name"] = ""
 
             loadbalancers.append(loadbalancer)
 
