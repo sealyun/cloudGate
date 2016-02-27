@@ -95,19 +95,28 @@ class AliyunImageServiceProcessor(ImageServiceProcessorBase):
             }
         }
         """
+        images = sorted(images, key=lambda x: x['CreationTime'], reverse=True)
         if name:
             images = [i for i in images if name in i['ImageName']]
         if status:
             mapper = {'Available': 'Active'}
             images = [i for i in images if status in mapper.get(i['Status'])]
         if marker:
-            for i in range(len(images)):
-                if images[i]['ImageName'] == marker:
-                    images = images[i + 1:]
-                    break
+            if sort_dir == 'asc':
+                for i in range(len(images)):
+                    if images[i]['ImageName'] == marker:
+                        images = images[i + 1:]
+                        break
+            elif sort_dir == 'desc':
+                for i in range(len(images) - 1, 0, -1):
+                    if images[i]['ImageName'] == marker:
+                        images = images[: i]
+                        break
+        images = sorted(images, key=lambda x: x['CreationTime'], reverse=True)
         return images
 
-    def createImage(self, container_format, disk_format, name, snapshot_id):
+    def createImage(self, name, container_format, disk_format, snapshot_id):
+        print(container_format, disk_format, name, snapshot_id)
         request = CreateImageRequest.CreateImageRequest()
         request.set_accept_format('json')
         request.set_SnapshotId(snapshot_id)
@@ -115,6 +124,7 @@ class AliyunImageServiceProcessor(ImageServiceProcessorBase):
 
         response = self.clt.do_action(request)
         resp = json.loads(response)
+        print(resp)
         return resp
 
     def queryImageId(self, image_id):
