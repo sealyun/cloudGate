@@ -202,7 +202,7 @@ class AliyunNetworkingProcessor(NetworkingProcessorBase):
                 network["status"] = vpc["Status"]
             #network["subnets"] = self.getSubsetIDList(vpc["VRouterId"])
             network["subnets"] = []
-            network["subnets"].append(vpc["CidrBlock"])
+            #network["subnets"].append(vpc["CidrBlock"])
             network["name"] = vpc["VpcName"]
             network["router:external"] = False
             network["admin_state_up"] = True
@@ -616,8 +616,8 @@ class AliyunNetworkingProcessor(NetworkingProcessorBase):
             loadbalancer["vip_subnet_id"] = ""
             loadbalancer["id"] = lb["LoadBalancerId"]
             loadbalancer["operating_status"] = "ONLINE"
-            #loadbalancer["name"] = lb["LoadBalancerName"]
-            loadbalancer["name"] = ""
+            loadbalancer["name"] = lb["LoadBalancerName"]
+            #loadbalancer["name"] = ""
 
             loadbalancers.append(loadbalancer)
 
@@ -639,6 +639,7 @@ class AliyunNetworkingProcessor(NetworkingProcessorBase):
         request.set_LoadBalancerName(inLoadBalancer["name"])
         #create classic network loadbalancer
         #vpc loadbalancer need set vpc id and switch id
+        request.set_AddressType("intranet")
         request.set_accept_format('json')
         response = self.clt.do_action(request)
         resp = json.loads(response)
