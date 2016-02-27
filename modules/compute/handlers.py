@@ -81,7 +81,7 @@ class ServerHandler(ComputeBaseHandler):
         if "x-openstack-request-id" in headers:
             self.set_header("x-openstack-request-id", headers["x-openstack-request-id"])
         print "----serverHandler, res:"
-        #print json.dumps(body, indent=4)
+        print json.dumps(body, indent=4)
         self.send_json(body)
 
     def put(self, tenant_id, server_id):
