@@ -188,7 +188,7 @@ class LoadBalanceTest(unittest.TestCase):
         jl["admin_state_up"] = True
         jl["connection_limit"] = 100
         jl["description"] = "listener one"
-        jl["loadbalancer_id"] = loadbalancer_id
+        jl["loadbalancer_id"] = loadbalancer_id_for_listener_member
         jl["name"] = "listener1"
         jl["protocol"] = "HTTP"
         jl["protocol_port"] = "80"
@@ -310,4 +310,28 @@ class LoadBalanceTest(unittest.TestCase):
         print response.text
 
 if __name__ == '__main__':
-    unittest.main()
+    #unittest.main()
+    suite = unittest.TestSuite()
+    suite.addTest(NetworkTest("test_NetworksHandler_GET"))
+    suite.addTest(NetworkTest("test_NetworksHandler_POST"))
+    suite.addTest(NetworkTest("test_NetworkHandler_GET"))
+    suite.addTest(NetworkTest("test_NetworkHandler_PUT"))
+    suite.addTest(NetworkTest("test_NetworkHandler_DELETE"))
+    suite.addTest(LoadBalanceTest("test_LoadbalancersHandler_GET"))
+    suite.addTest(LoadBalanceTest("test_LoadbalancersHandler_POST"))
+    suite.addTest(LoadBalanceTest("test_LoadbalancerHandler_GET"))
+    suite.addTest(LoadBalanceTest("test_LoadbalancerStatusesHandler_GET"))
+    suite.addTest(LoadBalanceTest("test_LoadbalancerHandler_PUT"))
+    suite.addTest(LoadBalanceTest("test_LoadbalancerHandler_DELETE"))
+    suite.addTest(LoadBalanceTest("test_LbaasListenersHandler_GET"))
+    suite.addTest(LoadBalanceTest("test_LbaasListenersHandler_POST"))
+    suite.addTest(LoadBalanceTest("test_LbaasListenerHandler_GET"))
+    suite.addTest(LoadBalanceTest("test_LbaasListenerHandler_PUT"))
+    suite.addTest(LoadBalanceTest("test_LbaasListenerHandler_DELETE"))
+    suite.addTest(LoadBalanceTest("test_LbaasPoolMembersHandler_GET"))
+    suite.addTest(LoadBalanceTest("test_LbaasPoolMembersHandler_POST"))
+    suite.addTest(LoadBalanceTest("test_LbaasPoolMemberHandler_GET"))
+    suite.addTest(LoadBalanceTest("test_LbaasPoolMemberHandler_PUT"))
+    suite.addTest(LoadBalanceTest("test_LbaasPoolMemberHandler_DELETE"))
+    runner = unittest.TextTestRunner()
+    runner.run(suite)
