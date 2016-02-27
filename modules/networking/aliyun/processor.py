@@ -639,6 +639,7 @@ class AliyunNetworkingProcessor(NetworkingProcessorBase):
         request.set_LoadBalancerName(inLoadBalancer["name"])
         #create classic network loadbalancer
         #vpc loadbalancer need set vpc id and switch id
+        request.set_AddressType("intranet")
         request.set_accept_format('json')
         response = self.clt.do_action(request)
         resp = json.loads(response)

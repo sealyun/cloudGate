@@ -6,11 +6,12 @@ import time
 
 import requests
 
-from cloudGate.common.define import *
-from cloudGate.config import *
+#from cloudGate.common.define import *
+#from cloudGate.config import *
 
 #host = 'http://121.199.9.187:8082'
-network_url_base = 'http://' + HOST + ':' + PORT + NETWORKING_BASE_URL
+#network_url_base = 'http://' + HOST + ':' + PORT + NETWORKING_BASE_URL
+network_url_base = "http://121.199.9.187:8081/networking"
 
 headers = {"X-Auth-Token": "admintest:admintest"}
 #headers["X-Auth-Token"] = "admintest:admintest"
@@ -81,11 +82,22 @@ class NetworkTest(unittest.TestCase):
         print response.status_code
         print response.text
 
+    def test_NetworkHandler_PUT_special(self):
+        print "\n----------test_NetworkHandler_PUT----------"
+        _network_id = "vpc-62bu7ojn1"
+        print "network id: ", _network_id
+        data = '{"network":{"name": "vpc-newname"}}'
+        response = requests.put(network_url_base + '/v2.0/networks/' + _network_id + '.json', data=data, headers=headers)
+        print response.status_code
+        if response.status_code == 200:
+            j = json.loads(response.text)
+            print json.dumps(j, indent=1)
+
     def test_NetworkHandler_DELETE_special(self):
         print "\n----------test_NetworkHandler_DELETE_special----------"
         _network_id = "vpc-62o09qfaj"
         print "network id: ", _network_id
-        response = requests.delete(host + network_url_base + '/v2.0/networks/' + _network_id + '.json', headers=headers)
+        response = requests.delete(network_url_base + '/v2.0/networks/' + _network_id + '.json', headers=headers)
         print response.status_code
         print response.text
 
