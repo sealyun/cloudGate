@@ -1,0 +1,32 @@
+#!/bin/sh
+
+python httptest.py \
+NetworkTest.test_NetworksHandler_GET \
+NetworkTest.test_NetworksHandler_POST \
+NetworkTest.test_NetworkHandler_GET \
+NetworkTest.test_NetworkHandler_PUT \
+NetworkTest.test_NetworkHandler_DELETE \
+LoadBalanceTest.test_LoadbalancersHandler_GET \
+LoadBalanceTest.test_LoadbalancersHandler_POST \
+LoadBalanceTest.test_LoadbalancerHandler_GET \
+LoadBalanceTest.test_LoadbalancerStatusesHandler_GET \
+LoadBalanceTest.test_LoadbalancerHandler_PUT \
+LoadBalanceTest.test_LoadbalancerHandler_DELETE \
+LoadBalanceTest.test_LbaasListenersHandler_GET \
+LoadBalanceTest.test_LbaasListenersHandler_POST \
+LoadBalanceTest.test_LbaasListenerHandler_GET \
+LoadBalanceTest.test_LoadbalancerStatusesHandler_GET \
+LoadBalanceTest.test_LbaasListenerHandler_PUT \
+LoadBalanceTest.test_LbaasListenerHandler_DELETE \
+LoadBalanceTest.test_LbaasPoolMembersHandler_GET \
+LoadBalanceTest.test_LbaasPoolMembersHandler_POST \
+LoadBalanceTest.test_LbaasPoolMemberHandler_GET \
+LoadBalanceTest.test_LbaasPoolMemberHandler_PUT \
+LoadBalanceTest.test_LbaasPoolMemberHandler_DELETE \
+
+
+
+
+
+
+
