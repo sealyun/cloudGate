@@ -12,12 +12,14 @@ from aliyunsdkecs.request.v20140526 import JoinSecurityGroupRequest
 from aliyunsdkecs.request.v20140526 import LeaveSecurityGroupRequest
 from aliyunsdkecs.request.v20140526 import DescribeInstanceTypesRequest
 from aliyunsdkecs.request.v20140526 import AllocateEipAddressRequest
+from aliyunsdkecs.request.v20140526 import AssociateEipAddressRequest
 from aliyunsdkecs.request.v20140526 import DescribeEipAddressesRequest
 from aliyunsdkecs.request.v20140526 import DescribeRegionsRequest
 from aliyunsdkecs.request.v20140526 import ReleaseEipAddressRequest
 from aliyunsdkecs.request.v20140526 import UnassociateEipAddressRequest
 from aliyunsdkecs.request.v20140526 import DescribeZonesRequest
-
+from aliyunsdkecs.request.v20140526 import CreateImageRequest
+from aliyunsdkecs.request.v20140526 import DescribeInstanceVncUrlRequest
 
 from aliyunsdkecs.request.v20140526 import AttachDiskRequest
 from aliyunsdkecs.request.v20140526 import DetachDiskRequest
@@ -65,7 +67,7 @@ class AliyunComputeProcessor(ComputeProcessorBase):
             "id": "1",  
             "links": [
                 {
-                "href": "http://openstack.example.com/openstack/flavors/1",
+                "href": "",
                 "rel": "bookmark"
                 }
             ]
@@ -140,16 +142,17 @@ class AliyunComputeProcessor(ComputeProcessorBase):
         }
 	    	
     def createServer(self, tenant_id, name, imageRef, flavorRef, metadata):
-        request = CreateInstancesRequest.CreateInstancesRequest()
+        request = CreateInstanceRequest.CreateInstanceRequest()
         request.set_accept_format('json')
         request.set_InstanceName(name)
         request.set_ImageId(imageRef)
-        #todo set flavorRef
-        #todo set metadata
+        request.set_InstanceType(flavorRef)
+        request.set_SecurityGroupId("sg-62m1xgqht")
+        #request.add_query_param("RegionId", "cn-hongkong")
         response = self.clt.do_action(request)
 
         resp = json.loads(response)
-        #print "resp :", json.dumps(resp, indent=4)
+        print "resp :", json.dumps(resp, indent=4)
         if "InstanceId" in resp:
             headers, s = self.query_server(tenant_id, resp["InstanceId"])
             return {}, {
@@ -163,31 +166,45 @@ class AliyunComputeProcessor(ComputeProcessorBase):
             }
         else:
             return {}, {}
-
+    
     def queryServersDetails(self, tenant_id, changes_since, image,
             flavor, name, status, host, limit, marker):
+        regions = self._queryRegions()
+        #print "---regions:"
+        #print json.dumps(regions, indent=4)
+        servers = []
+        for region in regions["Regions"]["Region"]:
+            id = region["RegionId"]
+            servers += self._queryServersDetails(tenant_id, changes_since, image, flavor, name, status, host, limit, marker, id)
+        #print "------servers:"
+        #print json.dumps(servers, indent=4)
+        return {}, {"servers": servers}
+
+    def _queryServersDetails(self, tenant_id, changes_since, image,
+            flavor, name, status, host, limit, marker, region):
+
         request = DescribeInstancesRequest.DescribeInstancesRequest()
         request.set_accept_format('json')
+
+        request.add_query_param('RegionId', region)
         # not support query by "changes_since"
         request.set_ImageId(image) if image else None
         request.set_InstanceType(flavor) if flavor else None
         request.set_InstanceName(name) if name else None
-        request.set_Status(status) if status else None
+        #request.set_Status(status) if status else None
         # not support query by "host"
-        request.set_PageSize(limit) if limit else None
+        #request.set_PageSize(limit) if limit else None
         # not support query by "marker"
 
         response = self.clt.do_action(request)
 
         resp = json.loads(response)
-        #print "resp :", json.dumps(resp, indent=4)
+        #print "---query serversdetail resp :", json.dumps(resp, indent=4)
 
         if "Instances" not in resp.keys():
-            return {}, {}
+            return []
 
-        headers = {}
-        body = {
-            "servers": [
+        return [
                 {
                     "addresses": {
                         "private": [
@@ -214,7 +231,7 @@ class AliyunComputeProcessor(ComputeProcessorBase):
                         "id": s["InstanceType"],  
                         "links": [  # todo
                             {
-                            "href": "http://openstack.example.com/openstack/flavors/1",
+                            "href": "",
                             "rel": "bookmark"
                             }
                         ]
@@ -242,7 +259,7 @@ class AliyunComputeProcessor(ComputeProcessorBase):
                     }
                     ],
                     "metadata": {
-                    "My Server Name": s["InstanceName"]
+                        "My Server Name": s["InstanceName"]
                     },
                     "name": s["InstanceName"],
                     "accessIPv4": "",  #todo
@@ -261,23 +278,20 @@ class AliyunComputeProcessor(ComputeProcessorBase):
                     "OS-SRV-USG:terminated_at": "",  #todo
                     "progress": 0,  #todo
                     "security_groups": [
-                    {
-                        "name": name
-                    }
-                    for name in s["SecurityGroupIds"]["SecurityGroupId"]
+                        {
+                            "name": name
+                        }
+                        for name in s["SecurityGroupIds"]["SecurityGroupId"]
                     ],
                     #"status": s["Status"],
-                    "status": "ACTIVE",
-                    "host_status": "UP",  #todo
+                    "status": "ACTIVE" if s["Status"] != "Stopped" else "Stopped",
+                    "host_status": "DOWN" if s["Status"] == "Stopped" else "UP",  #todo
                     "tenant_id": "openstack",  #todo
                     "updated": s["ExpiredTime"],
                     "user_id": "fake"  #todo
                 }
                 for s in resp["Instances"]["Instance"]
             ]
-        }
-
-        return headers, body
 
     def queryServer(self, tenant_id, server_id):
         request = DescribeInstancesRequest.DescribeInstancesRequest()
@@ -322,7 +336,7 @@ class AliyunComputeProcessor(ComputeProcessorBase):
                         "id": s["InstanceType"],  
                         "links": [  # todo
                             {
-                            "href": "http://openstack.example.com/openstack/flavors/1",
+                            "href": "",
                             "rel": "bookmark"
                             }
                         ]
@@ -418,7 +432,8 @@ class AliyunComputeProcessor(ComputeProcessorBase):
         request.set_accept_format("json")
         request.set_InstanceId(server_id)
 
-        self.clt.do_action(request)
+        rep = self.clt.do_action(request)
+        print "---rep:", rep
     
     def createFloatingIp(tenant_id, pool):
         request = AllocateEipAddressRequest.AllocateEipAddressRequest()
@@ -577,34 +592,39 @@ class AliyunComputeProcessor(ComputeProcessorBase):
         
         return resp
 
+    def _queryFloatingIpAllocationId(self, ip):
+        regions = self._queryRegions()
+        for region in regions["Regions"]["Region"]:
+            request = DescribeEipAddressesRequest.DescribeEipAddressesRequest()
+            request.set_accept_format("json")
+            request.add_query_param("RegionId", region['RegionId'])
+            response = self.clt.do_action(request)
+            resp = json.loads(response)
+            print "---resp:", resp
+            for eip in resp["EipAddresses"]["EipAddress"]:
+                if ip == eip["IpAddress"]:
+                    return eip["AllocationId"]
+        return ""
+
     def serverAction(self, tenant_id, server_id, action):
         if "addFixedIp" in action:  # depend network 
             pass 
         if "removeFixedIp" in action:  # depend network 
             pass 
         elif "addFloatingIp" in action:  # depend network
-            request = DescribeEipAddressesRequest.DescribeEipAddressesRequest()
-            request.set_accept_format("json")
-            request.set_EipAddress(action["addFloatingIp"]["address"])
-            response = self.clt.do_action(request)
-            resp = json.loads(response)
-
-            id = resp["EipAddresses"]["EipAddress"][0]["AllocationId"]
-
-            request = AllocateEipAddressRequest.AllocateEipAddressRequest()
+            id = self._queryFloatingIpAllocationId(action["addFloatingIp"]["address"])    
+            if not id:
+                return
+            request = AssociateEipAddressRequest.AssociateEipAddressRequest()
             request.set_accept_format("json")
             request.set_InstanceId(server_id)
             request.set_AllocationId(id)
             self.clt.do_action(request)
 
         elif "removeFloatingIp" in action:
-            request = DescribeEipAddressesRequest.DescribeEipAddressesRequest()
-            request.set_accept_format("json")
-            request.set_EipAddress(action["removeFloatingIp"]["address"])
-            response = self.clt.do_action(request)
-            resp = json.loads(response)
-
-            id = resp["EipAddresses"]["EipAddress"][0]["AllocationId"]
+            id = self._queryFloatingIpAllocationId(action["removeFloatingIp"]["address"])    
+            if not id:
+                return 
 
             request = UnassociateEipAddressRequest.UnassociateEipAddressRequest()
             request.set_accept_format("json")
@@ -613,45 +633,96 @@ class AliyunComputeProcessor(ComputeProcessorBase):
             self.clt.do_action(request)
 
         elif "attach" in action:  # depend volume
-            pass
+            '''
+            action
+            {
+                "attach": {
+                    "volume_id": "15e59938-07d5-11e1-90e3-e3dffe0c5983",
+                    "device": "/dev/vdb",
+                    "disk_bus": "ide",
+                    "device_type": "cdrom"
+                }
+            }
+            '''
+            self.serverAttachVolume(tenant_id, server_id, action["attach"]["volume_id"], None)
         elif "createImage" in action:  # depend image
-            pass
+            print "---createImage"
+            request = CreateImageRequest.CreateImageRequest()
+            request.set_accept_format('json')
+            request.set_SnapshotId(action["createImage"]["snapshot_id"])
+            request.set_ImageName(action["createImage"]["name"])
+
+            response = self.clt.do_action(request)
+            resp = json.loads(response)
+            print "---resp:", resp
         elif "forceDelete" in action:
+            print "----forceDelete"
             self.deleteServer(tenant_id, server_id)
 
         elif "lock" in action:
             pass
         elif "unlock" in action:
             pass
+        elif "os-getVNCConsole" in action:
+            request = DescribeInstanceVncUrlRequest.DescribeInstanceVncUrlRequest()
+            request.set_accept_format("json")
+            request.set_InstanceId(server_id)
+            response = self.clt.do_action(request)
+            res = json.loads(response)
+            return {}, {
+                 "console": {
+                 "type": "",
+                 "url": res["VncUrl"]
+                 }
+            }
         elif "reboot" in action:
             print "----reboot"
-            return
+            print "server_id:", server_id
             request = RebootInstanceRequest.RebootInstanceRequest()
             request.set_accept_format("json")
             request.set_InstanceId(server_id)
-            self.clt.do_action(request)
+            s = self.clt.do_action(request)
+            print 'rep:', s
         elif "os-start" in action:
+            print "----start"
+            print "server_id:", server_id
             request = StartInstanceRequest.StartInstanceRequest()
             request.set_accept_format("json")
             request.set_InstanceId(server_id)
-            self.clt.do_action(request)
+            s = self.clt.do_action(request)
+            print 'rep:', s
         elif "os-stop" in action:
             print "----stop"
-            return
+            print "server_id:", server_id
             request = StopInstanceRequest.StopInstanceRequest()
             request.set_accept_format("json")
             request.set_InstanceId(server_id)
-            self.clt.do_action(request)
+            s = self.clt.do_action(request)
+            print 'rep:', s
         elif "addSecurityGroup" in action:
+            print "------addSecurityGroup"
+            security_group_id = action["addSecurityGroup"]["name"] #todo
+            print "server_id:", server_id
+            print "security_group_id:", security_group_id
             request = JoinSecurityGroupRequest.JoinSecurityGroupRequest()
             request.set_accept_format("json")
             request.set_InstanceId(server_id)
-            self.clt.do_action(request)
+            request.set_SecurityGroupId(security_group_id)
+
+            s = self.clt.do_action(request)
+            print 'rep:', s
         elif "removeSecurityGroup" in action:
+            print "------removeSecurityGroup"
+            security_group_id = action["removeSecurityGroup"]["name"] #todo
+            print "server_id:", server_id
+            print "security_group_id:", security_group_id
             request = LeaveSecurityGroupRequest.LeaveSecurityGroupRequest()
             request.set_accept_format("json")
             request.set_InstanceId(server_id)
-            self.clt.do_action(request)
+            request.set_SecurityGroupId(security_group_id)
+            s = self.clt.do_action(request)
+            print 'rep:', s
+        return {}, {}
     
     def serverAttachVolume(self, tenant_id, instance_id, volume_id, device):
         headers = {}
@@ -694,7 +765,27 @@ class AliyunComputeProcessor(ComputeProcessorBase):
         body = {}
         
         return headers, body
-
+    
+    def getQuotaSets(self, admin_tenant_id, tenant_id):
+        return {}, {
+                "quota_set": {
+                "injected_file_content_bytes": 10240,
+                "metadata_items": 128,
+                "server_group_members": 10,
+                "server_groups": 10,
+                "ram": 51200,
+                "floating_ips": 10,
+                "key_pairs": 100,
+                "id": "91a3c6da787643c78f2a7c7428fa54f2",
+                "instances": 10,
+                "security_group_rules": 20,
+                "injected_files": 5,
+                "cores": 20,
+                "fixed_ips": -1,
+                "injected_file_path_bytes": 255,
+                "security_groups": 10
+            }
+        } 
 
     def queryFlavors(self, tenant_id):
         headers = {}
@@ -708,11 +799,11 @@ class AliyunComputeProcessor(ComputeProcessorBase):
                     "id": "1",
                     "links": [
                         {
-                            "href": "http://openstack.example.com/v2.1/openstack/flavors/1",
+                            "href": "",
                             "rel": "self"
                         },
                         {
-                            "href": "http://openstack.example.com/openstack/flavors/1",
+                            "href": "",
                             "rel": "bookmark"
                         }
                 }
@@ -811,16 +902,16 @@ class AliyunComputeProcessor(ComputeProcessorBase):
                     "id": f["InstanceTypeId"],
                     "links": [
                         {
-                            "href": "http://openstack.example.com/v2.1/openstack/flavors/1",
+                            "href": "",
                             "rel": "self"
                         },
                         {
-                            "href": "http://openstack.example.com/openstack/flavors/1",
+                            "href": "",
                             "rel": "bookmark"
                         }
                     ],
                     "name": f["InstanceTypeId"],
-                    "ram": f["MemorySize"],
+                    "ram": 1024 * f["MemorySize"],
                     "swap": "",
                     "vcpus": f["CpuCoreCount"]
                 }
@@ -828,7 +919,7 @@ class AliyunComputeProcessor(ComputeProcessorBase):
             ]
         }    
         print "---queryFlavorsDeatil, body:"
-        print body
+        #print body
         return headers, body
     
     def getAvailabilityZone(self, tenant_id):

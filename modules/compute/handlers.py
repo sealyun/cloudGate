@@ -81,7 +81,7 @@ class ServerHandler(ComputeBaseHandler):
         if "x-openstack-request-id" in headers:
             self.set_header("x-openstack-request-id", headers["x-openstack-request-id"])
         print "----serverHandler, res:"
-        print json.dumps(body, indent=4)
+        #print json.dumps(body, indent=4)
         self.send_json(body)
 
     def put(self, tenant_id, server_id):
@@ -115,8 +115,9 @@ class ServerActionHandler(ComputeBaseHandler):
     def post(self, tenant_id, server_id):
         self.get_processor()
         action = json.loads(self.request.body)
-        self.p.serverAction(tenant_id, server_id, action)
-
+        headers, body = self.p.serverAction(tenant_id, server_id, action)
+        if body:
+            self.send_json(body)
 
 class ServerVolumeHandler(ComputeBaseHandler):
     def post(self, tenant_id, server_id):
@@ -216,6 +217,16 @@ class AvailabilityZoneHandler(ComputeBaseHandler):
         self.get_processor()
         processor = self.get_processor()
         headers, body = processor.getAvailabilityZone(tenant_id)
+        self.send_json(body)
+
+
+class QuotaHandler(ComputeBaseHandler):
+    def get(self, admin_tenant_id, tenant_id):
+        self.get_processor()
+        processor = self.get_processor()
+        headers, body = processor.getQuotaSets(admin_tenant_id, tenant_id)
+        print "----QuotaHandler, resp:"
+        print body
         self.send_json(body)
 
 
