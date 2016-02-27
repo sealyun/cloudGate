@@ -58,7 +58,7 @@ class ComputeTest(unittest.TestCase):
 
     def test_server_action(self):
         self.server_create()
-
+        
         print "server_id:", g_server_id
         url = URL_BASE + "/v2.1/tenant_id/servers/%s/action" % g_server_id
         session.headers.update({'X-Auth-Token': 'admintest:admintest'})
