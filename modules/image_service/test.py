@@ -55,29 +55,39 @@ class TestCase(unittest.TestCase):
         session = requests.Session()
         session.headers.update({'X-Auth-Token': 'admintest:admintest'})
 
+        print('------------get images-----------------------')
         response = session.get(host + '/image_service/v1/images/detail')
         self.assertTrue('images' in response.text)
-        print('get images', response.status_code)
+        print(response.text)
+        input('press Enter to continue')
 
+        print('------------create images-----------------------')
         headers = {
             'X-Image-Meta-Name': 'test111101',
             'X-Glance-Api-Copy-From': 'http://s-62ev59pgw.vhd'
         }
         response = session.post(host + '/image_service/v1/images', headers=headers)
         id = json.loads(response.text)['image']['id']
-        print('create_image', response.text)
+        print(response.text)
         self.assertEqual(response.status_code, 202)
+        input('press Enter to continue')
 
+        print('------------patch image name-----------------------')
         response = session.patch(host + '/image_service/v1/images/' + id,
                                  json={'op': 'replace', 'path': 'ImageName', 'value': 'newName'})
-        print('patch_name', response.text)
+        print(response.text)
         self.assertEqual(response.status_code, 200)
+        input('press Enter to continue')
 
+        print('------------get image info-----------------------')
         response = session.get(host + '/image_service/v1/images/' + id)
-        print('get image_info', response.text)
+        print(response.text)
+        input('press Enter to continue')
 
+        print('------------delete image -----------------------')
         response = session.delete(host + '/image_service/v1/images/' + id)
-        print('delete_name', response.text)
+        print(response.text)
         self.assertEqual(response.status_code, 204)
+        input('press Enter to continue')
 if __name__ == '__main__':
     unittest.main()
