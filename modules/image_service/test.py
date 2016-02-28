@@ -59,7 +59,7 @@ class TestCase(unittest.TestCase):
         response = session.get(host + '/image_service/v1/images/detail')
         self.assertTrue('images' in response.text)
         print(response.text)
-        input('press Enter to continue')
+        raw_input('press Enter to continue')
 
         print('------------create images-----------------------')
         headers = {
@@ -70,24 +70,24 @@ class TestCase(unittest.TestCase):
         id = json.loads(response.text)['image']['id']
         print(response.text)
         self.assertEqual(response.status_code, 202)
-        input('press Enter to continue')
+        raw_input('press Enter to continue')
 
         print('------------patch image name-----------------------')
         response = session.patch(host + '/image_service/v1/images/' + id,
                                  json={'op': 'replace', 'path': 'ImageName', 'value': 'newName'})
         print(response.text)
         self.assertEqual(response.status_code, 200)
-        input('press Enter to continue')
+        raw_input('press Enter to continue')
 
         print('------------get image info-----------------------')
         response = session.get(host + '/image_service/v1/images/' + id)
         print(response.text)
-        input('press Enter to continue')
+        raw_input('press Enter to continue')
 
         print('------------delete image -----------------------')
         response = session.delete(host + '/image_service/v1/images/' + id)
-        print(response.text)
+        print(response.status_code)
         self.assertEqual(response.status_code, 204)
-        input('press Enter to continue')
+        raw_input('press Enter to continue')
 if __name__ == '__main__':
     unittest.main()
