@@ -136,3 +136,18 @@ class ComputeProcessorFac():
         if processor == "aliyun":
             return AliyunComputeProcessor()
 ```
+
+##deploy cloudGate
+1. deploy horizon
+http://docs.openstack.org/mitaka/install-guide-ubuntu/horizon-install.html
+2. deploy cloudGate
+   using command line config ali accesskey access secret, port etc,.
+3. config horizon
+`/etc/openstack-dashboard/local/local_settings.py` 
+edit `AVAILABLE_REGIONS` 
+```
+AVAILABLE_REGIONS = [
+    ('http://cloudGateIp:cloudGatePort/v2.0', 'cluster1'),
+]
+```
+
